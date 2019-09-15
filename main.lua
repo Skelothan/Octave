@@ -12,7 +12,8 @@ function love.load()
 	
 	-- initialize state machine
 	gStateMachine = StateMachine:init({
-		["title"] = function() return TitleState:init() end
+		["title"] = function() return TitleState:init() end,
+		["menu"] = function() return MenuState:init() end
 	})
 	gStateMachine:change("title", {})
 	
@@ -26,6 +27,10 @@ end
 
 function love.update(dt)
 	gStateMachine:update(dt)
+end
+
+function love.resize(x, y)
+
 end
 
 function love.keypressed(key)

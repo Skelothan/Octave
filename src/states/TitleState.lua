@@ -9,11 +9,15 @@ function TitleState:init()
 	return o
 end
 
-function TitleState:update(dt) 
-	print("Hello World!")
+function TitleState:update(dt) -- TODO: update this system to a prettier one
+	if love.keyboard.wasPressed("j") or 
+	love.keyboard.wasPressed("k") or 
+	love.keyboard.wasPressed("l") then
+		gStateMachine:change("menu", {})
+	end
 end
 
 function TitleState:render() 
-	love.graphics.setFont(gFonts["AvenirLight32"])
-	love.graphics.printf("Hello World", 0, 0, 10000000, "left")
+	love.graphics.printf("Octave", gFonts["AvenirLight64"], 0, love.graphics.getHeight()*0.25, love.graphics.getWidth(), "center")
+	love.graphics.printf("Press [down triangle]", gFonts["AvenirLight32"], 0, love.graphics.getHeight()*0.75, love.graphics.getWidth(), "center")
 end
