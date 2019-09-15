@@ -8,7 +8,7 @@ function BaseState:init()
 	return o
 end
 
-function BaseState:enter() end
+function BaseState:enter(params) end
 function BaseState:exit() end
 function BaseState:update(dt) end
 function BaseState:render() end
