@@ -12,20 +12,26 @@ function love.load()
 	
 	-- initialize state machine
 	gStateMachine = StateMachine:init({
-		["title"] = function() return TitleState:init() end
+		["title"] = function() return TitleState:init() end,
+		["menu"] = function() return MenuState:init() end
 	})
 	gStateMachine:change("title", {})
 	
 	-- initialize global assets
 	loadFonts()
+	gBackground = Background:init("oscCircle")
 	
 	love.keyboard.keysPressed = {}
 end
 
 
-
 function love.update(dt)
+	gBackground:update(dt)
+	
 	gStateMachine:update(dt)
+end
+
+function love.resize(x, y)
 end
 
 function love.keypressed(key)
@@ -43,8 +49,12 @@ function love.keyboard.wasPressed(key)
 end
 
 function love.draw()
-	-- [render background here]
+	gBackground:render()
 	
 	gStateMachine:render()
 end
 
+-- Sets draw color to white
+function love.graphics.resetColor()
+	love.graphics.setColor(1, 1, 1, 1)
+end
