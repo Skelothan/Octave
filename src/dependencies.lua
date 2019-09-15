@@ -4,4 +4,10 @@ require "lib/deepcopy"
 -- A class library. I don't think we'll use it, but it's here just in case.
 -- Class = require "lib/class"
 
+-- Contains asset-loading functions used in love.load().
 require "src/loadassets"
+
+-- State machine stuff
+require "src/states/BaseState"
+require "src/states/StateMachine"
+require "src/states/TitleState"

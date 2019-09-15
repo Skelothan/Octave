@@ -10,6 +10,12 @@ function love.load()
 	-- Set window title
 	love.window.setTitle("Octave")
 	
+	-- initialize state machine
+	gStateMachine = StateMachine:init({
+		["title"] = function() return TitleState:init() end
+	})
+	gStateMachine:change("title", {})
+	
 	-- initialize global assets
 	loadFonts()
 	
@@ -19,7 +25,7 @@ end
 
 
 function love.update(dt)
-	-- update everything currently in existence, pass in dt
+	gStateMachine:update(dt)
 end
 
 function love.keypressed(key)
@@ -37,6 +43,8 @@ function love.keyboard.wasPressed(key)
 end
 
 function love.draw()
-	-- render everything currently in existence
+	-- [render background here]
+	
+	gStateMachine:render()
 end
 
