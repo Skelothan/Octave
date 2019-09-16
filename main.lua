@@ -29,6 +29,8 @@ function love.update(dt)
 	gBackground:update(dt)
 	
 	gStateMachine:update(dt)
+	
+	love.keyboard.keysPressed = {}
 end
 
 function love.resize(x, y)
