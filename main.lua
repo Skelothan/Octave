@@ -34,6 +34,7 @@ function love.update(dt)
 end
 
 function love.resize(x, y)
+	
 end
 
 function love.keypressed(key)
