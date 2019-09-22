@@ -13,7 +13,8 @@ function love.load()
 	-- initialize state machine
 	gStateMachine = StateMachine:init({
 		["title"] = function() return TitleState:init() end,
-		["menu"] = function() return MenuState:init() end
+		["menu"] = function() return MenuState:init() end,
+		["play"] = function() return PlayState:init() end
 	})
 	gStateMachine:change("title", {})
 	
