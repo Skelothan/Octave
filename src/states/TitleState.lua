@@ -1,6 +1,7 @@
 TitleState = {}
 TitleState.__index = TitleState
 
+
 function TitleState:init()
 	local o = o or {}
 	setmetatable(o, self)
@@ -9,10 +10,9 @@ function TitleState:init()
 	return o
 end
 
-function TitleState:update(dt) -- TODO: update this system to a prettier one
-	if love.keyboard.wasPressed("j") or 
-	love.keyboard.wasPressed("k") or 
-	love.keyboard.wasPressed("l") then
+function TitleState:update(dt)
+	if love.keyboard.wasInput("upArrow") or 
+	love.keyboard.wasInput("downArrow") then
 		gStateMachine:change("menu", {})
 	end
 end
