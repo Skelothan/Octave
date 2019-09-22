@@ -1,6 +1,7 @@
 TitleState = {}
 TitleState.__index = TitleState
 
+
 function TitleState:init()
 	local o = o or {}
 	setmetatable(o, self)
