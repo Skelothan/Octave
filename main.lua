@@ -22,7 +22,7 @@ function love.load()
 	gBackground = Background:init("oscCircle")
 	
 	love.keyboard.keysPressed = {}
-	love.keyboard.bindings = {}
+	love.keyboard.inputs = {}
 end
 
 
@@ -42,8 +42,8 @@ end
 
 --INPUT HANDLING BEGIN
 function love.keypressed(key)
-	love.keyboard.keysPressed[key] = true
-	local action = keys[key]
+	--love.keyboard.keysPressed[key] = true
+	local action = gKeys[key] or "misc"
 	love.keyboard.inputs[action] = true;
 end
 
@@ -56,7 +56,7 @@ is still necessary. Might be worth testing.
 
 
 --stores the keys and what they are bound to
-local keys = {
+gKeys = {
 	escape = "togglePauseMenu",
 	
 	--player 1
@@ -80,11 +80,12 @@ local keys = {
 	left = "left2",
 	right = "right2",
 	x = "togglePauseMenu"
+	
 	}
 
 
-function love.keyboard.wasPressed(key)
-	return love.keyboard.keysPressed[key] or false
+function love.keyboard.wasInput(key)
+	return love.keyboard.inputs[key] or false
 end
 	
 --INPUT HANDLING END
