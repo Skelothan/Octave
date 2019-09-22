@@ -15,3 +15,11 @@ function AudioPlayer:init(audio)
     }
     return o
 end
+
+function AudioPlayer:playAudio()
+    self.audio:play()
+end
+
+function AudioPlayer:playFilteredAudio()
+    self.filteredAudio:play()
+end

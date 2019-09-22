@@ -16,3 +16,5 @@ require "src/states/MenuState"
 -- Backgrounds
 require "src/backgrounddefs"
 require "src/Background"
+
+require "src/AudioPlayer"

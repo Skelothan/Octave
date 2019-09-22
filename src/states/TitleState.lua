@@ -21,3 +21,8 @@ function TitleState:render()
 	love.graphics.printf("Octave", gFonts["AvenirLight64"], 0, love.graphics.getHeight()*0.25, love.graphics.getWidth(), "center")
 	love.graphics.printf("Press [down triangle]", gFonts["AvenirLight32"], 0, love.graphics.getHeight()*0.75, love.graphics.getWidth(), "center")
 end
+
+function TitleState:enter()
+	createAudioPlayer = AudioPlayer:init(love.audio.newSource("sfx/Drop_In_Flip_Out.mp3", "stream"))
+	createAudioPlayer:playFilteredAudio()
+end
