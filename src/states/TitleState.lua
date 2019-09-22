@@ -10,7 +10,7 @@ function TitleState:init()
 	return o
 end
 
-function TitleState:update(dt) -- TODO: update this system to a prettier one
+function TitleState:update(dt)
 	if love.keyboard.wasInput("upArrow") or 
 	love.keyboard.wasInput("downArrow") then
 		gStateMachine:change("menu", {})
