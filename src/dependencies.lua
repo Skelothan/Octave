@@ -12,6 +12,7 @@ require "src/states/BaseState"
 require "src/states/StateMachine"
 require "src/states/TitleState"
 require "src/states/MenuState"
+require "src/states/PlayState"
 
 -- Backgrounds
 require "src/backgrounddefs"
