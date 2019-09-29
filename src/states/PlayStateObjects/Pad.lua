@@ -16,16 +16,16 @@ function Pad:init(params)
 	self.radius = params.radius
 	
 	-- Numerically indexed tables
-	self.outlineColor = params.outlineColor
-	self.padColor = params.padColor
+	self.outlineColor = params.outlineColor or {0, 0, 0, 1}
+	self.padColor = params.padColor or {0, 127/255, 1, 1}
 	
-	return o
+	return table.deepcopy(o)
 end
 
 function Pad:update(dt)
 	-- decrement active timer, deactivate once over
 	self.activeTimer = math.max(self.activeTimer - dt, 0)
-	if self.activeTimer = 0 then
+	if self.activeTimer == 0 then
 		self.active = false
 	end
 end
@@ -37,13 +37,13 @@ function Pad:onPress()
 end
 
 function Pad:render()
-	-- Draw pad
-	love.graphics.setColor(self.padColor)
-	love.graphics.circle(fill, self.x-self.radius, self.y-self.radius, self.radius)
 	-- Draw outline
 	love.graphics.setColor(self.outlineColor)
 	local outlineRadius = self.radius * 1.2
-	love.graphics.circle(fill, self.x-outlineRadius, self.y-outlineRadius, outlineRadius)
+	love.graphics.circle("fill", self.x, self.y, outlineRadius)
+	-- Draw pad
+	love.graphics.setColor(self.padColor)
+	love.graphics.circle("fill", self.x, self.y, self.radius)
 	-- Reset draw color
 	love.graphics.resetColor()
 end
