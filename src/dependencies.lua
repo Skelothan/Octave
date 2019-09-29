@@ -17,3 +17,5 @@ require "src/states/PlayState"
 -- Backgrounds
 require "src/backgrounddefs"
 require "src/Background"
+
+require "src/AudioPlayer"
