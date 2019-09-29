@@ -8,13 +8,14 @@ function AudioPlayer:init(audio)
     self.audio = audio:clone()
 
     highgain_ = 1
-    highgain_rate = 1
-    highgain_min = .3
+    highgain_rate = 6
+    highgain_min = .0001
     return o
 end
 
-function update(dt)
-	highgain_ = math.min(highgain_+highgain_rate*dt, 1)
+function AudioPlayer:update(dt)
+	print(highgain_);
+	highgain_ = math.min(highgain_+highgain_*highgain_rate*dt, 1)
 	self.audio:setFilter{
 		type = "lowpass",
 		volume = 1,
@@ -22,7 +23,8 @@ function update(dt)
 	}
 end
 
-function takeDamage()
+function AudioPlayer:takeDamage()
+	
 	highgain_ = highgain_min
 	self.audio:setFilter{
 		type = "lowpass",
