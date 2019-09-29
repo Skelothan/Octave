@@ -15,7 +15,7 @@ function Pad:init(params)
 	self.y = params.y
 	self.radius = params.radius
 	
-	-- Numerically index 
+	-- Numerically indexed tables
 	self.outlineColor = params.outlineColor
 	self.padColor = params.padColor
 	
