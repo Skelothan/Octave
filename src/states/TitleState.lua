@@ -24,5 +24,5 @@ end
 
 function TitleState:enter()
 	createAudioPlayer = AudioPlayer:init(love.audio.newSource("sfx/Drop_In_Flip_Out.mp3", "stream"))
-	createAudioPlayer:playFilteredAudio()
+	createAudioPlayer:playAudio()
 end

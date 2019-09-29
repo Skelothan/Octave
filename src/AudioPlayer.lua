@@ -6,20 +6,31 @@ function AudioPlayer:init(audio)
     setmetatable(o, self)
     self.__index = self
     self.audio = audio:clone()
-    self.filteredAudio = audio:clone()
 
-    self.filteredAudio:setFilter{
-        type = "lowpass",
-        volume = 1,
-        highgain = .5,
-    }
+    highgain_ = 1
+    highgain_rate = 1
+    highgain_min = .3
     return o
+end
+
+function update(dt)
+	highgain_ = math.min(highgain_+highgain_rate*dt, 1)
+	self.audio:setFilter{
+		type = "lowpass",
+		volume = 1,
+		highgain = highgain_,
+	}
+end
+
+function takeDamage()
+	highgain_ = highgain_min
+	self.audio:setFilter{
+		type = "lowpass",
+		volume = 1,
+		highgain = highgain_,
+	}
 end
 
 function AudioPlayer:playAudio()
     self.audio:play()
-end
-
-function AudioPlayer:playFilteredAudio()
-    self.filteredAudio:play()
 end
