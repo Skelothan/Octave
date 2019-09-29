@@ -7,6 +7,11 @@ require "lib/deepcopy"
 -- Contains asset-loading functions used in love.load().
 require "src/loadassets"
 
+
+-- Play State things
+require "src/states/PlayStateObjects/Pad"
+require "src/states/PlayStateObjects/Lane"
+
 -- State machine stuff
 require "src/states/BaseState"
 require "src/states/StateMachine"

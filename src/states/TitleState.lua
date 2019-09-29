@@ -7,7 +7,7 @@ function TitleState:init()
 	setmetatable(o, self)
 	self.__index = self
 	setmetatable(TitleState, BaseState) -- inheritance: arg a inherits arg b
-	return o
+	return table.deepcopy(o)
 end
 
 function TitleState:enter()
