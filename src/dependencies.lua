@@ -1,6 +1,8 @@
 -- A non-recursive deep copy function.
 require "lib/deepcopy"
 
+require "src/collision"
+
 -- A class library. I don't think we'll use it, but it's here just in case.
 -- Class = require "lib/class"
 
@@ -8,9 +10,11 @@ require "lib/deepcopy"
 require "src/loadassets"
 
 
+
 -- Play State things
 require "src/states/PlayStateObjects/Pad"
 require "src/states/PlayStateObjects/Lane"
+require "src/states/PlayStateObjects/Note"
 
 -- State machine stuff
 require "src/states/BaseState"
