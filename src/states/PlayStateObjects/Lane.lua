@@ -45,19 +45,20 @@ function Lane:init(params)
 	--self.vertices = {x1, y1, x2, y2,}
 	
 	local bound = math.max(love.graphics.getWidth(), love.graphics.getHeight())
+	local height = math.min(love.graphics.getHeight() - self.padY, self.padY - 0)
 	
 	if 1 == self.angle or (7 <= self.angle and self.angle <= 8) then
-		self.endpointX = bound
+		self.endpointX = self.padX + (height*1.5)
 	elseif 3 <= self.angle and self.angle <= 5 then
-		self.endpointX = 0
+		self.endpointX = self.padX - (height*1.5)
 	elseif self.angle == 2 or self.angle == 6 then
 		self.endpointX = self.padX
 	end
 	
 	if 1 <= self.angle and self.angle <= 3 then
-		self.endpointY = bound
+		self.endpointY = self.padY + (height*1.5)
 	elseif 5 <= self.angle and self.angle <= 7 then
-		self.endpointY = 0
+		self.endpointY = self.padY - (height*1.5)
 	else
 		self.endpointY = self.padY
 	end
