@@ -35,7 +35,12 @@ function love.update(dt)
 	
 	love.keyboard.keysPressed = {}
 	--stores the actual inputs
+<<<<<<< HEAD
+	love.keyboard.input = {}
+	love.keyboard.keysDown = {}
+=======
 	love.keyboard.inputs = {}
+>>>>>>> master
 end
 
 function love.resize(x, y)
@@ -46,14 +51,12 @@ end
 function love.keypressed(key)
 	--love.keyboard.keysPressed[key] = true
 	local action = gKeys[key] or "misc"
-	love.keyboard.inputs[action] = true
-	love.keyboard.keysDown[action] = true
+	love.keyboard.inputs[action] = true;
 end
 
-function love.keyreleased(key)
+function love.isDown(key)
 	local action  = gKeys[key] or "misc"
-	love.keyboard.keysDown[action] = false
-end
+	love.keyboard.keysDown[action] = true;
 
 --[[ 
 Last I was told, the default love.keypressed can only be accessed from main. 
