@@ -24,7 +24,6 @@ function love.load()
 	
 	love.keyboard.keysPressed = {}
 	love.keyboard.inputs = {}
-	love.keyboard.keysDown = {}
 end
 
 
@@ -35,7 +34,7 @@ function love.update(dt)
 	
 	love.keyboard.keysPressed = {}
 	--stores the actual inputs
-	love.keyboard.inputs = {}
+	love.keyboard.input = {}
 end
 
 function love.resize(x, y)
@@ -46,13 +45,7 @@ end
 function love.keypressed(key)
 	--love.keyboard.keysPressed[key] = true
 	local action = gKeys[key] or "misc"
-	love.keyboard.inputs[action] = true
-	love.keyboard.keysDown[action] = true
-end
-
-function love.keyreleased(key)
-	local action  = gKeys[key] or "misc"
-	love.keyboard.keysDown[action] = false
+	love.keyboard.inputs[action] = true;
 end
 
 --[[ 
@@ -96,9 +89,6 @@ function love.keyboard.wasInput(key)
 	return love.keyboard.inputs[key] or false
 end
 	
-function love.keyboard.isHeld(key)
-	return love.keyboard.keysDown[key] or false
-end
 --INPUT HANDLING END
 
 function love.draw()
