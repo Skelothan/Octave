@@ -35,8 +35,12 @@ function love.update(dt)
 	
 	love.keyboard.keysPressed = {}
 	--stores the actual inputs
-	love.keyboard.input = {}
+<<<<<<< HEAD
+	love.keyboard.inputs {}
 	love.keyboard.keysDown = {}
+=======
+	love.keyboard.inputs = {}
+>>>>>>> master
 end
 
 function love.resize(x, y)
