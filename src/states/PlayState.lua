@@ -1,7 +1,7 @@
 PlayState = {}
 PlayState.__index = PlayState
 
-function newPad(self, pX, pY, pRadius, pNum)
+function PlayState:newPad(pX, pY, pRadius, pNum)
 	table.insert(self.pads, Pad:init({
 		x = pX, 
 		y = pY, 
@@ -40,48 +40,49 @@ function PlayState:init()
 	
 	self.pads = {}
 	self.lanes = {}
-	self.notes
+	self.healthBar = HealthBar:init({}) -- todo: add palettes to everything
+	self.notes = {}
 	
 	local centerRadius = math.min(love.graphics.getHeight(), love.graphics.getWidth())/8
 	local pRadius = 20
 	
 	--Add pads:
 	--bottom 
-	newPad(self, love.graphics.getWidth()/2, love.graphics.getHeight()/2 + centerRadius, pRadius, 0)
+	self:newPad(love.graphics.getWidth()/2, love.graphics.getHeight()/2 + centerRadius, pRadius, 0)
 	
 	--bottom left
-	newPad(self, love.graphics.getWidth()/2 - centerRadius/math.sqrt(2), 
+	self:newPad(love.graphics.getWidth()/2 - centerRadius/math.sqrt(2), 
 		love.graphics.getHeight()/2 + centerRadius/math.sqrt(2), pRadius, 1)
 	
 	--left
-	newPad(self, love.graphics.getWidth()/2 - centerRadius, 
+	self:newPad(love.graphics.getWidth()/2 - centerRadius, 
 		love.graphics.getHeight()/2, pRadius, 2)
 	
 	--top left
-	newPad(self, love.graphics.getWidth()/2 - centerRadius/math.sqrt(2), 
+	self:newPad(love.graphics.getWidth()/2 - centerRadius/math.sqrt(2), 
 		love.graphics.getHeight()/2 - centerRadius/math.sqrt(2), pRadius, 3)
 	
 	--top
-	newPad(self, love.graphics.getWidth()/2, 
+	self:newPad(love.graphics.getWidth()/2, 
 		love.graphics.getHeight()/2- centerRadius, pRadius, 4)
 	
 	--top right
-	newPad(self, love.graphics.getWidth()/2 + centerRadius/math.sqrt(2), 
+	self:newPad(love.graphics.getWidth()/2 + centerRadius/math.sqrt(2), 
 		love.graphics.getHeight()/2 - centerRadius/math.sqrt(2), pRadius, 5)
 	
 	--right
-	newPad(self, love.graphics.getWidth()/2 + centerRadius, 
+	self:newPad(love.graphics.getWidth()/2 + centerRadius, 
 		love.graphics.getHeight()/2, pRadius, 6)
 	
 	--bottom right
-	newPad(self, love.graphics.getWidth()/2 + centerRadius/math.sqrt(2), 
+	self:newPad(love.graphics.getWidth()/2 + centerRadius/math.sqrt(2), 
 		love.graphics.getHeight()/2 + centerRadius/math.sqrt(2), pRadius, 7)
 	
 	return table.deepcopy(o)
 end
 
 function PlayState:update(dt) 
-	
+
 end
 
 function PlayState:render() 
@@ -91,6 +92,7 @@ function PlayState:render()
 	for k, pad in pairs(self.pads) do
 		pad:render()
 	end
+	self.healthBar:render()
 	for k, note in pairs(self.notes) do
 		note:render()
 	end

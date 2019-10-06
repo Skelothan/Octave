@@ -15,6 +15,7 @@ require "src/loadassets"
 require "src/states/PlayStateObjects/Pad"
 require "src/states/PlayStateObjects/Lane"
 require "src/states/PlayStateObjects/Note"
+require "src/states/PlayStateObjects/HealthBar"
 
 -- State machine stuff
 require "src/states/BaseState"
