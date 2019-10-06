@@ -8,6 +8,12 @@ local numSongs = 3
 local winWidth = love.graphics.getWidth()
 local winHeight = love.graphics.getHeight()
 
+local defaultMenuColor = {1, 1, 1, 1}
+local defaultTextColor = {0,0,0,1}
+
+local menuColor = nil
+local textColor = nil
+
 function MenuState:init()
 	local o = o or {}   -- create object if user does not provide one
 	setmetatable(o, self)
@@ -19,6 +25,8 @@ function MenuState:init()
 		"Artist Name",
 		love.graphics.newImage("images//noteImage.png"), 
 		4,
+		{0.9, 0.3, 0.6, 1},
+		{1, 1, 1, 1},
 		{ newScore("Score Name", 42069),
 			newScore("Bob", 19800),
 			newScore("Ted", 15256) })
@@ -28,6 +36,8 @@ function MenuState:init()
 		"Artist 2",
 		love.graphics.newImage("images//songImage.jpg"),
 		3,
+		{0.5, 0.5, 0.5, 1},
+		{1, 1, 1, 1},
 		{ newScore("Score Name", 1234),
 			newScore("Anon", 452) })
 	)
@@ -36,6 +46,8 @@ function MenuState:init()
 		"Artist 3",
 		love.graphics.newImage("images//noteImage.png"),
 		1,
+		nil,
+		nil,
 		{})
 	)
 	return o
@@ -47,21 +59,26 @@ end
 
 function MenuState:render()
 	for i, song in ipairs(songs) do 
-		renderSong(song, i)
 		if i == currentSong then 
-			renderLeft(song)
-			renderRight(song)
+			menuColor = song.menuColor
+			textColor = song.textColor
 		end
+		renderSong(song, i, 0.85/(math.abs(i-currentSong)+1))
+		if i == currentSong then
+			renderLeft(song, 0.85/(math.abs(i-currentSong)+1))
+			renderRight(song, 0.85/(math.abs(i-currentSong)+1))
+		end
+		
 	end
 end
 
-function renderSong(song, index)
+function renderSong(song, index, opacity)
 	local songWidth = (winWidth/3) - (winWidth/32)
 	local songHeight = (winHeight/6) - (winHeight/32)
 	local songX = (winWidth * 0.5) - (songWidth*0.5)
 	local songY = (winHeight*0.5) - (songHeight*0.5) + ((index-currentSong) * (songHeight + winHeight/32))
 
-	love.graphics.setColor(0.9, 0.3, 0.6, 1/(math.abs(index-currentSong)+1))
+	love.graphics.setColor(menuColor[1], menuColor[2], menuColor[3], opacity)
 	love.graphics.rectangle(
 		"fill",
 		songX,
@@ -69,7 +86,7 @@ function renderSong(song, index)
 		songWidth,
 		songHeight
 	)
-	love.graphics.setColor(1,1,1,1)
+	love.graphics.setColor(textColor[1], textColor[2], menuColor[3], opacity)
 	love.graphics.print(
 		song.name,
 		gFonts["AvenirLight32"],
@@ -84,7 +101,7 @@ function renderSong(song, index)
 	)
 end
 
-function renderLeft(song)
+function renderLeft(song, opacity)
 	local scaleX = winWidth/6/song.image:getWidth()
 	local scaleY = winWidth/6/song.image:getHeight()
 	local imageX = (winWidth/6) - (winWidth/6/2)
@@ -95,7 +112,7 @@ function renderLeft(song)
 	local starScaleX = winWidth/24/star:getWidth()
 	local starScaleY = winWidth/24/star:getHeight()
 
-	love.graphics.setColor(0.9, 0.3, 0.6, 1)
+	love.graphics.setColor(menuColor[1], menuColor[2], menuColor[3], opacity)
 	love.graphics.rectangle(
 		"fill",
 		imageX - 3* winWidth/64,
@@ -103,10 +120,10 @@ function renderLeft(song)
 		winWidth/3 - winWidth/16,
 		winHeight/2
 	)
-
+	love.graphics.setColor(1,1,1,opacity)
 	love.graphics.draw(song.image, imageX, imageY, 0, scaleX, scaleY, 0, 0)
 
-	love.graphics.setColor(1,1,1,1)
+	love.graphics.setColor(textColor[1], textColor[2], textColor[3], opacity)
 	love.graphics.print(
 		song.name,
 		gFonts["AvenirLight32"],
@@ -120,18 +137,20 @@ function renderLeft(song)
 		textY + 40
 	)
 
+	love.graphics.setColor(1,1,1, opacity)
+
 	for i = 0, song.difficulty-1, 1 do
 		love.graphics.draw(star, imageX - winWidth/32 + (3*i*winWidth/64), textY + 70, 0, starScaleX, starScaleY, 0, 0)
 	end
 end
 
-function renderRight(song) 
+function renderRight(song, opacity) 
 	local rectWidth = winWidth/3 - winWidth/16
 	local rectHeight = winHeight/2
 	local rectX = (5*winWidth/6) - (winWidth/6/2) - (3*winWidth/64)
 	local rectY = (winHeight/4) - winWidth/32
 
-	love.graphics.setColor(0.9, 0.3, 0.6, 1)
+	love.graphics.setColor(menuColor[1], menuColor[2], menuColor[3], opacity)
 	love.graphics.rectangle(
 		"fill", 
 		rectX, 
@@ -139,7 +158,7 @@ function renderRight(song)
 		rectWidth, 
 		rectHeight
 	)
-	love.graphics.setColor(1,1,1,1)
+	love.graphics.setColor(textColor[1], textColor[2], textColor[3], opacity)
 	love.graphics.print(
 		"High Scores",
 		gFonts["AvenirLight32"],
@@ -164,12 +183,26 @@ function renderRight(song)
 end
 
 
-function newSong(name, artist, image, difficulty, highScores)
+function newSong(name, artist, image, difficulty, mColor, tColor, highScores)
+	local menuColor = nil
+	local textColor = nil
+	if mColor == nil then
+		menuColor = defaultMenuColor
+	else
+		menuColor = mColor
+	end
+	if tColor == nil then
+		textColor = defaultTextColor
+	else
+		textColor = tColor
+	end
 	return {
 		name = name,
 		artist = artist,
 		image = image,
 		difficulty = difficulty,
+		menuColor = menuColor,
+		textColor = textColor,
 		highScores = highScores
 	}
 end
@@ -181,10 +214,10 @@ function newScore(name, score)
 	}
 end
 
-function love.keyreleased( key )
-   if (key == "r" or key == "t") and currentSong > 1 then 
+function love.keyreleased(key)
+   if (key == "w") and currentSong > 1 then 
 		currentSong = currentSong - 1
-	elseif (key == "g" or key == "f") and currentSong < numSongs then
+	elseif (key == "s") and currentSong < numSongs then
 		currentSong = currentSong + 1
 	end
 end
