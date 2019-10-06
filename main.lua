@@ -61,10 +61,10 @@ gKeys = {
 	escape = "togglePauseMenu",
 	
 	--player 1
-	r = "upArrow",
-	t = "upArrow",
-	f = "downArrow",
-	g = "downArrow",
+	r = "topArrow",
+	t = "topArrow",
+	f = "bottomArrow",
+	g = "bottomArrow",
 	w = "up",
 	a = "left",
 	s = "down",
@@ -72,10 +72,10 @@ gKeys = {
 	y = "togglePauseMenu",
 	
 	--player 2
-	space = "upArrow2",
-	z = "upArrow2",
-	c = "downArrow2",
-	v = "downArrow2",
+	space = "topArrow2",
+	z = "topArrow2",
+	c = "bottomArrow2",
+	v = "bottomArrow2",
 	up = "up2",
 	down = "down2",
 	left = "left2",

@@ -16,12 +16,12 @@ function TitleState:enter()
 end
 
 function TitleState:update(dt)
-	if love.keyboard.wasInput("upArrow") or 
-	love.keyboard.wasInput("downArrow") then
+	if love.keyboard.wasInput("topArrow") or 
+	love.keyboard.wasInput("bottomArrow") then
 		gStateMachine:change("menu", {})
 	end
-	if love.keyboard.wasInput("upArrow2") or
-	love.keyboard.wasInput("downArrow2") then
+	if love.keyboard.wasInput("topArrow2") or
+	love.keyboard.wasInput("bottomArrow2") then
 		createAudioPlayer:takeDamage()
 	end
 	createAudioPlayer:update(dt)

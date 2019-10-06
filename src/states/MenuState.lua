@@ -10,7 +10,7 @@ function MenuState:init()
 end
 
 function MenuState:update(dt)
-	if love.keyboard.wasPressed("j") then
+	if love.keyboard.wasInput("topArrow") then
 		gStateMachine:change("play", {})
 	end
 end
