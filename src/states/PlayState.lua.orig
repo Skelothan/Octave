@@ -82,28 +82,31 @@ function PlayState:init()
 end
 
 function PlayState:update(dt) 
+<<<<<<< HEAD
 	for k, pad in pairs(self.pads) do
 		pad.selected = false
 	end
-	print(love.keyboard.isDown("s"))
-	if love.keyboard.isHeld("down") and love.keyboard.isHeld("left") then 
-		
+
+	if love.keyboard.wasInput("down") and love.keyboard.wasInput("left") then 
 		self.pads[2].selected = true
-	elseif love.keyboard.isHeld("up") and love.keyboard.isHeld("left") then 
+	elseif love.keyboard.wasInput("up") and love.keyboard.wasInput("left") then 
 		self.pads[4].selected = true
-	elseif love.keyboard.isHeld("up") and love.keyboard.isHeld("right") then 
+	elseif love.keyboard.wasInput("up") and love.keyboard.wasInput("right") then 
 		self.pads[6].selected = true
-	elseif love.keyboard.isHeld("down") and love.keyboard.isHeld("right") then 
+	elseif love.keyboard.wasInput("down") and love.keyboard.wasInput("right") then 
 		self.pads[8].selected = true
-	elseif love.keyboard.isHeld("down") then
+	elseif love.keyboard.wasInput("down") then
 		self.pads[1].selected = true
-	elseif love.keyboard.isHeld("left") then
+	elseif love.keyboard.wasInput("left") then
 		self.pads[3].selected = true
-	elseif love.keyboard.isHeld("up") then
+	elseif love.keyboard.wasInput("up") then
 		self.pads[5].selected = true
-	elseif love.keyboard.isHeld("right") then
+	elseif love.keyboard.wasInput("right") then
 		self.pads[7].selected = true
 	end
+=======
+
+>>>>>>> master
 end
 
 function PlayState:render() 
