@@ -16,35 +16,10 @@ function Lane:init(params)
 	self.padY = params.padY
 	self.padR = params.padR
 	
-	
 	-- An integer from 1 to 8, where 8 is pointing right and 
 	-- decreases going counterclockwise.
 	self.angle = params.angle
-	
-	local theta = self.angle * math.pi / 4
-	local perpen = theta + math.pi/2
-	local perpen2 = theta - math.pi/2
-	
-	-- A table of vertices used to draw the lane.
-	--[[
-	local x1 = self.padR * math.cos(perpen) + self.padX
-	local y1 = self.padR * math.sin(perpen) + self.padY
-	local x2 = self.padR * math.cos(perpen2) + self.padX
-	local y2 = self.padR * math.sin(perpen2) + self.padY
-	
-	
-	local y3 = 
-	local y4 = 
-	
-	local x3 = 
-	
-	local x4 = 
-	]]
-	 
-	
-	--self.vertices = {x1, y1, x2, y2,}
-	
-	local bound = math.max(love.graphics.getWidth(), love.graphics.getHeight())
+		
 	local height = math.min(love.graphics.getHeight() - self.padY, self.padY - 0)
 	
 	if 1 == self.angle or (7 <= self.angle and self.angle <= 8) then
