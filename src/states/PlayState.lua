@@ -40,6 +40,7 @@ function PlayState:init()
 	
 	self.pads = {}
 	self.lanes = {}
+	self.healthBar = HealthBar:init({}) -- todo: add palettes to everything
 	self.notes = {}
 	
 	local centerRadius = math.min(love.graphics.getHeight(), love.graphics.getWidth())/8
@@ -81,7 +82,7 @@ function PlayState:init()
 end
 
 function PlayState:update(dt) 
-	
+
 end
 
 function PlayState:render() 
@@ -91,6 +92,7 @@ function PlayState:render()
 	for k, pad in pairs(self.pads) do
 		pad:render()
 	end
+	self.healthBar:render()
 	for k, note in pairs(self.notes) do
 		note:render()
 	end
