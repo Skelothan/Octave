@@ -83,7 +83,27 @@ function PlayState:init()
 end
 
 function PlayState:update(dt) 
-	
+	for k, pad in pairs(self.pads) do
+		pad.selected = false
+	end
+
+	if love.keyboard.wasInput("down") and love.keyboard.wasInput("left") then 
+		self.pads[2].selected = true
+	elseif love.keyboard.wasInput("up") and love.keyboard.wasInput("left") then 
+		self.pads[4].selected = true
+	elseif love.keyboard.wasInput("up") and love.keyboard.wasInput("right") then 
+		self.pads[6].selected = true
+	elseif love.keyboard.wasInput("down") and love.keyboard.wasInput("right") then 
+		self.pads[8].selected = true
+	elseif love.keyboard.wasInput("down") then
+		self.pads[1].selected = true
+	elseif love.keyboard.wasInput("left") then
+		self.pads[3].selected = true
+	elseif love.keyboard.wasInput("up") then
+		self.pads[5].selected = true
+	elseif love.keyboard.wasInput("right") then
+		self.pads[7].selected = true
+	end
 end
 
 function PlayState:render() 
