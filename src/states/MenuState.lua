@@ -5,8 +5,25 @@ local songs = {}
 local currentSong = 1
 local numSongs = 3
 
+--[[ 
+If you really need to write these in shorthand, why don't we make it global so
+everyone can use it?
+Not in this file, of course. Something like constants.lua might work.
+]]
 local winWidth = love.graphics.getWidth()
 local winHeight = love.graphics.getHeight()
+
+--[[
+function demoDefaultValues(passedIn)
+	-- Lua treats nil as false in conditionals, and everything else as true.
+	-- This lets you do things like this:
+	local variable = passedIn or default
+	
+	-- When we eventually load songs from JSON, we'll probably want to do
+	-- something like this.
+	
+	-- Delete this comment once implemented.
+]]
 
 local defaultMenuColor = {1, 1, 1, 1}
 local defaultTextColor = {0,0,0,1}
@@ -19,11 +36,12 @@ function MenuState:init()
 	setmetatable(o, self)
 	self.__index = self
 	setmetatable(MenuState, BaseState) -- inheritance: arg a inherits arg b
-
+	
+	-- TODO: reading this data from JSON
 	table.insert(songs, newSong(
 		"Song Name",
 		"Artist Name",
-		love.graphics.newImage("images//noteImage.png"), 
+		love.graphics.newImage("graphics/noteImage.png"), 
 		4,
 		{0.9, 0.3, 0.6, 1},
 		{1, 1, 1, 1},
@@ -34,7 +52,7 @@ function MenuState:init()
 	table.insert(songs, newSong(
 		"Song 2",
 		"Artist 2",
-		love.graphics.newImage("images//songImage.jpg"),
+		love.graphics.newImage("graphics/songImage.jpg"),
 		3,
 		{0.5, 0.5, 0.5, 1},
 		{1, 1, 1, 1},
@@ -44,7 +62,7 @@ function MenuState:init()
 	table.insert(songs, newSong(
 		"Song 3",
 		"Artist 3",
-		love.graphics.newImage("images//noteImage.png"),
+		love.graphics.newImage("graphics/noteImage.png"),
 		1,
 		nil,
 		nil,
@@ -108,7 +126,7 @@ function renderLeft(song, opacity)
 	local imageY = (winHeight/4) 
 	local textY = (winHeight*0.5)
 
-	local star = love.graphics.newImage("images//star.png")
+	local star = love.graphics.newImage("graphics/star.png")
 	local starScaleX = winWidth/24/star:getWidth()
 	local starScaleY = winWidth/24/star:getHeight()
 
@@ -182,8 +200,11 @@ function renderRight(song, opacity)
 	end
 end
 
-
 function newSong(name, artist, image, difficulty, mColor, tColor, highScores)
+	-- As mentioned above, you can use 
+	--   local variable = passedIn or default
+	-- notation to make this a lot cleaner looking.
+	-- You could also define an object.
 	local menuColor = nil
 	local textColor = nil
 	if mColor == nil then
@@ -214,9 +235,11 @@ function newScore(name, score)
 	}
 end
 
+-- TODO: replace with new input method
+-- Also, let's use key repeat.
 function love.keyreleased(key)
-   if (key == "w") and currentSong > 1 then 
-		currentSong = currentSong - 1
+	if (key == "w") and currentSong > 1 then 
+		currentSong = currentSong - 1 -- What happens if this goes negative?
 	elseif (key == "s") and currentSong < numSongs then
 		currentSong = currentSong + 1
 	end
