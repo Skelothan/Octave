@@ -28,7 +28,7 @@ function StateMachine:change(stateName, params)
 	self.current:enter(params)
 end
 
-function StateMachine:update()
+function StateMachine:update(dt)
 	self.current:update(dt)
 end
 
