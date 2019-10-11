@@ -14,13 +14,10 @@ function Pad:init(params)
 	self.x = params.x
 	self.y = params.y
 	self.radius = params.radius
-	self.selected = false
 	
 	-- Numerically indexed tables
-	self.selectedColor = params.selectedColor or {1, 1, 1, 1}
 	self.outlineColor = params.outlineColor or {0, 0, 0, 1}
 	self.padColor = params.padColor or {0, 127/255, 1, 1}
-
 	
 	return table.deepcopy(o)
 end
@@ -31,7 +28,6 @@ function Pad:update(dt)
 	if self.activeTimer == 0 then
 		self.active = false
 	end
-
 end
 
 function Pad:onPress()
@@ -42,11 +38,7 @@ end
 
 function Pad:render()
 	-- Draw outline
-	if self.selected then
-		love.graphics.setColor(self.selectedColor)
-	else
-		love.graphics.setColor(self.outlineColor)
-	end
+	love.graphics.setColor(self.outlineColor)
 	local outlineRadius = self.radius * 1.2
 	love.graphics.circle("fill", self.x, self.y, outlineRadius)
 	-- Draw pad
