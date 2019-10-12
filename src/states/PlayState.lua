@@ -2,51 +2,47 @@ PlayState = {}
 PlayState.__index = PlayState
 
 function PlayState:newPad(pX, pY, pRadius, pNum)
+	color = self.palette.pad1
+	if pNum % 2 == 1 then
+		color = self.palette.pad2
+	end
 	table.insert(self.pads, Pad:init({
 		x = pX, 
 		y = pY, 
-		radius = pRadius
+		radius = pRadius,
+		padColor = color
 		})
 	)
 	local lane11 = Lane:init({
 		padX = pX, 
 		padY = pY, 
 		padR = pRadius,
-		angle = (pNum+1)%8
-
+		angle = (pNum+1)%8,
+		laneColor = self.palette.laneColor
 	})
 	table.insert(self.lanes, lane11)
 	local lane12 = Lane:init({
 		padX = pX, 
 		padY = pY, 
 		padR = pRadius,
-		angle = (pNum+2)%8
+		angle = (pNum+2)%8,
+		laneColor = self.palette.laneColor
 	})
 	table.insert(self.lanes, lane12)
 	local lane13 = Lane:init({
 		padX = pX, 
 		padY = pY, 
 		padR = pRadius,
-		angle = (pNum+3)%8
+		angle = (pNum+3)%8,
+		laneColor = self.palette.laneColor
 	})
 	table.insert(self.lanes, lane13)
 end
 
-function PlayState:init()
-	local o = o or {}
-	setmetatable(o, self)
-	self.__index = self
-	setmetatable(PlayState, BaseState) -- inheritance: arg a inherits arg b
-	
-	self.pads = {}
-	self.lanes = {}
-	self.healthBar = HealthBar:init({}) -- todo: add palettes to everything
-	self.notes = {}
-	
+function PlayState:makePads()
 	local centerRadius = math.min(love.graphics.getHeight(), love.graphics.getWidth())/8
 	local pRadius = 20
-	
-	--Add pads:
+
 	--bottom 
 	self:newPad(love.graphics.getWidth()/2, love.graphics.getHeight()/2 + centerRadius, pRadius, 0)
 	
@@ -77,6 +73,25 @@ function PlayState:init()
 	--bottom right
 	self:newPad(love.graphics.getWidth()/2 + centerRadius/math.sqrt(2), 
 		love.graphics.getHeight()/2 + centerRadius/math.sqrt(2), pRadius, 7)
+end
+
+function PlayState:enter(params)
+	self.palette = params.palette or gPalette["standard"]
+
+	self.healthBar = HealthBar:init({healthColor = self.palette.healthColor})
+	self:makePads()
+end
+
+function PlayState:init()
+	local o = o or {}
+	setmetatable(o, self)
+	self.__index = self
+	setmetatable(PlayState, BaseState) -- inheritance: arg a inherits arg b
+	
+	self.pads = {}
+	self.lanes = {}
+	self.healthBar = {}
+	self.notes = {}
 	
 	return table.deepcopy(o)
 end

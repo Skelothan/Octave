@@ -16,7 +16,7 @@ function love.load()
 		["menu"] = function() return MenuState:init() end,
 		["play"] = function() return PlayState:init() end
 	})
-	gStateMachine:change("title", {})
+	gStateMachine:change("play", {palette = gPalette["standard"]})
 	
 	-- initialize global assets
 	loadFonts()
