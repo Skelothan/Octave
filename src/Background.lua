@@ -10,7 +10,7 @@ function Background:init(backgroundName)
 	self:setFunctions(backgroundName)
 	self:init2()
 	
-	return o
+	return table.deepcopy(o)
 end
 
 function Background:setFunctions(backgroundName)

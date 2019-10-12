@@ -5,8 +5,9 @@ function MenuState:init()
 	local o = o or {}  
 	setmetatable(o, self)
 	self.__index = self
-	setmetatable(MenuState, BaseState) 
-	
+
+  setmetatable(MenuState, BaseState) -- inheritance: arg a inherits arg b	
+  
 	self.songs = {}
 	self.currentSong = 1
 
@@ -67,6 +68,14 @@ function MenuState:update(dt)
 	elseif self.lastDown >= 0.15 and love.keyboard.isDown("s") and self.currentSong < self.numSongs then
 		self.currentSong = self.currentSong + 1
 		self.lastDown = 0
+  
+	return table.deepcopy(o)
+end
+
+function MenuState:update(dt)
+	if love.keyboard.wasInput("topArrow") then
+		gStateMachine:change("play", {})
+
 	end
 end
 

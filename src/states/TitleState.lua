@@ -7,14 +7,24 @@ function TitleState:init()
 	setmetatable(o, self)
 	self.__index = self
 	setmetatable(TitleState, BaseState) -- inheritance: arg a inherits arg b
-	return o
+	return table.deepcopy(o)
+end
+
+function TitleState:enter()
+	createAudioPlayer = AudioPlayer:init(love.audio.newSource("sfx/Drop_In_Flip_Out.mp3", "stream"))
+	createAudioPlayer:playAudio()
 end
 
 function TitleState:update(dt)
-	if love.keyboard.wasInput("upArrow") or 
-	love.keyboard.wasInput("downArrow") then
+	if love.keyboard.wasInput("topArrow") or 
+	love.keyboard.wasInput("bottomArrow") then
 		gStateMachine:change("menu", {})
 	end
+	if love.keyboard.wasInput("topArrow2") or
+	love.keyboard.wasInput("bottomArrow2") then
+		createAudioPlayer:takeDamage()
+	end
+	createAudioPlayer:update(dt)
 end
 
 function TitleState:render() 

@@ -4,6 +4,9 @@ function love.load()
 	-- Set image scaling settings
 	love.graphics.setDefaultFilter("nearest", "nearest")
 	
+	-- Fullscreen, retina display
+	love.window.setMode(0, 0, {fullscreen = true, highdpi = true, msaa = 2})
+	
 	-- Seed RNG, just in case we use it
 	math.randomseed(os.time())
 	
@@ -24,6 +27,7 @@ function love.load()
 	
 	love.keyboard.keysPressed = {}
 	love.keyboard.inputs = {}
+	love.keyboard.keysDown = {}
 end
 
 
@@ -34,7 +38,7 @@ function love.update(dt)
 	
 	love.keyboard.keysPressed = {}
 	--stores the actual inputs
-	love.keyboard.input = {}
+	love.keyboard.inputs = {}
 end
 
 function love.resize(x, y)
@@ -45,7 +49,13 @@ end
 function love.keypressed(key)
 	--love.keyboard.keysPressed[key] = true
 	local action = gKeys[key] or "misc"
-	love.keyboard.inputs[action] = true;
+	love.keyboard.inputs[action] = true
+	love.keyboard.keysDown[action] = true
+end
+
+function love.keyreleased(key)
+	local action  = gKeys[key] or "misc"
+	love.keyboard.keysDown[action] = false
 end
 
 --[[ 
@@ -61,10 +71,10 @@ gKeys = {
 	escape = "togglePauseMenu",
 	
 	--player 1
-	r = "upArrow",
-	t = "upArrow",
-	f = "downArrow",
-	g = "downArrow",
+	r = "topArrow",
+	t = "topArrow",
+	f = "bottomArrow",
+	g = "bottomArrow",
 	w = "up",
 	a = "left",
 	s = "down",
@@ -72,10 +82,10 @@ gKeys = {
 	y = "togglePauseMenu",
 	
 	--player 2
-	space = "upArrow2",
-	z = "upArrow2",
-	c = "downArrow2",
-	v = "downArrow2",
+	space = "topArrow2",
+	z = "topArrow2",
+	c = "bottomArrow2",
+	v = "bottomArrow2",
 	up = "up2",
 	down = "down2",
 	left = "left2",
@@ -89,6 +99,9 @@ function love.keyboard.wasInput(key)
 	return love.keyboard.inputs[key] or false
 end
 	
+function love.keyboard.isHeld(key)
+	return love.keyboard.keysDown[key] or false
+end
 --INPUT HANDLING END
 
 function love.draw()
