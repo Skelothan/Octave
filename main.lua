@@ -14,9 +14,11 @@ function love.load()
 	gStateMachine = StateMachine:init({
 		["title"] = function() return TitleState:init() end,
 		["menu"] = function() return MenuState:init() end,
-		["play"] = function() return PlayState:init() end
+		["play"] = function() return PlayState:init() end, 
+		["gameOver"] = function() return GameOverState:init() end
 	})
-	gStateMachine:change("title", {})
+
+	gStateMachine:change("title", {}})
 	
 	-- initialize global assets
 	loadFonts()

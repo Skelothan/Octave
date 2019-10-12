@@ -32,6 +32,9 @@ function HealthBar:takeDamage(dScore)
 	--gAudioPlayer:takeDamage()
 	self.health = math.max(self.health - self.notesPerHP, 0)
 	self:incrementScore(-dScore)
+	if self.health <= 0 then 
+		gStateMachine:change("gameOver", {score = dScore})
+	end
 end
 
 function HealthBar:restoreHealth()
