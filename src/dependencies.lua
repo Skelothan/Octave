@@ -16,6 +16,9 @@ require "src/constants"
 -- Audio player
 require "src/AudioPlayer"
 
+-- Meny State things
+require "src/Song"
+
 -- Play State things
 require "src/states/PlayStateObjects/Pad"
 require "src/states/PlayStateObjects/Lane"
