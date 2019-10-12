@@ -28,4 +28,7 @@ require "src/states/PlayState"
 require "src/backgrounddefs"
 require "src/Background"
 
+-- Palette
+require "src/palettedefs"
+
 require "src/AudioPlayer"
