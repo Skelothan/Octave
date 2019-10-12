@@ -103,6 +103,7 @@ function PlayState:update(dt)
 	elseif love.keyboard.isHeld("right") then
 		self.pads[7].selected = true
 	end
+	self.healthBar:update(dt)
 end
 
 function PlayState:render() 
