@@ -45,6 +45,9 @@ function love.update(dt)
 	love.keyboard.keysPressed = {}
 	--stores the actual inputs
 	love.keyboard.inputs = {}
+
+	winWidth = love.graphics.getWidth()
+	winHeight = love.graphics.getHeight()
 end
 
 function love.resize(x, y)
