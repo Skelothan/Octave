@@ -53,7 +53,7 @@ function MenuState:init()
 	self.textColor = self.songs[self.currentSong].textColor or {0, 0, 0, 1}
 	self.lastUp = 0
 	self.lastDown = 0
-	
+  
 	return table.deepcopy(o)
 end
 
@@ -70,7 +70,6 @@ function MenuState:update(dt)
 	end
 	if love.keyboard.wasInput("downArrow") then
 		gStateMachine:change("play", {})
-
 	end
 end
 

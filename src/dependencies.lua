@@ -31,6 +31,7 @@ require "src/states/StateMachine"
 require "src/states/TitleState"
 require "src/states/MenuState"
 require "src/states/PlayState"
+require "src/states/GameOverState"
 
 -- Backgrounds
 require "src/backgrounddefs"

@@ -17,8 +17,10 @@ function love.load()
 	gStateMachine = StateMachine:init({
 		["title"] = function() return TitleState:init() end,
 		["menu"] = function() return MenuState:init() end,
-		["play"] = function() return PlayState:init() end
+		["play"] = function() return PlayState:init() end, 
+		["gameOver"] = function() return GameOverState:init() end
 	})
+
 	gStateMachine:change("title", {})
 	
 	-- initialize global assets
@@ -28,6 +30,10 @@ function love.load()
 	love.keyboard.keysPressed = {}
 	love.keyboard.inputs = {}
 	love.keyboard.keysDown = {}
+
+	gAudioPlayer = AudioPlayer:init(love.audio.newSource("sfx/menu.mp3", "stream"))
+	gAudioPlayer:setLooping(true)
+	gAudioPlayer:playAudio()
 end
 
 
