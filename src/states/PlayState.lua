@@ -12,7 +12,7 @@ function PlayState:newPad(pX, pY, pRadius, pNum)
 		padX = pX, 
 		padY = pY, 
 		padR = pRadius,
-		angle = (pNum+1)%8
+		angle = math.oimod((pNum+1), 8)
 
 	})
 	table.insert(self.lanes, lane11)
@@ -20,14 +20,14 @@ function PlayState:newPad(pX, pY, pRadius, pNum)
 		padX = pX, 
 		padY = pY, 
 		padR = pRadius,
-		angle = (pNum+2)%8
+		angle = math.oimod((pNum+2), 8)
 	})
 	table.insert(self.lanes, lane12)
 	local lane13 = Lane:init({
 		padX = pX, 
 		padY = pY, 
 		padR = pRadius,
-		angle = (pNum+3)%8
+		angle = math.oimod((pNum+3), 8)
 	})
 	table.insert(self.lanes, lane13)
 end
