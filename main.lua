@@ -30,6 +30,10 @@ function love.load()
 	love.keyboard.keysPressed = {}
 	love.keyboard.inputs = {}
 	love.keyboard.keysDown = {}
+
+	gAudioPlayer = AudioPlayer:init(love.audio.newSource("sfx/menu.mp3", "stream"))
+	gAudioPlayer:setLooping(true)
+	gAudioPlayer:playAudio()
 end
 
 

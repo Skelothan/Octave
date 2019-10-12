@@ -55,7 +55,7 @@ function MenuState:init()
 	self.textColor = self.songs[self.currentSong].textColor or {0, 0, 0, 1}
 	self.lastUp = 0
 	self.lastDown = 0
-	return o
+	return table.deepcopy(o)
 end
 
 function MenuState:update(dt)
@@ -69,8 +69,6 @@ function MenuState:update(dt)
 		self.currentSong = self.currentSong + 1
 		self.lastDown = 0
 	end
-  
-	return table.deepcopy(o)
 end
 
 function MenuState:update(dt)
