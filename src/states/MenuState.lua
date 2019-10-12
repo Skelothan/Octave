@@ -68,7 +68,7 @@ function MenuState:update(dt)
 		self.currentSong = self.currentSong + 1
 		self.lastDown = 0
 	end
-	if love.keyboard.wasInput("downArrow") then
+	if love.keyboard.wasInput("bottomArrow") then
 		gStateMachine:change("play", {})
 	end
 end
