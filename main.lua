@@ -4,6 +4,9 @@ function love.load()
 	-- Set image scaling settings
 	love.graphics.setDefaultFilter("nearest", "nearest")
 	
+	-- Fullscreen, retina display
+	love.window.setMode(0, 0, {fullscreen = true, highdpi = true, msaa = 2})
+	
 	-- Seed RNG, just in case we use it
 	math.randomseed(os.time())
 	
@@ -14,8 +17,10 @@ function love.load()
 	gStateMachine = StateMachine:init({
 		["title"] = function() return TitleState:init() end,
 		["menu"] = function() return MenuState:init() end,
-		["play"] = function() return PlayState:init() end
+		["play"] = function() return PlayState:init() end, 
+		["gameOver"] = function() return GameOverState:init() end
 	})
+
 	gStateMachine:change("title", {})
 	
 	-- initialize global assets
