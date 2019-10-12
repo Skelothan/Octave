@@ -1,6 +1,7 @@
 -- A non-recursive deep copy function.
 require "lib/deepcopy"
 
+require "src/helpers"
 require "src/collision"
 
 -- A class library. I don't think we'll use it, but it's here just in case.
