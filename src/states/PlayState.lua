@@ -45,7 +45,7 @@ function PlayState:init()
 	
 	local centerRadius = math.min(love.graphics.getHeight(), love.graphics.getWidth())/8
 	local pRadius = 20
-	
+
 	--Add pads:
 	--bottom 
 	self:newPad(love.graphics.getWidth()/2, love.graphics.getHeight()/2 + centerRadius, pRadius, 0)

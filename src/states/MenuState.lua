@@ -68,7 +68,7 @@ function MenuState:update(dt)
 	elseif self.lastDown >= 0.15 and love.keyboard.isDown("s") and self.currentSong < self.numSongs then
 		self.currentSong = self.currentSong + 1
 		self.lastDown = 0
-  
+	end
 	return table.deepcopy(o)
 end
 

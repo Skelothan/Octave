@@ -30,6 +30,9 @@ function love.load()
 	love.keyboard.keysPressed = {}
 	love.keyboard.inputs = {}
 	love.keyboard.keysDown = {}
+
+	createAudioPlayer = AudioPlayer:init(love.audio.newSource("sfx/menu.mp3", "stream"))
+	createAudioPlayer:playAudio()
 end
 
 
