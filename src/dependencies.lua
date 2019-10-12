@@ -7,6 +7,9 @@ require "lib/deepcopy"
 -- Contains asset-loading functions used in love.load().
 require "src/loadassets"
 
+-- Contains constants
+require "src/constants"
+
 -- State machine stuff
 require "src/states/BaseState"
 require "src/states/StateMachine"

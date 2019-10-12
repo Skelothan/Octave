@@ -1,102 +1,102 @@
 MenuState = {}
 MenuState.__index = MenuState
 
-local songs = {}
-local currentSong = 1
-local numSongs = 3
-
---[[ 
-If you really need to write these in shorthand, why don't we make it global so
-everyone can use it?
-Not in this file, of course. Something like constants.lua might work.
-]]
-local winWidth = love.graphics.getWidth()
-local winHeight = love.graphics.getHeight()
-
---[[
-function demoDefaultValues(passedIn)
-	-- Lua treats nil as false in conditionals, and everything else as true.
-	-- This lets you do things like this:
-	local variable = passedIn or default
-	
-	-- When we eventually load songs from JSON, we'll probably want to do
-	-- something like this.
-	
-	-- Delete this comment once implemented.
-]]
-
-local defaultMenuColor = {1, 1, 1, 1}
-local defaultTextColor = {0,0,0,1}
-
-local menuColor = nil
-local textColor = nil
-
 function MenuState:init()
-	local o = o or {}   -- create object if user does not provide one
+	local o = o or {}  
 	setmetatable(o, self)
 	self.__index = self
-	setmetatable(MenuState, BaseState) -- inheritance: arg a inherits arg b
+	setmetatable(MenuState, BaseState) 
 	
+	self.songs = {}
+	self.currentSong = 1
+
 	-- TODO: reading this data from JSON
-	table.insert(songs, newSong(
-		"Song Name",
-		"Artist Name",
-		love.graphics.newImage("graphics/noteImage.png"), 
-		4,
-		{0.9, 0.3, 0.6, 1},
-		{1, 1, 1, 1},
-		{ newScore("Score Name", 42069),
-			newScore("Bob", 19800),
-			newScore("Ted", 15256) })
-	)
-	table.insert(songs, newSong(
-		"Song 2",
-		"Artist 2",
-		love.graphics.newImage("graphics/songImage.jpg"),
-		3,
-		{0.5, 0.5, 0.5, 1},
-		{1, 1, 1, 1},
-		{ newScore("Score Name", 1234),
-			newScore("Anon", 452) })
-	)
-	table.insert(songs, newSong(
-		"Song 3",
-		"Artist 3",
-		love.graphics.newImage("graphics/noteImage.png"),
-		1,
-		nil,
-		nil,
-		{})
-	)
+	local song1 = {
+		name = "Song Name",
+		artist = "Artist Name",
+		image = love.graphics.newImage("graphics/noteImage.png"), 
+		difficulty = 4,
+		menuColor = {0.9, 0.3, 0.6, 1},
+		textColor = {1, 1, 1, 1},
+		highScores = { 
+			{name = "Score Name", score = 42069},
+			{name = "Bob", score = 19800},
+			{name = "Ted", score = 15256} 
+		}
+	}
+	local song2 = {
+		name = "Song 2",
+		artist = "Artist 2",
+		image = love.graphics.newImage("graphics/songImage.jpg"),
+		difficulty = 3,
+		menuColor = {0.5, 0.5, 0.5, 1},
+		textColor = {1, 1, 1, 1},
+		highScores = {
+			{name = "Score Name", score = 1234},
+			{name = "Anon", score = 452}
+		}
+	}
+	local song3 = {
+		name = "Song 3",
+		artist = "Artist 3",
+		image = love.graphics.newImage("graphics/noteImage.png"),
+		difficulty = 1,
+		menuColor = nil,
+		textColor = nil,
+		highScores = {}
+	}
+	table.insert(self.songs, song1)
+	table.insert(self.songs, song2)
+	table.insert(self.songs, song3)
+	self.numSongs = 3
+
+	self.menuColor = self.songs[self.currentSong].menuColor or {1,1,1,1}
+	self.textColor = self.songs[self.currentSong].textColor or {0, 0, 0, 1}
+	self.lastUp = 0
+	self.lastDown = 0
 	return o
 end
 
 function MenuState:update(dt)
-	
+	self.lastUp = self.lastUp + dt
+	self.lastDown = self.lastDown + dt
+
+	if self.lastUp >= 0.15 and love.keyboard.isDown("w") and self.currentSong > 1 then
+		self.currentSong = self.currentSong - 1
+		self.lastUp = 0
+	elseif self.lastDown >= 0.15 and love.keyboard.isDown("s") and self.currentSong < self.numSongs then
+		self.currentSong = self.currentSong + 1
+		self.lastDown = 0
+	end
 end
 
+
 function MenuState:render()
-	for i, song in ipairs(songs) do 
-		if i == currentSong then 
-			menuColor = song.menuColor
-			textColor = song.textColor
+	for i, song in ipairs(self.songs) do 
+		if i == self.currentSong then 
+			self.menuColor = song.menuColor or {1,1,1,1}
+			self.textColor = song.textColor or {0,0,0,1}
 		end
-		renderSong(song, i, 0.85/(math.abs(i-currentSong)+1))
-		if i == currentSong then
-			renderLeft(song, 0.85/(math.abs(i-currentSong)+1))
-			renderRight(song, 0.85/(math.abs(i-currentSong)+1))
+		renderSong(song, i, 0.85/(math.abs(i-self.currentSong)+1), self)
+		if i == self.currentSong then
+			renderLeft(song, 0.85/(math.abs(i-self.currentSong)+1), self)
+			renderRight(song, 0.85/(math.abs(i-self.currentSong)+1), self)
 		end
 		
 	end
 end
 
-function renderSong(song, index, opacity)
+function renderSong(song, index, opacity, self)
 	local songWidth = (winWidth/3) - (winWidth/32)
 	local songHeight = (winHeight/6) - (winHeight/32)
 	local songX = (winWidth * 0.5) - (songWidth*0.5)
-	local songY = (winHeight*0.5) - (songHeight*0.5) + ((index-currentSong) * (songHeight + winHeight/32))
+	local songY = (winHeight*0.5) - (songHeight*0.5) + ((index- self.currentSong) * (songHeight + winHeight/32))
 
-	love.graphics.setColor(menuColor[1], menuColor[2], menuColor[3], opacity)
+	local menuColor = self.menuColor
+	menuColor[4] = opacity
+	local textColor = self.textColor
+	textColor[4] = opacity
+	love.graphics.setColor(menuColor)
 	love.graphics.rectangle(
 		"fill",
 		songX,
@@ -104,7 +104,8 @@ function renderSong(song, index, opacity)
 		songWidth,
 		songHeight
 	)
-	love.graphics.setColor(textColor[1], textColor[2], menuColor[3], opacity)
+
+	love.graphics.setColor(self.textColor[1], self.textColor[2], self.textColor[3], opacity)
 	love.graphics.print(
 		song.name,
 		gFonts["AvenirLight32"],
@@ -119,7 +120,7 @@ function renderSong(song, index, opacity)
 	)
 end
 
-function renderLeft(song, opacity)
+function renderLeft(song, opacity, self)
 	local scaleX = winWidth/6/song.image:getWidth()
 	local scaleY = winWidth/6/song.image:getHeight()
 	local imageX = (winWidth/6) - (winWidth/6/2)
@@ -130,7 +131,11 @@ function renderLeft(song, opacity)
 	local starScaleX = winWidth/24/star:getWidth()
 	local starScaleY = winWidth/24/star:getHeight()
 
-	love.graphics.setColor(menuColor[1], menuColor[2], menuColor[3], opacity)
+	local menuColor = self.menuColor
+	menuColor[4] = opacity
+	local textColor = self.textColor
+	textColor[4] = opacity
+	love.graphics.setColor(menuColor)
 	love.graphics.rectangle(
 		"fill",
 		imageX - 3* winWidth/64,
@@ -141,7 +146,7 @@ function renderLeft(song, opacity)
 	love.graphics.setColor(1,1,1,opacity)
 	love.graphics.draw(song.image, imageX, imageY, 0, scaleX, scaleY, 0, 0)
 
-	love.graphics.setColor(textColor[1], textColor[2], textColor[3], opacity)
+	love.graphics.setColor(textColor)
 	love.graphics.print(
 		song.name,
 		gFonts["AvenirLight32"],
@@ -162,13 +167,17 @@ function renderLeft(song, opacity)
 	end
 end
 
-function renderRight(song, opacity) 
+function renderRight(song, opacity, self) 
 	local rectWidth = winWidth/3 - winWidth/16
 	local rectHeight = winHeight/2
 	local rectX = (5*winWidth/6) - (winWidth/6/2) - (3*winWidth/64)
 	local rectY = (winHeight/4) - winWidth/32
 
-	love.graphics.setColor(menuColor[1], menuColor[2], menuColor[3], opacity)
+	local menuColor = self.menuColor
+	menuColor[4] = opacity
+	local textColor = self.textColor
+	textColor[4] = opacity
+	love.graphics.setColor(menuColor)
 	love.graphics.rectangle(
 		"fill", 
 		rectX, 
@@ -176,7 +185,7 @@ function renderRight(song, opacity)
 		rectWidth, 
 		rectHeight
 	)
-	love.graphics.setColor(textColor[1], textColor[2], textColor[3], opacity)
+	love.graphics.setColor(textColor)
 	love.graphics.print(
 		"High Scores",
 		gFonts["AvenirLight32"],
@@ -197,50 +206,5 @@ function renderRight(song, opacity)
 			"right",
 			0, 1, 1, 0, 0, 0, 0
 		)
-	end
-end
-
-function newSong(name, artist, image, difficulty, mColor, tColor, highScores)
-	-- As mentioned above, you can use 
-	--   local variable = passedIn or default
-	-- notation to make this a lot cleaner looking.
-	-- You could also define an object.
-	local menuColor = nil
-	local textColor = nil
-	if mColor == nil then
-		menuColor = defaultMenuColor
-	else
-		menuColor = mColor
-	end
-	if tColor == nil then
-		textColor = defaultTextColor
-	else
-		textColor = tColor
-	end
-	return {
-		name = name,
-		artist = artist,
-		image = image,
-		difficulty = difficulty,
-		menuColor = menuColor,
-		textColor = textColor,
-		highScores = highScores
-	}
-end
-
-function newScore(name, score)
-	return {
-		name = name,
-		score = score
-	}
-end
-
--- TODO: replace with new input method
--- Also, let's use key repeat.
-function love.keyreleased(key)
-	if (key == "w") and currentSong > 1 then 
-		currentSong = currentSong - 1 -- What happens if this goes negative?
-	elseif (key == "s") and currentSong < numSongs then
-		currentSong = currentSong + 1
 	end
 end
