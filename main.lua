@@ -18,7 +18,7 @@ function love.load()
 		["gameOver"] = function() return GameOverState:init() end
 	})
 
-	gStateMachine:change("title", {}})
+	gStateMachine:change("title", {})
 	
 	-- initialize global assets
 	loadFonts()
