@@ -53,8 +53,9 @@ function HealthBar:render()
 	love.graphics.setColor(self.outlineColor)
 	love.graphics.circle("fill", self.x, self.y, self.radius * 0.8)
 	love.graphics.setLineWidth(self.radius * 0.1)
-	love.graphics.line(self.x, self.y - self.radius, self.x, self.y + self.radius)
-	love.graphics.line(self.x - self.radius, self.y, self.x + self.radius, self.y)
+	local segmentRadius = self.radius * 0.95
+	love.graphics.line(self.x, self.y - segmentRadius, self.x, self.y + segmentRadius)
+	love.graphics.line(self.x - segmentRadius, self.y, self.x + segmentRadius, self.y)
 	-- Draw score text
 	love.graphics.setColor(self.textColor)
 	love.graphics.printf(self.score, gFonts["AvenirLight16"], self.x - self.radius, self.y - self.radius / 3, self.radius * 2, "center")
