@@ -85,7 +85,6 @@ function PlayState:update(dt)
 	for k, pad in pairs(self.pads) do
 		pad.selected = false
 	end
-	print(love.keyboard.isDown("s"))
 	if love.keyboard.isHeld("down") and love.keyboard.isHeld("left") then 
 		
 		self.pads[2].selected = true
