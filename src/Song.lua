@@ -6,35 +6,36 @@ function Song:init(params)
 	setmetatable(o, self)
 	self.__index = self
 	
-	name = params.name or "Song Name"
-	artist = "Artist Name"
-	--image = love.graphics.newImage("graphics/noteImage.png"), 
-	difficulty = params.difficulty or 4
-	menuColor = params.menuColor or {0.9, 0.3, 0.6, 1}
-	textColor = params.menuColor or {1, 1, 1, 1}
-	highScores = params.highScores or {}
+	self.name = params.name or "Song Name"
+	self.artist = "Artist Name"
+	self.image = params.image or "graphics/noteImage.png"
+	self.difficulty = params.difficulty or 4
+	self.menuColor = params.menuColor or {0.9, 0.3, 0.6, 1}
+	self.textColor = params.textColor or {1, 1, 1, 1}
+	self.highScores = params.highScores or {}
 	
 	return table.deepcopy(o)
 end
 
-function Song:render(index, opacity, isCurrentSong)
-	self:renderSong(index, opacity)
+function Song:render(index, currentSong, opacity, isCurrentSong)
+	self:renderSong(index, currentSong, opacity)
 	if isCurrentSong then
 		self:renderLeft(1)
 		self:renderRight(1)
 	end
 end
 
-function Song:renderSong(index, opacity)
+function Song:renderSong(index, currentSong, opacity)
 	local songWidth = (winWidth/3) - (winWidth/32)
 	local songHeight = (winHeight/6) - (winHeight/32)
 	local songX = (winWidth * 0.5) - (songWidth*0.5)
-	local songY = (winHeight*0.5) - (songHeight*0.5) + ((index - self.currentSong) * (songHeight + winHeight/32))
+	local songY = (winHeight*0.5) - (songHeight*0.5) + ((index - currentSong) * (songHeight + winHeight/32))
 
 	local menuColor = self.menuColor
 	menuColor[4] = opacity
 	local textColor = self.textColor
 	textColor[4] = opacity
+
 	love.graphics.setColor(menuColor)
 	love.graphics.rectangle(
 		"fill",
@@ -44,7 +45,7 @@ function Song:renderSong(index, opacity)
 		songHeight
 	)
 
-	love.graphics.setColor(self.textColor[1], self.textColor[2], self.textColor[3], opacity)
+	love.graphics.setColor(textColor)
 	love.graphics.print(
 		self.name,
 		gFonts["AvenirLight32"],
@@ -60,40 +61,41 @@ function Song:renderSong(index, opacity)
 end
 
 function Song:renderLeft(opacity)
-	--local scaleX = winWidth/6/self.image:getWidth()
-	--local scaleY = winWidth/6/self.image:getHeight()
 	local imageX = (winWidth/6) - (winWidth/6/2)
-	local imageY = (winHeight/4) 
-	local textY = (winHeight*0.5)
+	local imageY = (winHeight/5) 
+	local textY = (winHeight*0.5) + (winWidth/64)
 
 	local star = love.graphics.newImage("graphics/star.png")
+	local image = love.graphics.newImage(self.image)
+	local scaleX = winWidth/6/image:getWidth()
+	local scaleY = winWidth/6/image:getHeight()
 	local starScaleX = (winWidth/24)/star:getWidth()
 	local starScaleY = (winWidth/24)/star:getHeight()
 
 	self.menuColor[4] = opacity
 	self.textColor[4] = opacity
-	love.graphics.setColor(menuColor)
+	love.graphics.setColor(self.menuColor)
 	love.graphics.rectangle(
 		"fill",
 		imageX - 3 * winWidth/64,
-		imageY - winWidth/32,
+		imageY - winWidth/24,
 		winWidth/3 - winWidth/16,
-		winHeight/2
+		2*winHeight/3
 	)
 	love.graphics.setColor(1,1,1,opacity)
-	--love.graphics.draw(self.image, imageX, imageY, 0, scaleX, scaleY, 0, 0)
+	love.graphics.draw(image, imageX, imageY, 0, scaleX, scaleY, 0, 0)
 
-	love.graphics.setColor(textColor)
+	love.graphics.setColor(self.textColor)
 	love.graphics.print(
 		self.name,
 		gFonts["AvenirLight32"],
-		imageX - winWidth/32,
+		imageX - winWidth/64,
 		textY
 	)
 	love.graphics.print(
 		self.artist,
 		gFonts["AvenirLight16"],
-		imageX - winWidth/32,
+		imageX - winWidth/64,
 		textY + 40
 	)
 
@@ -110,11 +112,9 @@ function Song:renderRight(opacity)
 	local rectX = (5*winWidth/6) - (winWidth/6/2) - (3*winWidth/64)
 	local rectY = (winHeight/4) - winWidth/32
 
-	local menuColor = self.menuColor
-	menuColor[4] = opacity
-	local textColor = self.textColor
-	textColor[4] = opacity
-	love.graphics.setColor(menuColor)
+	self.menuColor[4] = opacity
+	self.textColor[4] = opacity
+	love.graphics.setColor(self.menuColor)
 	love.graphics.rectangle(
 		"fill", 
 		rectX, 
@@ -122,7 +122,7 @@ function Song:renderRight(opacity)
 		rectWidth, 
 		rectHeight
 	)
-	love.graphics.setColor(textColor)
+	love.graphics.setColor(self.textColor)
 	love.graphics.print(
 		"High Scores",
 		gFonts["AvenirLight32"],
