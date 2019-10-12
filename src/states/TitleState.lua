@@ -20,9 +20,9 @@ function TitleState:update(dt)
 	end
 	if love.keyboard.wasInput("topArrow2") or
 	love.keyboard.wasInput("bottomArrow2") then
-		createAudioPlayer:takeDamage()
+		gAudioPlayer:takeDamage()
 	end
-	createAudioPlayer:update(dt)
+	gAudioPlayer:update(dt)
 end
 
 function TitleState:render() 
