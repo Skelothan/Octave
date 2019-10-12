@@ -48,10 +48,10 @@ function Pad:render()
 		love.graphics.setColor(self.outlineColor)
 	end
 	local outlineRadius = self.radius * 1.2
-	love.graphics.circle("fill", self.x, self.y, outlineRadius)
+	love.graphics.circle("fill", self.x, self.y, outlineRadius, 40)
 	-- Draw pad
 	love.graphics.setColor(self.padColor)
-	love.graphics.circle("fill", self.x, self.y, self.radius)
+	love.graphics.circle("fill", self.x, self.y, self.radius, 40)
 	-- Reset draw color
 	love.graphics.resetColor()
 end
