@@ -14,7 +14,6 @@ function AudioPlayer:init(audio)
 end
 
 function AudioPlayer:update(dt)
-	print(highgain_);
 	highgain_ = math.min(highgain_+highgain_*highgain_rate*dt, 1)
 	self.audio:setFilter{
 		type = "lowpass",
