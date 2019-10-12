@@ -29,3 +29,6 @@ require "src/backgrounddefs"
 require "src/Background"
 
 require "src/AudioPlayer"
+
+-- MIDI Reader
+require "src/MidiReader"
