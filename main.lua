@@ -5,7 +5,7 @@ function love.load()
 	love.graphics.setDefaultFilter("nearest", "nearest")
 	
 	-- Fullscreen, retina display
-	love.window.setMode(0, 0, {fullscreen = true, highdpi = true})	
+	love.window.setMode(0, 0, {fullscreen = true, highdpi = true, msaa = 2})
 	
 	-- Seed RNG, just in case we use it
 	math.randomseed(os.time())
