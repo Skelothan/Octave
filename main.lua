@@ -21,7 +21,7 @@ function love.load()
 	-- initialize global assets
 	loadFonts()
 	gBackgroundImage = nil
-	gBackground = Background:init("oscCircle")
+	gBackground = Background:init("spinTriangle", "standard")
 	
 	love.keyboard.keysPressed = {}
 	love.keyboard.inputs = {}
