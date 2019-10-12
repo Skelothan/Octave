@@ -10,7 +10,11 @@ require "src/collision"
 -- Contains asset-loading functions used in love.load().
 require "src/loadassets"
 
+-- Contains constants
+require "src/constants"
 
+-- Audio player
+require "src/AudioPlayer"
 
 -- Play State things
 require "src/states/PlayStateObjects/Pad"
@@ -28,5 +32,3 @@ require "src/states/PlayState"
 -- Backgrounds
 require "src/backgrounddefs"
 require "src/Background"
-
-require "src/AudioPlayer"
