@@ -1,6 +1,7 @@
 function circleCollision(x1, y1, r1, x2, y2, r2)
 	local distance = math.sqrt(math.pow((x2 - x1), 2) + math.pow((y2 - y1), 2))
-	return distance <= r1 + r2, distance
+	
+	return math.abs(distance) <= math.abs(r1 + r2), math.abs(distance)
 end
 
 function noteCollision(pad, note)
@@ -16,5 +17,6 @@ function noteCollision(pad, note)
 	If this works as intended, then if collides is true proportionalDistance 
 	must be between 0 and 2, and any other value greater than 2 otherwise.
 	]]
+
 	return collides, proportionalDistance
 end

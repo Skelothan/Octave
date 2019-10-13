@@ -24,24 +24,11 @@ function Pad:init(params)
 
 	self.activeColor = params.activeColor or {1, 1, 1, 1}
 	self.activeOpacity = 0;
-
-	self.notes = {}
 	
 	return table.deepcopy(o)
 end
 
 function Pad:update(dt)
-	--note collision
-	if self.active or not self.active then
-		for k, note in pairs(self.notes) do --notes is populated from within note.lua when spawned
-			self.collides, self.dist = noteCollision(self, note)
-			print(self.collides)
-			if self.collides == true and note.isDestroyed == false then
-				note:isHit()
-				print("yeet")
-			end
-		end
-	end
 
 	-- decrement active timer, deactivate once over
 	self.activeTimer = math.max(self.activeTimer - dt, 0)
