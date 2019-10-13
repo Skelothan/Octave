@@ -77,5 +77,37 @@ gBackgroundDefs = {
 						end
 						love.graphics.resetColor()
 					end
+	},
+	["shearSquares"] = {
+			init2 = function(self)
+						gBackgroundImage = nil
+						self.timer1 = 0
+						self.timer2 = math.pi/2
+						self.shear1 = 0
+						self.shear2 = 0
+						self.bounds = math.max(love.graphics.getHeight(), love.graphics.getWidth())
+					end,
+			update = function(self, dt)
+						self.timer1 = (self.timer1 + dt) % (2 * math.pi)
+						self.timer2 = (self.timer2 + dt) % (2 * math.pi)
+					end
+			render = function(self)
+						love.graphics.push()
+						love.graphics.shear(self.shear1, 0)
+						for i=1,4 do
+							for j=1,4 do
+								love.graphics.rectangle(fill, bounds*2i+1/8, bounds*2j+1/8, bounds*3/4, bounds*3/4)
+							end
+						end
+						love.graphics.pop()
+						love.graphics.push()
+						love.graphics.shear(-self.shear2, 0)
+						for i=1,4 do
+							for j=1,4 do
+								love.graphics.rectangle(fill, bounds*2i+1/8, bounds*2j+1/8, bounds*3/4, bounds*3/4)
+							end
+						end
+						love.graphics.pop()
+					end
 	}
 }
