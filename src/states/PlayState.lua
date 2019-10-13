@@ -160,9 +160,6 @@ function PlayState:update(dt)
 					coll_collides, coll_dist = noteCollision(pad, note)
 					if coll_collides == true and note.isHit == false then
 						note:onHit()
-						print("YEET")
-						print("YEET")
-						print("YEET")
 					end
 				end
 			end
