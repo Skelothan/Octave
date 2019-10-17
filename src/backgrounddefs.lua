@@ -83,31 +83,38 @@ gBackgroundDefs = {
 						gBackgroundImage = nil
 						self.timer1 = 0
 						self.timer2 = math.pi/2
-						self.shear1 = 0
-						self.shear2 = 0
+						love.graphics.setBackgroundColor(gPalette[currentPalette].background)
 						self.bounds = math.max(love.graphics.getHeight(), love.graphics.getWidth())
 					end,
 			update = function(self, dt)
-						self.timer1 = (self.timer1 + dt) % (2 * math.pi)
-						self.timer2 = (self.timer2 + dt) % (2 * math.pi)
-					end
+						self.timer1 = (self.timer1 + dt * 3/4) % (2 * math.pi)
+						self.timer2 = (self.timer2 + dt * 3/4) % (2 * math.pi)
+						
+					end,
 			render = function(self)
+						local margin = self.bounds * 1/4 * 1/8
+						local size = self.bounds*1/4*3/4
 						love.graphics.push()
-						love.graphics.shear(self.shear1, 0)
+						love.graphics.setColor(gPalette[currentPalette].bgObjects)
+						love.graphics.translate(margin,love.graphics.getHeight()/2 + margin)
+						love.graphics.shear(math.tan(self.timer1), 0)
 						for i=1,4 do
 							for j=1,4 do
-								love.graphics.rectangle(fill, bounds*2i+1/8, bounds*2j+1/8, bounds*3/4, bounds*3/4)
+								love.graphics.rectangle("fill", self.bounds*((i-1)/4)+1/8, self.bounds*((j-3)/4)+1/8, size, size)
 							end
 						end
 						love.graphics.pop()
 						love.graphics.push()
-						love.graphics.shear(-self.shear2, 0)
+						love.graphics.setColor(gPalette[currentPalette].background2)
+						love.graphics.translate(margin,love.graphics.getHeight()/2 + margin)
+						love.graphics.shear(-math.tan(self.timer2), 0)
 						for i=1,4 do
 							for j=1,4 do
-								love.graphics.rectangle(fill, bounds*2i+1/8, bounds*2j+1/8, bounds*3/4, bounds*3/4)
+								love.graphics.rectangle("fill", self.bounds*((i-1)/4)+5/8, self.bounds*((j-3)/4)+5/8, size, size)
 							end
 						end
 						love.graphics.pop()
+						love.graphics.resetColor()
 					end
 	}
 }
