@@ -8,25 +8,29 @@ function Note:init(params)
 	
 	self.isDestroyed = false
 	
+	-- Corresponds to pad angle. 
+	self.pad = params.pad or 1
+	table.insert(self.pad.notes, self)
+
 	-- When drawn, centered on radius.
 	-- Exact size will be determined by screen size.
 	self.x = params.x
 	self.y = params.y
-	self.radius = params.radius
+	self.radius = self.pad.radius
 	
-	-- Corresponds to pad angle. 
-	self.pad = params.pad or 1
+	
 	
 	-- 1 = counterclockwise, 2 = normal, 3 = clockwise
 	self.lane = params.lane or 2
 	
 	local speed = params.speed
-	local angle = (self.pad + (self.lane - 2)) % 8
+	--local angle = (self.pad.index + (self.lane.angle - 2)) % 8
+	local angle = self.lane.angle
 	
 	local theta = math.pi / 4 * angle
 	
-	self.dx = speed * math.cos(theta)
-	self.dy = speed * math.sin(theta)
+	self.dx = -speed * math.cos(theta)
+	self.dy = -speed * math.sin(theta)
 	
 	-- 1: bottom, 2: top, 3: both
 	self.noteType = params.noteType or 1

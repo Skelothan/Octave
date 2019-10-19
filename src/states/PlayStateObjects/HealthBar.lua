@@ -25,13 +25,24 @@ function HealthBar:init(params)
 end
 
 function HealthBar:update(dt)
-	
+	if love.keyboard.isDown("1") then
+		self.health = 0
+	end
+	if self.health <= 0 then 
+		gStateMachine:change("gameOver", {
+			score = dScore, 
+			isWon = false,
+			backgroundColor = self.outlineColor,
+			textColor = self.textColor
+		})
+	end
 end
 
 function HealthBar:takeDamage(dScore)
 	--gAudioPlayer:takeDamage()
 	self.health = math.max(self.health - self.notesPerHP, 0)
 	self:incrementScore(-dScore)
+	
 end
 
 function HealthBar:restoreHealth()

@@ -22,12 +22,16 @@ function Lane:init(params)
 		
 	local height = math.min(love.graphics.getHeight() - self.padY, self.padY - 0)
 	
-	if 1 == self.angle or (7 <= self.angle and self.angle <= 8) then
+	if 1 == self.angle or (7 == self.angle) then
 		self.endpointX = self.padX + (height*1.5)
-	elseif 3 <= self.angle and self.angle <= 5 then
+	elseif 3 == self.angle or self.angle == 5 then
 		self.endpointX = self.padX - (height*1.5)
 	elseif self.angle == 2 or self.angle == 6 then
 		self.endpointX = self.padX
+	elseif self.angle == 4 then
+		self.endpointX = 0
+	elseif self.angle == 8 then
+		self.endpointX = love.graphics.getWidth()
 	end
 	
 	if 1 <= self.angle and self.angle <= 3 then
@@ -41,7 +45,7 @@ function Lane:init(params)
 	-- Numerically indexed table 
 	self.laneColor = params.laneColor or {60/255, 127/255, 1, 120/255}
 	-- Not currently used, will be used for fade if we get there
-	self.alphaLimit = 120/255
+	self.alphaLimit = (params.laneColor and params.laneColor[4]) or 120/255
 	
 	return table.deepcopy(o)
 end

@@ -17,9 +17,11 @@ function love.load()
 	gStateMachine = StateMachine:init({
 		["title"] = function() return TitleState:init() end,
 		["menu"] = function() return MenuState:init() end,
-		["play"] = function() return PlayState:init() end
+		["play"] = function() return PlayState:init() end, 
+		["gameOver"] = function() return GameOverState:init() end
 	})
 	gStateMachine:change("play", {palette = gPalette["standard"]})
+
 	
 	-- initialize global assets
 	loadFonts()
@@ -29,6 +31,10 @@ function love.load()
 	love.keyboard.keysPressed = {}
 	love.keyboard.inputs = {}
 	love.keyboard.keysDown = {}
+
+	gAudioPlayer = AudioPlayer:init(love.audio.newSource("sfx/menu.mp3", "stream"))
+	gAudioPlayer:setLooping(true)
+	gAudioPlayer:playAudio()
 end
 
 
@@ -40,6 +46,9 @@ function love.update(dt)
 	love.keyboard.keysPressed = {}
 	--stores the actual inputs
 	love.keyboard.inputs = {}
+
+	winWidth = love.graphics.getWidth()
+	winHeight = love.graphics.getHeight()
 end
 
 function love.resize(x, y)

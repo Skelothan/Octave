@@ -11,6 +11,7 @@ function PlayState:newPad(pX, pY, pRadius, pNum)
 		y = pY, 
 		radius = pRadius,
 		padColor = color
+		index = pNum
 		})
 	)
 	local lane11 = Lane:init({
@@ -38,41 +39,59 @@ function PlayState:newPad(pX, pY, pRadius, pNum)
 	})
 	table.insert(self.lanes, lane13)
 end
+--noteType: 1: bottom, 2: top, 3: both
+function PlayState:newNote(nRadius, nPad, nLane, nSpeed, nNoteType)
+	table.insert(self.notes, Note:init({
+			x = nLane.endpointX,
+			--x = self.lanes[nLane].endpointX,
+			x = 0,
+			y = nLane.endpointY,
+			--y = self.lanes[nLane].endpointY,
+			--y = love.graphics.getHeight()/2,
+			radius = nRadius,
+			pad = nPad,
+			lane = nLane,
+			speed = nSpeed,
+			noteType = nNoteType
+		})
+	)
+end
 
 function PlayState:makePads()
 	local centerRadius = math.min(love.graphics.getHeight(), love.graphics.getWidth())/8
 	local pRadius = 20
+	--Add pads:
+
+	--bottom right
+	self:newPad(love.graphics.getWidth()/2 + centerRadius/math.sqrt(2), 
+		love.graphics.getHeight()/2 + centerRadius/math.sqrt(2), pRadius, 8)
 
 	--bottom 
-	self:newPad(love.graphics.getWidth()/2, love.graphics.getHeight()/2 + centerRadius, pRadius, 0)
+	self:newPad(love.graphics.getWidth()/2, love.graphics.getHeight()/2 + centerRadius, pRadius, 1)
 	
 	--bottom left
 	self:newPad(love.graphics.getWidth()/2 - centerRadius/math.sqrt(2), 
-		love.graphics.getHeight()/2 + centerRadius/math.sqrt(2), pRadius, 1)
+		love.graphics.getHeight()/2 + centerRadius/math.sqrt(2), pRadius, 2)
 	
 	--left
 	self:newPad(love.graphics.getWidth()/2 - centerRadius, 
-		love.graphics.getHeight()/2, pRadius, 2)
+		love.graphics.getHeight()/2, pRadius, 3)
 	
 	--top left
 	self:newPad(love.graphics.getWidth()/2 - centerRadius/math.sqrt(2), 
-		love.graphics.getHeight()/2 - centerRadius/math.sqrt(2), pRadius, 3)
+		love.graphics.getHeight()/2 - centerRadius/math.sqrt(2), pRadius, 4)
 	
 	--top
 	self:newPad(love.graphics.getWidth()/2, 
-		love.graphics.getHeight()/2- centerRadius, pRadius, 4)
+		love.graphics.getHeight()/2- centerRadius, pRadius, 5)
 	
 	--top right
 	self:newPad(love.graphics.getWidth()/2 + centerRadius/math.sqrt(2), 
-		love.graphics.getHeight()/2 - centerRadius/math.sqrt(2), pRadius, 5)
+		love.graphics.getHeight()/2 - centerRadius/math.sqrt(2), pRadius, 6)
 	
 	--right
 	self:newPad(love.graphics.getWidth()/2 + centerRadius, 
-		love.graphics.getHeight()/2, pRadius, 6)
-	
-	--bottom right
-	self:newPad(love.graphics.getWidth()/2 + centerRadius/math.sqrt(2), 
-		love.graphics.getHeight()/2 + centerRadius/math.sqrt(2), pRadius, 7)
+		love.graphics.getHeight()/2, pRadius, 7)
 end
 
 function PlayState:enter(params)
@@ -92,32 +111,74 @@ function PlayState:init()
 	self.lanes = {}
 	self.healthBar = {}
 	self.notes = {}
-	
 	return table.deepcopy(o)
+end
+
+function PlayState:spawnNote() --for testing, for now
+	self:newNote(30, self.pads[1], self.lanes[1], 500, 1)
 end
 
 function PlayState:update(dt) 
 	for k, pad in pairs(self.pads) do
 		pad.selected = false
 	end
+
+	--selecting with joystick
 	if love.keyboard.isHeld("down") and love.keyboard.isHeld("left") then 
 		
-		self.pads[2].selected = true
-	elseif love.keyboard.isHeld("up") and love.keyboard.isHeld("left") then 
-		self.pads[4].selected = true
-	elseif love.keyboard.isHeld("up") and love.keyboard.isHeld("right") then 
-		self.pads[6].selected = true
-	elseif love.keyboard.isHeld("down") and love.keyboard.isHeld("right") then 
-		self.pads[8].selected = true
-	elseif love.keyboard.isHeld("down") then
-		self.pads[1].selected = true
-	elseif love.keyboard.isHeld("left") then
 		self.pads[3].selected = true
-	elseif love.keyboard.isHeld("up") then
+	elseif love.keyboard.isHeld("up") and love.keyboard.isHeld("left") then 
 		self.pads[5].selected = true
-	elseif love.keyboard.isHeld("right") then
+	elseif love.keyboard.isHeld("up") and love.keyboard.isHeld("right") then 
 		self.pads[7].selected = true
+	elseif love.keyboard.isHeld("down") and love.keyboard.isHeld("right") then 
+		self.pads[1].selected = true
+	elseif love.keyboard.isHeld("down") then
+		self.pads[2].selected = true
+	elseif love.keyboard.isHeld("left") then
+		self.pads[4].selected = true
+	elseif love.keyboard.isHeld("up") then
+		self.pads[6].selected = true
+	elseif love.keyboard.isHeld("right") then
+		self.pads[8].selected = true
 	end
+
+	--actually hitting buttons
+	if love.keyboard.wasInput("topArrow") and love.keyboard.wasInput("bottomArrow") then 
+		for k, pad in pairs(self.pads) do
+			if(pad.selected == true) then
+				pad:onPress("bothArrows")
+				break
+			end
+		end
+	elseif love.keyboard.wasInput("topArrow") then
+		for k, pad in pairs(self.pads) do
+			if(pad.selected == true) then
+				pad:onPress("topArrow")
+				break
+			end
+		end
+	elseif love.keyboard.wasInput("bottomArrow") then
+		for k, pad in pairs(self.pads) do
+			if(pad.selected == true) then
+				pad:onPress("bottomArrow")
+				break
+			end
+		end
+	end
+
+	for k, pad in pairs(self.pads) do
+		pad:update(dt)
+	end
+	for k, note in pairs(self.notes) do
+		note:update(dt)
+	end
+
+
+	if love.keyboard.wasInput("topArrow") then
+		self:spawnNote()
+	end
+
 end
 
 function PlayState:render() 
@@ -126,6 +187,9 @@ function PlayState:render()
 	end
 	for k, pad in pairs(self.pads) do
 		pad:render()
+	end
+	for k, note in pairs(self.notes) do
+		note:render()
 	end
 	self.healthBar:render()
 	for k, note in pairs(self.notes) do
