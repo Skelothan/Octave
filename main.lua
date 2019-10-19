@@ -20,7 +20,7 @@ function love.load()
 		["play"] = function() return PlayState:init() end, 
 		["gameOver"] = function() return GameOverState:init() end
 	})
-	gStateMachine:change("play", {palette = gPalette["standard"]})
+	gStateMachine:change("menu", {palette = gPalette["standard"]})
 
 	
 	-- initialize global assets

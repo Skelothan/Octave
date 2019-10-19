@@ -57,18 +57,28 @@ function MenuState:init()
 	return table.deepcopy(o)
 end
 
+function MenuState:enter(params)
+	self.palette = params.palette or gPalette["standard"]
+	self.scroll =  love.audio.newSource("sfx/scroll.wav", "static")
+	self.select = love.audio.newSource("sfx/select.wav", "static")
+end 
+
+
 function MenuState:update(dt)
 	self.lastUp = self.lastUp + dt
 	self.lastDown = self.lastDown + dt
 
 	if self.lastUp >= 0.15 and love.keyboard.isHeld("up") and self.currentSong > 1 then
+		self.scroll:play()
 		self.currentSong = self.currentSong - 1
 		self.lastUp = 0
 	elseif self.lastDown >= 0.15 and love.keyboard.isHeld("down") and self.currentSong < self.numSongs then
+		self.scroll:play()
 		self.currentSong = self.currentSong + 1
 		self.lastDown = 0
 	end
-	if love.keyboard.wasInput("downArrow") then
+	if love.keyboard.wasInput("bottomArrow") then
+		self.select:play()
 		gStateMachine:change("play", {})
 	end
 end

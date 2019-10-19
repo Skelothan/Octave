@@ -10,7 +10,7 @@ function PlayState:newPad(pX, pY, pRadius, pNum)
 		x = pX, 
 		y = pY, 
 		radius = pRadius,
-		padColor = color
+		padColor = color,
 		index = pNum
 		})
 	)
@@ -18,7 +18,7 @@ function PlayState:newPad(pX, pY, pRadius, pNum)
 		padX = pX, 
 		padY = pY, 
 		padR = pRadius,
-		angle = (pNum+1)%8,
+		angle = math.oimod((pNum), 8),
 		laneColor = self.palette.laneColor
 	})
 	table.insert(self.lanes, lane11)
@@ -26,7 +26,7 @@ function PlayState:newPad(pX, pY, pRadius, pNum)
 		padX = pX, 
 		padY = pY, 
 		padR = pRadius,
-		angle = (pNum+2)%8,
+		angle = math.oimod((pNum+1), 8),
 		laneColor = self.palette.laneColor
 	})
 	table.insert(self.lanes, lane12)
@@ -34,7 +34,7 @@ function PlayState:newPad(pX, pY, pRadius, pNum)
 		padX = pX, 
 		padY = pY, 
 		padR = pRadius,
-		angle = (pNum+3)%8,
+		angle = math.oimod((pNum+2), 8),
 		laneColor = self.palette.laneColor
 	})
 	table.insert(self.lanes, lane13)
@@ -96,7 +96,6 @@ end
 
 function PlayState:enter(params)
 	self.palette = params.palette or gPalette["standard"]
-
 	self.healthBar = HealthBar:init({healthColor = self.palette.healthColor})
 	self:makePads()
 end
