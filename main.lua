@@ -39,6 +39,7 @@ end
 
 function love.update(dt)
 	gBackground:update(dt)
+	gAudioPlayer:update(dt)
 	
 	gStateMachine:update(dt)
 	

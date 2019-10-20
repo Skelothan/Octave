@@ -22,7 +22,6 @@ function Note:init(params, playState)
 	
 	self.directionChanged = false
 	
-	
 	-- The lane the note travels on. Integer from 1-24.
 	self.lane = params.lane or 2
 	
@@ -36,9 +35,7 @@ function Note:init(params, playState)
 	The absolute angle of the lane travels on. Integer from 1-8.
 	Set in setSpeeds().
 	]]
-	
-	print(self.pad, self.lane, self.laneAngle)
-	
+		
 	self.speed = params.speed
 	self:setSpeeds()
 	

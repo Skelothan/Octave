@@ -101,7 +101,7 @@ end
 
 function PlayState:spawnNote() --for testing, for now
 	local rand = math.random(24)
-	self:newNote(20, rand, 500, 1)
+	self:newNote(20, rand, 200, 1)
 end
 
 function PlayState:update(dt) 
@@ -152,7 +152,7 @@ function PlayState:update(dt)
 		end
 	end
 		
-	--collision
+	-- Pad/note collision
 	if love.keyboard.wasInput("topArrow") or love.keyboard.wasInput("bottomArrow") then
 		for k, pad in pairs(self.pads) do
 			if pad.active then
@@ -166,6 +166,7 @@ function PlayState:update(dt)
 		end
 	end
 	
+	-- Debug: spawning notes
 	if love.keyboard.wasInput("unbound") then
 		self:spawnNote()
 	end
@@ -191,6 +192,11 @@ function PlayState:update(dt)
 				end
 			end
 		end
+		-- Health bar/note collision
+		if circleCollision(note.x, note.y, note.radius, self.healthBar.x, self.healthBar.y, self.healthBar.radius - 2.25 * note.radius) then
+			note.isDestroyed = true
+			self.healthBar:takeDamage(note.score)
+		end
 		if note.isDestroyed then
 			table.remove(self.notes, k)
 		end
@@ -199,6 +205,8 @@ function PlayState:update(dt)
 	for k, pad in pairs(self.pads) do
 		pad:update(dt)
 	end
+	
+	self.healthBar:update(dt)
 end
 
 function PlayState:render() 
@@ -208,9 +216,8 @@ function PlayState:render()
 	for k, pad in pairs(self.pads) do
 		pad:render()
 	end
-	self.healthBar:render()
 	for k, note in pairs(self.notes) do
 		note:render()
 	end
-	
+	self.healthBar:render()
 end
