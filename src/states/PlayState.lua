@@ -93,7 +93,11 @@ function PlayState:init()
 	self:newPad(love.graphics.getWidth()/2 + centerRadius, 
 		love.graphics.getHeight()/2, pRadius, 7)
 	
-	
+	--needs a way to pass in midi file
+	gMidiReader = MidiReader:init("sfx/Test.mid")
+	gMapNotes = gMidiReader:get_notes()
+	self.timer = 0
+	self.noteIndex = 1
 	
 	return table.deepcopy(o)
 end
@@ -179,6 +183,12 @@ function PlayState:update(dt)
 	end
 	
 
+	self.timer = self.timer + dt
+	print(self.timer)
+	if self.noteIndex <= #gMapNotes and self.timer >= gMapNotes[self.noteIndex].start_time then
+		self:newNote(30, self.pads[1], self.lanes[2], 500, 1)
+		self.noteIndex = self.noteIndex + 1
+	end
 
 	if love.keyboard.wasInput("unbound") then
 		self:spawnNote()

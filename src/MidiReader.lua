@@ -1,6 +1,7 @@
 local MIDI = require 'src/MIDI'
 
-local MidiReader = {}
+MidiReader = {}
+MidiReader.__index = MidiReader
 
 local convertNote = {
   "None", "None", "None", "None", "None", "None", "None", "None", "None", "None", "None", "None",
@@ -30,7 +31,7 @@ function MidiReader:init(filename)
       -- note structure: {'note', start_time, duration, channel, note, velocity}
       if self.midiData[i][j][1] == 'note' then
         -- assign start times
-        self.midiData[i][j].start_time = self.midiData[i][j][2]
+        self.midiData[i][j].start_time = self.midiData[i][j][2]/1000
         -- assign durations
         self.midiData[i][j].duration = self.midiData[i][j][3]
         -- assign pitch strings
@@ -54,7 +55,7 @@ function MidiReader:init(filename)
       end
     end
   end
-  return o
+  return table.deepcopy(o)
 end
 
 function MidiReader:get_notes()
