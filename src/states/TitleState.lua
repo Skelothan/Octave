@@ -17,6 +17,7 @@ end
 function TitleState:update(dt)
 	if love.keyboard.wasInput("topArrow") or 
 	love.keyboard.wasInput("bottomArrow") then
+		gSounds["start"]:play()
 		gStateMachine:change("menu", {})
 	end
 	if love.keyboard.wasInput("topArrow2") or

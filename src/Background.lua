@@ -1,7 +1,7 @@
 Background = {}
 Background.__index = Background
 
-function Background:init(backgroundName, paletteName)
+function Background:init(backgroundName, palette)
 	-- print(funcs)
 	
 	local o = o or {}   -- create object if user does not provide one
@@ -10,7 +10,7 @@ function Background:init(backgroundName, paletteName)
 	
 	print(type(o))
 	self:setFunctions(backgroundName or "oscCircle")
-	self:setPalette(paletteName or "standard")
+	self:setPalette(palette or gPalette["standard"])
 	self:init2()
 	print(type(o))
 	
@@ -24,8 +24,8 @@ function Background:setFunctions(backgroundName)
 	self.render = gBackgroundDefs[backgroundName].render or gBackgroundDefs["oscCircle"].render
 end
 
-function Background:setPalette(paletteName)
-	currentPalette = paletteName
+function Background:setPalette(palette)
+	currentPalette = palette
 end 
 
 function Background:init2() end

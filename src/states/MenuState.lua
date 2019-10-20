@@ -68,16 +68,19 @@ function MenuState:update(dt)
 	self.lastDown = self.lastDown + dt
 
 	if self.lastUp >= 0.15 and love.keyboard.isHeld("up") and self.currentSong > 1 then
+		gSounds["scroll"]:stop()
 		gSounds["scroll"]:play()
 		self.currentSong = self.currentSong - 1
 		self.lastUp = 0
 	elseif self.lastDown >= 0.15 and love.keyboard.isHeld("down") and self.currentSong < self.numSongs then
+		gSounds["scroll"]:stop()
 		gSounds["scroll"]:play()
 		self.currentSong = self.currentSong + 1
 		self.lastDown = 0
 	end
 	if love.keyboard.wasInput("bottomArrow") then
-		gSounds["scroll"]:play()
+		gSounds["scroll"]:stop()
+		gSounds["select"]:play()
 		gStateMachine:change("play", {})
 	end
 end
