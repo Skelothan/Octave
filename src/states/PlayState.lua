@@ -43,11 +43,7 @@ end
 function PlayState:newNote(nRadius, nPad, nLane, nSpeed, nNoteType)
 	table.insert(self.notes, Note:init({
 			x = nLane.endpointX,
-			--x = self.lanes[nLane].endpointX,
-			x = 0,
 			y = nLane.endpointY,
-			--y = self.lanes[nLane].endpointY,
-			--y = love.graphics.getHeight()/2,
 			radius = nRadius,
 			pad = nPad,
 			lane = nLane,
@@ -114,7 +110,8 @@ function PlayState:init()
 end
 
 function PlayState:spawnNote() --for testing, for now
-	self:newNote(30, self.pads[1], self.lanes[1], 500, 1)
+	local rand = math.random(24)
+	self:newNote(30, self.pads[math.floor((rand-1)/3) + 1], self.lanes[rand], 500, 1)
 end
 
 function PlayState:update(dt) 
@@ -165,16 +162,36 @@ function PlayState:update(dt)
 			end
 		end
 	end
+		
+	--collision
+	if love.keyboard.wasInput("topArrow") or love.keyboard.wasInput("bottomArrow") then
+		for k, pad in pairs(self.pads) do
+			if pad.active then
+				for k, note in pairs(self.notes) do --notes is populated from within note.lua when spawned
+					coll_collides, coll_dist = noteCollision(pad, note)
+					if coll_collides == true and note.isHit == false then
+						note:onHit()
+					end
+				end
+			end
+		end
+	end
 
+
+
+	for k, note in pairs(self.notes) do
+		note:update(dt)
+		if(note.isDestroyed) then
+			table.remove(self.notes, k)
+		end
+	end
 	for k, pad in pairs(self.pads) do
 		pad:update(dt)
 	end
-	for k, note in pairs(self.notes) do
-		note:update(dt)
-	end
+	
 
 
-	if love.keyboard.wasInput("topArrow") then
+	if love.keyboard.wasInput("unbound") then
 		self:spawnNote()
 	end
 

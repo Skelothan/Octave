@@ -91,6 +91,7 @@ gKeys = {
 	s = "down",
 	d = "right",
 	y = "togglePauseMenu",
+	h = "unbound",
 	
 	--player 2
 	space = "topArrow2",
