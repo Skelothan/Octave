@@ -4,6 +4,9 @@ function love.load()
 	-- Set image scaling settings
 	love.graphics.setDefaultFilter("nearest", "nearest")
 	
+	-- Fullscreen, retina display
+	love.window.setMode(0, 0, {fullscreen = true, highdpi = true, msaa = 2})
+	
 	-- Seed RNG, just in case we use it
 	math.randomseed(os.time())
 	
@@ -14,8 +17,10 @@ function love.load()
 	gStateMachine = StateMachine:init({
 		["title"] = function() return TitleState:init() end,
 		["menu"] = function() return MenuState:init() end,
-		["play"] = function() return PlayState:init() end
+		["play"] = function() return PlayState:init() end, 
+		["gameOver"] = function() return GameOverState:init() end
 	})
+
 	gStateMachine:change("title", {})
 	
 	-- initialize global assets
@@ -25,6 +30,10 @@ function love.load()
 	love.keyboard.keysPressed = {}
 	love.keyboard.inputs = {}
 	love.keyboard.keysDown = {}
+
+	gAudioPlayer = AudioPlayer:init(love.audio.newSource("sfx/menu.mp3", "stream"))
+	gAudioPlayer:setLooping(true)
+	gAudioPlayer:playAudio()
 end
 
 
@@ -36,6 +45,9 @@ function love.update(dt)
 	love.keyboard.keysPressed = {}
 	--stores the actual inputs
 	love.keyboard.inputs = {}
+
+	winWidth = love.graphics.getWidth()
+	winHeight = love.graphics.getHeight()
 end
 
 function love.resize(x, y)
@@ -77,6 +89,7 @@ gKeys = {
 	s = "down",
 	d = "right",
 	y = "togglePauseMenu",
+	h = "unbound",
 	
 	--player 2
 	space = "topArrow2",

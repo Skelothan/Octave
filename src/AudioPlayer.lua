@@ -22,8 +22,11 @@ function AudioPlayer:update(dt)
 	}
 end
 
+function AudioPlayer:setLooping(loop)
+	self.audio:setLooping(loop)
+end
+
 function AudioPlayer:takeDamage()
-	
 	highgain_ = highgain_min
 	self.audio:setFilter{
 		type = "lowpass",
