@@ -17,8 +17,7 @@ function MenuState:init()
 		artist = "Artist Name",
 		image = "graphics/noteImage.png", 
 		difficulty = 4,
-		menuColor = {0.9, 0.3, 0.6, 1},
-		textColor = {1, 1, 1, 1},
+		palette = "standard",
 		highScores = { 
 			{name = "Score Name", score = 42069},
 			{name = "Bob", score = 19800},
@@ -30,8 +29,7 @@ function MenuState:init()
 		artist = "Artist 2",
 		image = "graphics/songImage.jpg",
 		difficulty = 3,
-		menuColor = {0.5, 0.5, 0.5, 1},
-		textColor = {1, 1, 1, 1},
+		palette = "standard",
 		highScores = {
 			{name = "Score Name", score = 1234},
 			{name = "Anon", score = 452}
@@ -42,6 +40,7 @@ function MenuState:init()
 		artist = "Artist 3",
 		--image = love.graphics.newImage("graphics/noteImage.png"),
 		difficulty = 1,
+		palette = "standard",
 		highScores = {}
 	})
 	table.insert(self.songs, song1)
@@ -58,9 +57,9 @@ function MenuState:init()
 end
 
 function MenuState:enter(params)
-	self.palette = params.palette or gPalette["standard"]
-	self.scroll =  love.audio.newSource("sfx/scroll.wav", "static")
-	self.select = love.audio.newSource("sfx/select.wav", "static")
+	gAudioPlayer = AudioPlayer:init(love.audio.newSource("sfx/menu.mp3", "stream"))
+	gAudioPlayer:setLooping(true)
+	gAudioPlayer:playAudio()
 end 
 
 
@@ -69,16 +68,16 @@ function MenuState:update(dt)
 	self.lastDown = self.lastDown + dt
 
 	if self.lastUp >= 0.15 and love.keyboard.isHeld("up") and self.currentSong > 1 then
-		self.scroll:play()
+		gSounds["scroll"]:play()
 		self.currentSong = self.currentSong - 1
 		self.lastUp = 0
 	elseif self.lastDown >= 0.15 and love.keyboard.isHeld("down") and self.currentSong < self.numSongs then
-		self.scroll:play()
+		gSounds["scroll"]:play()
 		self.currentSong = self.currentSong + 1
 		self.lastDown = 0
 	end
 	if love.keyboard.wasInput("bottomArrow") then
-		self.select:play()
+		gSounds["scroll"]:play()
 		gStateMachine:change("play", {})
 	end
 end

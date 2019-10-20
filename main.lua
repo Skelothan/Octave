@@ -20,11 +20,12 @@ function love.load()
 		["play"] = function() return PlayState:init() end, 
 		["gameOver"] = function() return GameOverState:init() end
 	})
-	gStateMachine:change("menu", {palette = gPalette["standard"]})
+	gStateMachine:change("title", {palette = gPalette["standard"]})
 
 	
 	-- initialize global assets
 	loadFonts()
+	loadSounds()
 	gBackgroundImage = nil
 	gBackground = Background:init("spinTriangle", "standard")
 	

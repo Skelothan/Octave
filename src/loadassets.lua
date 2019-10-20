@@ -7,4 +7,10 @@ function loadFonts()
 	love.graphics.setFont(gFonts["AvenirLight32"])
 end
 
+function loadSounds()
+	gSounds = {
+		["scroll"] =  love.audio.newSource("sfx/scroll.wav", "static"),
+		["select"]= love.audio.newSource("sfx/select.wav", "static")
+	}
+end 
 -- TODO: functions for images, frames, sfx, etc
