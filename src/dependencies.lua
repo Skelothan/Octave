@@ -16,7 +16,7 @@ require "src/constants"
 -- Audio player
 require "src/AudioPlayer"
 
--- Meny State things
+-- Menu State things
 require "src/Song"
 
 -- Play State things
@@ -36,3 +36,8 @@ require "src/states/GameOverState"
 -- Backgrounds
 require "src/backgrounddefs"
 require "src/Background"
+
+require "src/AudioPlayer"
+
+-- MIDI Reader
+require "src/MidiReader"
