@@ -45,14 +45,12 @@ function love.update(dt)
 	
 	love.keyboard.keysPressed = {}
 	--stores the actual inputs
-	love.keyboard.inputs = {}
-
-	winWidth = love.graphics.getWidth()
-	winHeight = love.graphics.getHeight()
+	love.keyboard.inputs = {}	
 end
 
 function love.resize(x, y)
-	
+	winWidth = love.graphics.getWidth()
+	winHeight = love.graphics.getHeight()
 end
 
 --INPUT HANDLING BEGIN
