@@ -7,6 +7,9 @@ require "src/collision"
 -- A class library. I don't think we'll use it, but it's here just in case.
 -- Class = require "lib/class"
 
+-- The MIDI library
+MIDI = require 'src/MIDI'
+
 -- Contains asset-loading functions used in love.load().
 require "src/loadassets"
 

@@ -1,6 +1,5 @@
-local MIDI = require 'src/MIDI'
-
-local MidiReader = {}
+MidiReader = {}
+MidiReader.__index = MidiReader
 
 local convertNote = {
   "None", "None", "None", "None", "None", "None", "None", "None", "None", "None", "None", "None",
