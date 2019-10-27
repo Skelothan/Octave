@@ -76,13 +76,13 @@ function MenuState:update(dt)
 		self.lastDown = 0
 	end
 	if love.keyboard.wasInput("bottomArrow") then
-		gSounds["scroll"]:stop()
-		gSounds["select"]:play()
+		gSounds["startExt"]:stop()
+		gSounds["startExt"]:play()
 		gStateMachine:change("play", {})
 	end
 	if love.keyboard.wasInput("topArrow") then
-		gSounds["scroll"]:stop()
-		--gSounds["back"]:play()
+		gSounds["back"]:stop()
+		gSounds["back"]:play()
 		gStateMachine:change("title", {})
 	end
 end

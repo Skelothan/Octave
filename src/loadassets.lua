@@ -11,7 +11,9 @@ function loadSounds()
 	gSounds = {
 		["scroll"] =  love.audio.newSource("sfx/scroll.wav", "static"),
 		["select"]= love.audio.newSource("sfx/select.wav", "static"),
-		["start"] = love.audio.newSource("sfx/start.wav", "static")
+		["start"] = love.audio.newSource("sfx/start.wav", "static"),
+		["startExt"] = love.audio.newSource("sfx/start_ext.mp3", "static"),
+		["back"] = love.audio.newSource("sfx/back.mp3", "static")
 	}
 end 
 -- TODO: functions for images, frames, sfx, etc
