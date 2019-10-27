@@ -1,7 +1,0 @@
-name = "Song Name"
-artist = "Artist Name"
-difficulty = 4
-highScores = {
-"name", score
-"John", 420
-}
