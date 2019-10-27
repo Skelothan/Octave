@@ -17,7 +17,7 @@ function GameOverState:enter(params)
 end
 
 function GameOverState:update(dt)
-	if love.keyboard.wasInput("topArrow") then
+	if love.keyboard.wasInput("bottomArrow") then
 		gStateMachine:change("menu", {})
 	end
 end
