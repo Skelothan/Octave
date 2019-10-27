@@ -6,13 +6,13 @@ function Song:init(params)
 	setmetatable(o, self)
 	self.__index = self
 	
-	self.name = params.name or "Song Name"
+	self.name = params.title or "Song Name"
 	self.artist = "Artist Name"
 	self.image = params.image or "graphics/noteImage.png"
 	self.difficulty = params.difficulty or 4
 	self.menuColor = gPalette[params.palette].menuColor or {0.9, 0.3, 0.6, 1}
 	self.textColor = gPalette[params.palette].textColor or {1, 1, 1, 1}
-	self.highScores = params.highScores or {}
+	self.highScores = JSONReader:init(params.highScores).data["highScores"] or {}
 	
 	return table.deepcopy(o)
 end
@@ -26,6 +26,8 @@ function Song:render(index, currentSong, opacity, isCurrentSong)
 end
 
 function Song:renderSong(index, currentSong, opacity)
+	local winWidth = love.graphics.getWidth()
+	local winHeight = love.graphics.getHeight()
 	local songWidth = (winWidth/3) - (winWidth/32)
 	local songHeight = (winHeight/6) - (winHeight/32)
 	local songX = (winWidth * 0.5) - (songWidth*0.5)
@@ -61,6 +63,9 @@ function Song:renderSong(index, currentSong, opacity)
 end
 
 function Song:renderLeft(opacity)
+	local winWidth = love.graphics.getWidth()
+	local winHeight = love.graphics.getHeight()
+
 	local imageX = (winWidth/6) - (winWidth/6/2)
 	local imageY = (winHeight/5) 
 	local textY = (winHeight*0.5) + (winWidth/64)
@@ -107,6 +112,9 @@ function Song:renderLeft(opacity)
 end
 
 function Song:renderRight(opacity) 
+	local winWidth = love.graphics.getWidth()
+	local winHeight = love.graphics.getHeight()
+
 	local rectWidth = winWidth/3 - winWidth/16
 	local rectHeight = winHeight/2
 	local rectX = (5*winWidth/6) - (winWidth/6/2) - (3*winWidth/64)
