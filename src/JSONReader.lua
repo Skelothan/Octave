@@ -20,7 +20,12 @@
 --   "artist" : "Skelothan",
 --   "album" : "Octave OST Vol. 1",
 --   "source" : "Flip Flop",
---   "year" : 2019
+--   "year" : 2019,
+--   "leaderboard" : {
+--     "name": 12345,
+--     "name2": 2345,
+--     "name3": 345, 
+--   }
 -- }
 -- 
 -- JSONReader converts JSON file to following format under self.data
@@ -56,6 +61,11 @@
 --     },
 --     bgObjects = {
 --     }
+--   },
+--   leaderboard = {
+--     name = { 12345 },
+--     name2 = { 2345 },
+--     name3 = { 345 }  
 --   },
 --   source = "Flip Flop",
 --   title = "Drop In, Flip Out",
