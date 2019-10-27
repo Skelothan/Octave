@@ -223,7 +223,7 @@ function PlayState:update(dt)
 	--print(self.timer)
 	if self.noteIndex <= #gMapNotes and self.timer >= gMapNotes[self.noteIndex].start_time * self.note_time_multiplier then
 		--print(gMapNotes[self.noteIndex].pad)
-		self:newNote(30, gMapNotes[self.noteIndex], gMapNotes[self.noteIndex].lane, 500, 1)
+		self:newNote(20, gMapNotes[self.noteIndex].pad, gMapNotes[self.noteIndex].lane, 500, 1)
 		self.noteIndex = self.noteIndex + 1
 	end
 
