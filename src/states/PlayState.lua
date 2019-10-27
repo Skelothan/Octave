@@ -105,7 +105,7 @@ function PlayState:init()
 	self.noteIndex = 1
 
 	gAudioPlayer:stopAudio()
-	gAudioPlayer = AudioPlayer:init(love.audio.newSource("sfx/Drop_In_Flip_Out.mp3", "stream"))
+	gAudioPlayer:changeAudio(love.audio.newSource("sfx/Drop_In_Flip_Out.mp3", "stream"))
 	gAudioPlayer:setLooping(false)
 	gAudioPlayer:playAudio()
 	
