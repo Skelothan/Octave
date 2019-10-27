@@ -2,9 +2,9 @@ PlayState = {}
 PlayState.__index = PlayState
 
 function PlayState:newPad(pX, pY, pRadius, pNum)
-	color = self.palette.pad1
+	color = gCurrentPalette.pad1
 	if pNum % 2 == 1 then
-		color = self.palette.pad2
+		color = gCurrentPalette.pad2
 	end
 	table.insert(self.pads, Pad:init({
 		x = pX, 
@@ -19,7 +19,7 @@ function PlayState:newPad(pX, pY, pRadius, pNum)
 		padY = pY, 
 		padR = pRadius,
 		angle = math.oimod((pNum), 8),
-		laneColor = self.palette.laneColor
+		laneColor = gCurrentPalette.laneColor
 	})
 	table.insert(self.lanes, lane11)
 	local lane12 = Lane:init({
@@ -27,7 +27,7 @@ function PlayState:newPad(pX, pY, pRadius, pNum)
 		padY = pY, 
 		padR = pRadius,
 		angle = math.oimod((pNum+1), 8),
-		laneColor = self.palette.laneColor
+		laneColor = gCurrentPalette.laneColor
 	})
 	table.insert(self.lanes, lane12)
 	local lane13 = Lane:init({
@@ -35,7 +35,7 @@ function PlayState:newPad(pX, pY, pRadius, pNum)
 		padY = pY, 
 		padR = pRadius,
 		angle = math.oimod((pNum+2), 8),
-		laneColor = self.palette.laneColor
+		laneColor = gCurrentPalette.laneColor
 	})
 	table.insert(self.lanes, lane13)
 end
@@ -92,16 +92,13 @@ function PlayState:makePads()
 end
 
 function PlayState:enter(params)
-	self.palette = params.palette or gPalette["standard"]
-  
-  self.pads = {}
+	self.pads = {}
 	self.lanes = {}
-  self.healthBar = HealthBar:init({healthColor = self.palette.healthColor})
+	self.healthBar = HealthBar:init({healthColor = gCurrentPalette.healthColor})
 	self.notes = {}
 	
 	self:makePads()
-  
-  
+	
 
 	--needs a way to pass in midi file
 	gMidiReader = MidiReader:init("maps/drop_in_flip_out_map_tempo.mid")
