@@ -19,6 +19,9 @@ require "src/constants"
 -- Audio player
 require "src/AudioPlayer"
 
+-- MIDI Reader
+require "src/MidiReader"
+
 -- Menu State things
 require "src/Song"
 
@@ -42,5 +45,4 @@ require "src/Background"
 
 require "src/AudioPlayer"
 
--- MIDI Reader
-require "src/MidiReader"
+

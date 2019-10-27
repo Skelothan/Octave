@@ -33,14 +33,14 @@ function PlayState:newPad(pX, pY, pRadius, pNum)
 	table.insert(self.lanes, lane13)
 end
 --noteType: 1: bottom, 2: top, 3: both
-function PlayState:newNote(nRadius, rand, nSpeed, nNoteType)
-	local nLane = self.lanes[rand]
+function PlayState:newNote(nRadius, pad, lane, nSpeed, nNoteType)
+	local nLane = self.lanes[lane]
 	table.insert(self.notes, Note:init({
 			x = nLane.endpointX,
 			y = nLane.endpointY,
 			radius = nRadius,
-			pad = math.floor((rand-1)/3) + 1,
-			lane = rand,
+			pad = pad,
+			lane = lane,
 			speed = nSpeed,
 			noteType = nNoteType
 		})
@@ -94,7 +94,20 @@ function PlayState:init()
 	self:newPad(love.graphics.getWidth()/2 + centerRadius, 
 		love.graphics.getHeight()/2, pRadius, 7)
 	
-	
+	--needs a way to pass in midi file
+	gMidiReader = MidiReader:init("maps/drop_in_flip_out_map_tempo.mid")
+	gMapNotes = gMidiReader:get_notes()
+	self.delay_before_notes = 2.7
+	self.note_time_multiplier = 120/176
+
+	--DELAY BEFORE NOTES ENTER - make it longer to make them come sooner
+	self.timer = self.delay_before_notes
+	self.noteIndex = 1
+
+	gAudioPlayer:stopAudio()
+	gAudioPlayer = AudioPlayer:init(love.audio.newSource("sfx/Drop_In_Flip_Out.mp3", "stream"))
+	gAudioPlayer:setLooping(false)
+	gAudioPlayer:playAudio()
 	
 	return table.deepcopy(o)
 end
@@ -205,8 +218,23 @@ function PlayState:update(dt)
 	for k, pad in pairs(self.pads) do
 		pad:update(dt)
 	end
-	
+
+	self.timer = self.timer + dt
+	--print(self.timer)
+	if self.noteIndex <= #gMapNotes and self.timer >= gMapNotes[self.noteIndex].start_time * self.note_time_multiplier then
+		--print(gMapNotes[self.noteIndex].pad)
+		self:newNote(30, gMapNotes[self.noteIndex], gMapNotes[self.noteIndex].lane, 500, 1)
+		self.noteIndex = self.noteIndex + 1
+	end
+
+  --[[
+	if love.keyboard.wasInput("unbound") then
+		self:spawnNote()
+	end
+  ]]
+
 	self.healthBar:update(dt)
+
 end
 
 function PlayState:render() 

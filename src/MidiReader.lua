@@ -29,19 +29,21 @@ function MidiReader:init(filename)
       -- note structure: {'note', start_time, duration, channel, note, velocity}
       if self.midiData[i][j][1] == 'note' then
         -- assign start times
-        self.midiData[i][j].start_time = self.midiData[i][j][2]
+        --NUMBER AT THE END DECIDES HOW FAST NOTES COME
+        self.midiData[i][j].start_time = self.midiData[i][j][2]/1000
         -- assign durations
         self.midiData[i][j].duration = self.midiData[i][j][3]
         -- assign pitch strings
-        self.midiData[i][j].pitch = convertNote[self.midiData[i][j][5] + 1]
+        self.midiData[i][j].pitch = convertNote[self.midiData[i][j][5] - 11]
         -- assign lanes
-        for c=48, 25, -1 do
-          if self.midiData[i][j].pitch == convertNote[c] then
-            local absoluteLane =  49 - c
+        --for c=48, 25, -1 do
+          --if self.midiData[i][j].pitch == convertNote[c] then
+            local absoluteLane =  49 - (self.midiData[i][j][5] - 11)
             self.midiData[i][j].pad = math.ceil(absoluteLane / 3)
-            self.midiData[i][j].lane = (absoluteLane + 2) % 3 + 1
-          end
-        end
+            --FIX LANE ASSOC HERE
+            self.midiData[i][j].lane = (absoluteLane)
+          --end
+        --end
         -- assign type
         if self.midiData[i][j][6] <= 45 then
           self.midiData[i][j].type = "down"
@@ -53,7 +55,7 @@ function MidiReader:init(filename)
       end
     end
   end
-  return o
+  return table.deepcopy(o)
 end
 
 function MidiReader:get_notes()

@@ -11,7 +11,6 @@ function Note:init(params, playState)
 	
 	-- Corresponds to pad angle. Integer.
 	self.pad = params.pad or 1
-	--table.insert(self.pad.notes, self)
 
 	-- When drawn, centered on radius.
 	-- Exact size will be determined by screen size.
