@@ -10,6 +10,9 @@ require "src/collision"
 -- The MIDI library
 MIDI = require 'lib/MIDI'
 
+-- The JSON library
+json = require 'lib/json'
+
 -- Contains asset-loading functions used in love.load().
 require "src/loadassets"
 
@@ -21,6 +24,9 @@ require "src/AudioPlayer"
 
 -- MIDI Reader
 require "src/MidiReader"
+
+-- JSON Reader
+require "src/JSONReader"
 
 -- Menu State things
 require "src/Song"
