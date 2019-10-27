@@ -56,10 +56,7 @@ function MenuState:init()
 	return table.deepcopy(o)
 end
 
-function MenuState:enter(params)
-	gAudioPlayer = AudioPlayer:init(love.audio.newSource("sfx/menu.mp3", "stream"))
-	gAudioPlayer:setLooping(true)
-	gAudioPlayer:playAudio()
+function MenuState:enter()
 end 
 
 
@@ -82,6 +79,11 @@ function MenuState:update(dt)
 		gSounds["scroll"]:stop()
 		gSounds["select"]:play()
 		gStateMachine:change("play", {})
+	end
+	if love.keyboard.wasInput("topArrow") then
+		gSounds["scroll"]:stop()
+		--gSounds["back"]:play()
+		gStateMachine:change("title", {})
 	end
 end
 
