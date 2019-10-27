@@ -33,13 +33,14 @@ function PlayState:newPad(pX, pY, pRadius, pNum)
 	table.insert(self.lanes, lane13)
 end
 --noteType: 1: bottom, 2: top, 3: both
-function PlayState:newNote(nRadius, nPad, nLane, nSpeed, nNoteType)
+function PlayState:newNote(nRadius, pad, lane, nSpeed, nNoteType)
+	local nLane = self.lanes[lane]
 	table.insert(self.notes, Note:init({
 			x = nLane.endpointX,
 			y = nLane.endpointY,
 			radius = nRadius,
-			pad = nPad,
-			lane = nLane,
+			pad = pad,
+			lane = lane,
 			speed = nSpeed,
 			noteType = nNoteType
 		})
@@ -113,17 +114,16 @@ end
 
 function PlayState:spawnNote() --for testing, for now
 	local rand = math.random(24)
-	self:newNote(30, self.pads[math.floor((rand-1)/3) + 1], self.lanes[rand], 500, 1)
+	self:newNote(20, rand, 200, 1)
 end
 
 function PlayState:update(dt) 
 	for k, pad in pairs(self.pads) do
 		pad.selected = false
 	end
-
+	
 	--selecting with joystick
 	if love.keyboard.isHeld("down") and love.keyboard.isHeld("left") then 
-		
 		self.pads[3].selected = true
 	elseif love.keyboard.isHeld("up") and love.keyboard.isHeld("left") then 
 		self.pads[5].selected = true
@@ -140,32 +140,32 @@ function PlayState:update(dt)
 	elseif love.keyboard.isHeld("right") then
 		self.pads[8].selected = true
 	end
-
+	
 	--actually hitting buttons
 	if love.keyboard.wasInput("topArrow") and love.keyboard.wasInput("bottomArrow") then 
 		for k, pad in pairs(self.pads) do
-			if(pad.selected == true) then
+			if pad.selected then
 				pad:onPress("bothArrows")
 				break
 			end
 		end
 	elseif love.keyboard.wasInput("topArrow") then
 		for k, pad in pairs(self.pads) do
-			if(pad.selected == true) then
+			if pad.selected then
 				pad:onPress("topArrow")
 				break
 			end
 		end
 	elseif love.keyboard.wasInput("bottomArrow") then
 		for k, pad in pairs(self.pads) do
-			if(pad.selected == true) then
+			if pad.selected then
 				pad:onPress("bottomArrow")
 				break
 			end
 		end
 	end
 		
-	--collision
+	-- Pad/note collision
 	if love.keyboard.wasInput("topArrow") or love.keyboard.wasInput("bottomArrow") then
 		for k, pad in pairs(self.pads) do
 			if pad.active then
@@ -178,31 +178,62 @@ function PlayState:update(dt)
 			end
 		end
 	end
-
-
-
+	
+	-- Debug: spawning notes
+	if love.keyboard.wasInput("unbound") then
+		self:spawnNote()
+	end
+	
 	for k, note in pairs(self.notes) do
 		note:update(dt)
-		if(note.isDestroyed) then
+		-- Change directions of notes once they reach center of pad
+		if note.lane ~= 2 and not note.directionChanged then
+			local pad = note.pad
+			if (note.noteAngle == 4 or note.noteAngle == 8) then
+				-- Try changing based on x position, since the note travels horizontally
+				if note.dx > 0 and self.pads[pad].x <= note.x then
+					note:changeDirection()
+				elseif note.dx < 0 and self.pads[pad].x >= note.x then
+					note:changeDirection()
+				end
+			else 
+				-- Otherwise, try changing based on y position.
+				if note.dy > 0 and self.pads[pad].y <= note.y then
+					note:changeDirection()
+				elseif note.dy < 0 and self.pads[pad].y >= note.y then
+					note:changeDirection()
+				end
+			end
+		end
+		-- Health bar/note collision
+		if circleCollision(note.x, note.y, note.radius, self.healthBar.x, self.healthBar.y, self.healthBar.radius - 2.25 * note.radius) then
+			note.isDestroyed = true
+			self.healthBar:takeDamage(note.score)
+		end
+		if note.isDestroyed then
 			table.remove(self.notes, k)
 		end
 	end
+
 	for k, pad in pairs(self.pads) do
 		pad:update(dt)
 	end
-	
 
 	self.timer = self.timer + dt
 	--print(self.timer)
 	if self.noteIndex <= #gMapNotes and self.timer >= gMapNotes[self.noteIndex].start_time * self.note_time_multiplier then
 		--print(gMapNotes[self.noteIndex].pad)
-		self:newNote(30, self.pads[gMapNotes[self.noteIndex].pad], self.lanes[gMapNotes[self.noteIndex].lane], 500, 1)
+		self:newNote(30, gMapNotes[self.noteIndex], gMapNotes[self.noteIndex].lane, 500, 1)
 		self.noteIndex = self.noteIndex + 1
 	end
 
+  --[[
 	if love.keyboard.wasInput("unbound") then
 		self:spawnNote()
 	end
+  ]]
+
+	self.healthBar:update(dt)
 
 end
 
@@ -217,7 +248,4 @@ function PlayState:render()
 		note:render()
 	end
 	self.healthBar:render()
-	for k, note in pairs(self.notes) do
-		note:render()
-	end
 end

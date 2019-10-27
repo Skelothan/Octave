@@ -1,5 +1,3 @@
-local MIDI = require 'src/MIDI'
-
 MidiReader = {}
 MidiReader.__index = MidiReader
 
