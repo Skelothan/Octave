@@ -10,7 +10,7 @@ function Note:init(params)
 	self.isHit = false
 	
 	-- Corresponds to pad angle. 
-	self.pad = params.pad or 1
+	self.pad = params.pad
 	--table.insert(self.pad.notes, self)
 
 	-- When drawn, centered on radius.

@@ -94,10 +94,19 @@ function PlayState:init()
 		love.graphics.getHeight()/2, pRadius, 7)
 	
 	--needs a way to pass in midi file
-	gMidiReader = MidiReader:init("sfx/Test.mid")
+	gMidiReader = MidiReader:init("maps/drop_in_flip_out_map_tempo.mid")
 	gMapNotes = gMidiReader:get_notes()
-	self.timer = 0
+	self.delay_before_notes = 2.7
+	self.note_time_multiplier = 120/176
+
+	--DELAY BEFORE NOTES ENTER - make it longer to make them come sooner
+	self.timer = self.delay_before_notes
 	self.noteIndex = 1
+
+	gAudioPlayer:stopAudio()
+	gAudioPlayer = AudioPlayer:init(love.audio.newSource("sfx/Drop_In_Flip_Out.mp3", "stream"))
+	gAudioPlayer:setLooping(false)
+	gAudioPlayer:playAudio()
 	
 	return table.deepcopy(o)
 end
@@ -184,9 +193,10 @@ function PlayState:update(dt)
 	
 
 	self.timer = self.timer + dt
-	print(self.timer)
-	if self.noteIndex <= #gMapNotes and self.timer >= gMapNotes[self.noteIndex].start_time then
-		self:newNote(30, self.pads[1], self.lanes[2], 500, 1)
+	--print(self.timer)
+	if self.noteIndex <= #gMapNotes and self.timer >= gMapNotes[self.noteIndex].start_time * self.note_time_multiplier then
+		--print(gMapNotes[self.noteIndex].pad)
+		self:newNote(30, self.pads[gMapNotes[self.noteIndex].pad], self.lanes[gMapNotes[self.noteIndex].lane], 500, 1)
 		self.noteIndex = self.noteIndex + 1
 	end
 
