@@ -10,12 +10,14 @@ function TitleState:init()
 	return table.deepcopy(o)
 end
 
-function TitleState:enter()
+function TitleState:enter(params)
+	self.palette = params.palette
 end
 
 function TitleState:update(dt)
 	if love.keyboard.wasInput("topArrow") or 
 	love.keyboard.wasInput("bottomArrow") then
+		gSounds["start"]:play()
 		gStateMachine:change("menu", {})
 	end
 	if love.keyboard.wasInput("topArrow2") or
@@ -26,6 +28,8 @@ function TitleState:update(dt)
 end
 
 function TitleState:render() 
+	love.graphics.setColor(self.palette.menuText)
 	love.graphics.printf("Octave", gFonts["AvenirLight64"], 0, love.graphics.getHeight()*0.25, love.graphics.getWidth(), "center")
 	love.graphics.printf("Press [down triangle]", gFonts["AvenirLight32"], 0, love.graphics.getHeight()*0.75, love.graphics.getWidth(), "center")
+	love.graphics.resetColor()
 end

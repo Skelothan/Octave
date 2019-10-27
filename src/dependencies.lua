@@ -28,6 +28,9 @@ require "src/MidiReader"
 -- JSON Reader
 require "src/JSONReader"
 
+-- Palette
+require "src/palettedefs"
+
 -- Menu State things
 require "src/Song"
 
@@ -48,7 +51,3 @@ require "src/states/GameOverState"
 -- Backgrounds
 require "src/backgrounddefs"
 require "src/Background"
-
-require "src/AudioPlayer"
-
-
