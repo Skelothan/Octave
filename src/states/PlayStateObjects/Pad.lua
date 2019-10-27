@@ -24,8 +24,17 @@ function Pad:init(params)
 
 	self.activeColor = params.activeColor or {1, 1, 1, 1}
 	self.activeOpacity = 0;
+
+	self.particleSystem = nil;
 	
 	return table.deepcopy(o)
+end
+
+function Pad:setParticleSystem(pSystem)
+	self.particleSystem = pSystem
+	self.setPosition(self.x, self.y)
+	pSystem:setDirection(-(math.pi/4 + self.index * math.pi/4))
+	pSystem:setSpread(2)
 end
 
 function Pad:update(dt)
@@ -35,7 +44,7 @@ function Pad:update(dt)
 	if self.activeTimer == 0 then
 		self.active = false
 	end
-
+	self.particleSystem:update(dt)
 end
 
 function Pad:onPress(input)
@@ -43,6 +52,8 @@ function Pad:onPress(input)
 	self.activeOpacity = 1
 	-- Current window is two frames. Should playtest if this is too big/small.
 	self.activeTimer = 2/60
+
+	self:emitPerfect()
 end
 
 function Pad:render()
@@ -68,7 +79,17 @@ function Pad:render()
 	love.graphics.setColor(self.activeColor[1], self.activeColor[2], self.activeColor[3], self.activeOpacity)
 	love.graphics.circle("fill", self.x, self.y, self.radius, 40)
 
+	love.graphics.draw(self.particleSystem)
 	-- Reset draw color
 	love.graphics.resetColor()
 end
 
+function Pad:emitPerfect()
+	self.particleSystem:setParticleLifetime(gParticle["perfect"].lifeMin, gParticle["perfect"].lifeMax)
+	self.particleSystem:setSpeed(gParticle["perfect"].speed)
+	self.particleSystem:setRotation(gParticle["perfect"].rotateMin, gParticle["perfect"].rotateMax)
+	self.particleSystem:setSpin(gParticle["perfect"].spinMin, gParticle["perfect"].spinMax)
+	self.particleSystem:setEmissionRate(gParicle["perfect"].rate)
+	self.particleSystem:emit(50)
+	love.graphics.draw(self.particleSystem)
+end
