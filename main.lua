@@ -23,12 +23,15 @@ function love.load()
 		["play"] = function() return PlayState:init() end, 
 		["gameOver"] = function() return GameOverState:init() end
 	})
-
 	gStateMachine:change("title", {})
+
 	
 	-- initialize global assets
 	loadFonts()
-	gBackground = Background:init("oscCircle")
+	loadSounds()
+	gBackgroundImage = nil
+	gBackground = Background:init("spinTriangle", gPalette["standard"])
+	gCurrentPalette = gPalette["standard"]
 	
 	love.keyboard.keysPressed = {}
 	love.keyboard.inputs = {}
@@ -117,6 +120,10 @@ end
 --INPUT HANDLING END
 
 function love.draw()
+	if gBackgroundImage then
+		love.graphics.resetColor()
+		love.graphics.draw(gBackgroundImage,0,0,0,love.graphics.getWidth()/1920, love.graphics.getHeight()/1080)
+	end
 	gBackground:render()
 	
 	gStateMachine:render()

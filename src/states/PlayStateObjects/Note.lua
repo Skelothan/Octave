@@ -78,7 +78,6 @@ function Note:onHit()
 end
 
 function Note:changeDirection()
-	print("Changed note direction!")
 	self.laneAngle = 2
 	self:setSpeeds()
 	self.directionChanged = true
