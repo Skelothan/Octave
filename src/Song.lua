@@ -12,6 +12,8 @@ function Song:init(params)
 	self.difficulty = params.difficulty or 4
 	self.menuColor = gPalette[params.palette].menuColor or {0.9, 0.3, 0.6, 1}
 	self.textColor = gPalette[params.palette].textColor or {1, 1, 1, 1}
+	self.menuColor = params.palette.menuColor or {0.9, 0.3, 0.6, 1}
+	self.textColor = params.palette.menuText or {1, 1, 1, 1}
 	self.highScores = JSONReader:init(params.highScores).data["highScores"] or {}
 	
 	return table.deepcopy(o)

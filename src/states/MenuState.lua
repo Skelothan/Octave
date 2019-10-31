@@ -11,7 +11,6 @@ function MenuState:init()
 	self.songs = {}
 	self.currentSong = 1
 	self.numSongs = 0	
-	-- TODO: reading this data from JSON
 	local songFiles = JSONReader:init("maps/database.json").data["songs"]
 
 	for i, song in ipairs(songFiles) do
