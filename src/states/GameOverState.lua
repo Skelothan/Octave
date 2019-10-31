@@ -10,6 +10,7 @@ function GameOverState:init(params)
 end
 
 function GameOverState:enter(params)
+	gAudioPlayer:stopAudio()
 	self.score = params.score or 0;
 	self.backgroundColor = params.backgroundColor or {0, 0, 0, 1}
 	self.textColor = params.textColor or {1, 1, 1, 1}
@@ -17,7 +18,10 @@ function GameOverState:enter(params)
 end
 
 function GameOverState:update(dt)
-	if love.keyboard.wasInput("topArrow") then
+	if love.keyboard.wasInput("bottomArrow") then
+		gAudioPlayer:changeAudio(love.audio.newSource("sfx/Welcome_to_Octave.wav", "stream"))
+		gAudioPlayer:setLooping(true)
+		gAudioPlayer:playAudio()
 		gStateMachine:change("menu", {})
 	end
 end
