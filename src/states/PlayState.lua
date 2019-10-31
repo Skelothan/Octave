@@ -101,7 +101,7 @@ function PlayState:enter(params)
 	
 
 	--needs a way to pass in midi file
-	gMidiReader = MidiReader:init("maps/drop_in_flip_out_map_tempo.mid")
+	gMidiReader = MidiReader:init("maps/Test/drop_in_flip_out_map_tempo.mid")
 	gMapNotes = gMidiReader:get_notes()
 	self.delay_before_notes = 2.7
 	self.note_time_multiplier = 120/176
