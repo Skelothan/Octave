@@ -58,7 +58,7 @@ function PlayState:init()
 	self.healthBar = HealthBar:init({}) -- todo: add palettes to everything
 	self.notes = {}
 	
-	--local centerRadius = math.min(love.graphics.getHeight(), love.graphics.getWidth())/8
+	local centerRadius = math.min(love.graphics.getHeight(), love.graphics.getWidth())/8
 	local pRadius = 20
 	
 	--Add pads:
