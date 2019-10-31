@@ -30,7 +30,7 @@ function TitleState:update(dt)
 end
 
 function TitleState:render() 
-	--love.graphics.setColor(gCurrentPalette.menuText)
+	love.graphics.setColor(gCurrentPalette.menuText)
 	love.graphics.printf("Octave", gFonts["AvenirLight64"], 0, love.graphics.getHeight()*0.25, love.graphics.getWidth(), "center")
 	love.graphics.printf("Press [down triangle]", gFonts["AvenirLight32"], 0, love.graphics.getHeight()*0.75, love.graphics.getWidth(), "center")
 	love.graphics.resetColor()

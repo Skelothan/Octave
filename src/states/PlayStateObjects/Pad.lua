@@ -35,6 +35,7 @@ function Pad:setParticleSystem(pSystem)
 	pSystem:setDirection(-(math.pi/4 + self.index * math.pi/4))
 	pSystem:setSpread(2)
 	self.particleSystem = pSystem
+	self.particleSystem:start()
 end
 
 function Pad:update(dt)
@@ -52,8 +53,9 @@ function Pad:onPress(input)
 	self.activeOpacity = 1
 	-- Current window is two frames. Should playtest if this is too big/small.
 	self.activeTimer = 2/60
-
+	
 	self:emitPerfect()
+	self.particleSystem:start()
 end
 
 function Pad:render()
