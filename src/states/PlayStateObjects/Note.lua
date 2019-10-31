@@ -1,7 +1,7 @@
 Note = {}
 Note.__index = Note
 
-function Note:init(params, playState)
+function Note:init(params)
 	local o = o or {}
 	setmetatable(o, self)
 	self.__index = self
@@ -9,34 +9,30 @@ function Note:init(params, playState)
 	self.isDestroyed = false
 	self.isHit = false
 	
-	-- Corresponds to pad angle. Integer.
+	-- Corresponds to pad angle. 
 	self.pad = params.pad or 1
+	--table.insert(self.pad.notes, self)
 
 	-- When drawn, centered on radius.
 	-- Exact size will be determined by screen size.
 	self.x = params.x
 	self.y = params.y
 
-	self.radius = params.radius
+	self.radius = self.pad.radius
 	
-	self.directionChanged = false
 	
-	-- The lane the note travels on. Integer from 1-24.
+	
+	-- 1 = counterclockwise, 2 = normal, 3 = clockwise
 	self.lane = params.lane or 2
 	
-	-- The angle of the lane the note travels on relative to the pad.
-	-- Integer from 1-3.
-	-- 1 = counterclockwise, 2 = normal, 3 = clockwise
-	self.laneAngle = math.oimod(self.lane, 3)
+	local speed = params.speed
+	--local angle = (self.pad.index + (self.lane.angle - 2)) % 8
+	local angle = self.lane.angle
 	
-	--[[ 
-	self.noteAngle:
-	The absolute angle of the lane travels on. Integer from 1-8.
-	Set in setSpeeds().
-	]]
-		
-	self.speed = params.speed
-	self:setSpeeds()
+	local theta = math.pi / 4 * angle
+	
+	self.dx = -speed * math.cos(theta)
+	self.dy = -speed * math.sin(theta)
 	
 	-- 1: bottom, 2: top, 3: both
 	self.noteType = params.noteType or 1
@@ -49,38 +45,24 @@ function Note:init(params, playState)
 	return table.deepcopy(o)
 end
 
-function Note:setSpeeds()
-	self.noteAngle = math.oimod((self.pad + (self.laneAngle - 2)), 8)
-	local theta = math.pi / 4 * self.noteAngle
-	
-	self.dx = -self.speed * math.cos(theta)
-	self.dy = -self.speed * math.sin(theta)
-end
-
 function Note:update(dt)
-	if not self.isHit then
+	if(self.isHit == false) then
 		self.x = self.x + self.dx * dt
-		self.y = self.y + self.dy * dt
+		self.y = self.y + self.dy * dt	
 	else
 		self.destroyTimer = math.max(self.destroyTimer - dt, 0)
 		if self.destroyTimer == 0 then
 			self.isDestroyed = true
 		else
-			self.outlineColor[4] = self.outlineColor[4] - dt * 6
-			self.noteColor[4] = self.noteColor[4] - dt * 6
+			self.outlineColor = {self.outlineColor[1],self.outlineColor[2],self.outlineColor[3],self.outlineColor[4]-dt*6}
+			self.noteColor = {self.noteColor[1],self.noteColor[2],self.noteColor[3],self.noteColor[4]-dt*6}
 		end
 	end
 end
 
 function Note:onHit()
-	self.isHit = true -- triggers destroying animation, stops movement, will be destroyed when isDestroyed is true
+	self.isHit = true -- triggers destroying animation, will be destroyed when isDestroyed is true
 	self.destroyTimer = 10/60
-end
-
-function Note:changeDirection()
-	self.laneAngle = 2
-	self:setSpeeds()
-	self.directionChanged = true
 end
 
 function Note:render()

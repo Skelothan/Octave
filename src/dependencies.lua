@@ -7,12 +7,6 @@ require "src/collision"
 -- A class library. I don't think we'll use it, but it's here just in case.
 -- Class = require "lib/class"
 
--- The MIDI library
-MIDI = require 'lib/MIDI'
-
--- The JSON library
-json = require 'lib/json'
-
 -- Contains asset-loading functions used in love.load().
 require "src/loadassets"
 
@@ -22,16 +16,7 @@ require "src/constants"
 -- Audio player
 require "src/AudioPlayer"
 
--- MIDI Reader
-require "src/MidiReader"
-
--- JSON Reader
-require "src/JSONReader"
-
--- Palette
-require "src/palettedefs"
-
--- Menu State things
+-- Meny State things
 require "src/Song"
 
 -- Play State things
@@ -51,3 +36,8 @@ require "src/states/GameOverState"
 -- Backgrounds
 require "src/backgrounddefs"
 require "src/Background"
+
+-- Palette
+require "src/palettedefs"
+
+require "src/AudioPlayer"
