@@ -1,25 +1,13 @@
 {
   "difficulty" : 3,
   "background" : "spinTriangle",
-  "palette" : {
-    "background" : [0, 0.51, 0.98, 1.0],
-    "background2" : [0.0, 1.0, 1.0, 0.16],
-    "gradient" : [0.63, 0.0, 0.55, 1.0],
-    "bgObjects" : [1.0, 1.0, 1.0, 0.35],
-    "menuText" : [0.0, 0.0, 0.0, 1.0],	
-    "scoreText" : [1.0, 1.0, 1.0, 1.0],
-    "laneColor" : [0.27, 0.54, 1.0, 0.31],
-    "pad1" : [0, 0.5, 1, 1],
-    "pad2" : [0, 0.5, 1, 1],
-    "menuColor" : [0.9, 0.3, 0.6, 1],
-    "healthColor" : [0.0, 0.75, 0.0, 1.0],
-    "noteColor" : [0.98, 0.24, 0.55, 1.0]
-  },
+  "palette" : "standard",
   "title" : "Drop In, Flip Out",
   "artist" : "Skelothan",
   "album" : "Octave OST Vol. 1",
   "image" : "graphics/noteImage.png",
   "source" : "Flip Flop",
-  "year" : 2019
+  "year" : 2019,
+  "highScores" : "maps/Test/highScores.json"
 }
 
