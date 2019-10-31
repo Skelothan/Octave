@@ -114,6 +114,12 @@ function PlayState:enter(params)
 	gAudioPlayer:changeAudio(love.audio.newSource("sfx/Drop_In_Flip_Out.mp3", "stream"))
 	gAudioPlayer:setLooping(false)
 	gAudioPlayer:playAudio()
+
+	local image  = love.graphics.newImage(gParticle["perfect"].image)
+	for i, pad in ipairs(self.pads) do
+		local pSystem = love.graphics.newParticleSystem(image, gParticle["perfect"].buffer)
+		pad:setParticleSystem(pSystem)
+	end
 end
 
 function PlayState:init()

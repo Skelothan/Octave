@@ -51,3 +51,6 @@ require "src/states/GameOverState"
 -- Backgrounds
 require "src/backgrounddefs"
 require "src/Background"
+
+--Particles
+require "src/particles"

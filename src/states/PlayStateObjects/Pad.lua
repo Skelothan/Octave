@@ -31,10 +31,10 @@ function Pad:init(params)
 end
 
 function Pad:setParticleSystem(pSystem)
-	self.particleSystem = pSystem
-	self.setPosition(self.x, self.y)
+	pSystem:setPosition(self.x, self.y)
 	pSystem:setDirection(-(math.pi/4 + self.index * math.pi/4))
 	pSystem:setSpread(2)
+	self.particleSystem = pSystem
 end
 
 function Pad:update(dt)
@@ -89,7 +89,7 @@ function Pad:emitPerfect()
 	self.particleSystem:setSpeed(gParticle["perfect"].speed)
 	self.particleSystem:setRotation(gParticle["perfect"].rotateMin, gParticle["perfect"].rotateMax)
 	self.particleSystem:setSpin(gParticle["perfect"].spinMin, gParticle["perfect"].spinMax)
-	self.particleSystem:setEmissionRate(gParicle["perfect"].rate)
+	self.particleSystem:setEmissionRate(gParticle["perfect"].rate)
 	self.particleSystem:emit(50)
 	love.graphics.draw(self.particleSystem)
 end

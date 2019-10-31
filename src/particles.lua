@@ -13,13 +13,13 @@ gParticle = {
 	rate = 25,
 	startColor = {1,1,1,1},
 	endColor = {1,1,1,0}
-}
+},
 ["great"] = {
 
-}
+},
 ["good"] = {
 
-}
+},
 ["okay"] = {
 
 }
