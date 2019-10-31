@@ -43,12 +43,12 @@ end
 function PlayState:newNote(nRadius, pad, lane, nSpeed, nNoteType)
 	local nLane = self.lanes[lane]
 	table.insert(self.notes, Note:init({
-			x = noteSpawnCoords[pad][1],
-			y = noteSpawnCoords[pad][2],
+			x = noteSpawnCoords[lane][1],
+			y = noteSpawnCoords[lane][2],
 			radius = nRadius,
 			pad = pad,
 			lane = lane,
-			speed = nSpeed,
+			speed = nSpeed * math.max(love.graphics.getHeight(), love.graphics.getWidth()),
 			noteType = nNoteType
 		})
 	)
@@ -111,6 +111,7 @@ function PlayState:enter(params)
 	self.noteIndex = 1
 
 	gAudioPlayer:stopAudio()
+	-- Delay before audio syncs to MIDI: 85 milliseconds, more or less exactly
 	gAudioPlayer:changeAudio(love.audio.newSource("sfx/Drop_In_Flip_Out.mp3", "stream"))
 	gAudioPlayer:setLooping(false)
 	gAudioPlayer:playAudio()
