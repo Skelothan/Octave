@@ -12,7 +12,7 @@ function Song:init(params)
 	self.difficulty = params.difficulty or 4
 	self.menuColor = params.palette.menuColor or {0.9, 0.3, 0.6, 1}
 	self.textColor = params.palette.menuText or {1, 1, 1, 1}
-	self.highScores = params.leaderboard or {}
+	self.highScores = JSONReader:init(params.highScores).data["highScores"] or {}
 	
 	return table.deepcopy(o)
 end
@@ -56,7 +56,7 @@ function Song:renderSong(index, currentSong, opacity)
 	)
 	love.graphics.print(
 		self.artist,
-		gFonts["AvenirLight16"],
+		gFonts["AvenirLight24"],
 		songX + (songWidth/16),
 		songY + (songHeight/16) + 40
 	)
@@ -99,7 +99,7 @@ function Song:renderLeft(opacity)
 	)
 	love.graphics.print(
 		self.artist,
-		gFonts["AvenirLight16"],
+		gFonts["AvenirLight24"],
 		imageX - winWidth/64,
 		textY + 40
 	)
@@ -139,14 +139,14 @@ function Song:renderRight(opacity)
 	)
 	for i, score in ipairs(self.highScores) do
 		love.graphics.print(score.name,
-			gFonts["AvenirLight16"],
+			gFonts["AvenirLight24"],
 			rectX + winWidth/64*1.5,
-			rectY + winWidth/64*1.5 + 40 + (i-1)*20
+			rectY + winWidth/64*1.5 + 40 + (i-1)*30
 		)
 		love.graphics.printf(score.score,
-			gFonts["AvenirLight16"],
+			gFonts["AvenirLight24"],
 			rectX+winWidth/64*1.5,
-			rectY + winWidth/64*1.5 + 40 + (i-1)*20,
+			rectY + winWidth/64*1.5 + 40 + (i-1)*30,
 			rectWidth - winWidth/64*3,
 			"right",
 			0, 1, 1, 0, 0, 0, 0

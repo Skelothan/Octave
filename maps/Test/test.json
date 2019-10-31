@@ -20,6 +20,7 @@
   "album" : "Octave OST Vol. 1",
   "image" : "graphics/noteImage.png",
   "source" : "Flip Flop",
-  "year" : 2019
+  "year" : 2019,
+  "highScores" : "maps/Test/highScores.json"
 }
 
