@@ -9,11 +9,13 @@ end
 
 function loadSounds()
 	gSounds = {
+		["back"] = love.audio.newSource("sfx/back.mp3", "static"),
+		["noteHit"] = love.audio.newSource("sfx/note_hit.wav", "static"),
+		["noteMiss"] = love.audio.newSource("sfx/note_miss.wav", "static"),
 		["scroll"] =  love.audio.newSource("sfx/scroll.wav", "static"),
 		["select"]= love.audio.newSource("sfx/select.wav", "static"),
 		["start"] = love.audio.newSource("sfx/start.wav", "static"),
-		["startExt"] = love.audio.newSource("sfx/start_ext.mp3", "static"),
-		["back"] = love.audio.newSource("sfx/back.mp3", "static")
+		["startExt"] = love.audio.newSource("sfx/start_ext.mp3", "static")
 	}
 end 
 -- TODO: functions for images, frames, sfx, etc
