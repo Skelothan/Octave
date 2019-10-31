@@ -43,8 +43,8 @@ end
 function PlayState:newNote(nRadius, pad, lane, nSpeed, nNoteType)
 	local nLane = self.lanes[lane]
 	table.insert(self.notes, Note:init({
-			x = nLane.endpointX,
-			y = nLane.endpointY,
+			x = noteSpawnCoords[pad][1],
+			y = noteSpawnCoords[pad][2],
 			radius = nRadius,
 			pad = pad,
 			lane = lane,
@@ -55,7 +55,7 @@ function PlayState:newNote(nRadius, pad, lane, nSpeed, nNoteType)
 end
 
 function PlayState:makePads()
-	local centerRadius = math.min(love.graphics.getHeight(), love.graphics.getWidth())/8
+	--local centerRadius = math.min(love.graphics.getHeight(), love.graphics.getWidth())/8
 	local pRadius = 20
 	--Add pads:
 
