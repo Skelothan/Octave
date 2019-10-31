@@ -115,7 +115,7 @@ function PlayState:enter(params)
 	gAudioPlayer:setLooping(false)
 	gAudioPlayer:playAudio()
 
-	local image  = love.graphics.newImage(gParticle["perfect"].image)
+	local image = love.graphics.newImage(gParticle["perfect"].image)
 	for i, pad in ipairs(self.pads) do
 		local pSystem = love.graphics.newParticleSystem(image, gParticle["perfect"].buffer)
 		pad:setParticleSystem(pSystem)
@@ -227,7 +227,7 @@ function PlayState:update(dt)
 		-- Health bar/note collision
 		if circleCollision(note.x, note.y, note.radius, self.healthBar.x, self.healthBar.y, self.healthBar.radius - 2.25 * note.radius) then
 			note.isDestroyed = true
-			self.healthBar:takeDamage(note.score)
+			--self.healthBar:takeDamage(note.score)
 		end
 		if note.isDestroyed then
 			table.remove(self.notes, k)

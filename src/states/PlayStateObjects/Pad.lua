@@ -32,10 +32,9 @@ end
 
 function Pad:setParticleSystem(pSystem)
 	pSystem:setPosition(self.x, self.y)
-	pSystem:setDirection(-(math.pi/4 + self.index * math.pi/4))
+	pSystem:setDirection((math.pi/4 + self.index * math.pi/4))
 	pSystem:setSpread(2)
 	self.particleSystem = pSystem
-	self.particleSystem:start()
 end
 
 function Pad:update(dt)
@@ -55,7 +54,7 @@ function Pad:onPress(input)
 	self.activeTimer = 2/60
 	
 	self:emitPerfect()
-	self.particleSystem:start()
+	
 end
 
 function Pad:render()
@@ -87,11 +86,17 @@ function Pad:render()
 end
 
 function Pad:emitPerfect()
+	self.particleSystem:reset()
+	local image = love.graphics.newImage(gParticle["perfect"].image)
+	self.particleSystem:setTexture(image)
+	self.particleSystem:setSizes(0.6)
 	self.particleSystem:setParticleLifetime(gParticle["perfect"].lifeMin, gParticle["perfect"].lifeMax)
 	self.particleSystem:setSpeed(gParticle["perfect"].speed)
 	self.particleSystem:setRotation(gParticle["perfect"].rotateMin, gParticle["perfect"].rotateMax)
 	self.particleSystem:setSpin(gParticle["perfect"].spinMin, gParticle["perfect"].spinMax)
 	self.particleSystem:setEmissionRate(gParticle["perfect"].rate)
+	self.particleSystem:setColors(gParticle["perfect"].startColor, gParticle["perfect"].endColor)
+	self.particleSystem:setLinearAcceleration(6, 15, 6, 15)
 	self.particleSystem:emit(50)
 	love.graphics.draw(self.particleSystem)
 end

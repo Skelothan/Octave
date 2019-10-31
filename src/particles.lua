@@ -1,18 +1,18 @@
 gParticle = {
 	
 ["perfect"] = {
-	image = "graphics/square.png",
+	image = "graphics/triangle.png",
 	buffer = 50,
-	lifeMin = 1,
-	lifeMax = 1.5,
-	speed = 60,
+	lifeMin = 1.25,
+	lifeMax = 1.75,
+	speed = 100,
 	rotateMin = 0.75,
 	rotateMax = 1.5,
-	spinMin = 1,
-	spinMax = 2.5,
+	spinMin = 2.5,
+	spinMax = 5,
 	rate = 25,
 	startColor = {1,1,1,1},
-	endColor = {1,1,1,0}
+	endColor = {1,1,1,1}
 },
 ["great"] = {
 
