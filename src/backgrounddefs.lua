@@ -74,9 +74,8 @@ gBackgroundDefs = {
 			render = function(self)
 						love.graphics.setLineWidth(10)
 						love.graphics.setBackgroundColor(currentPalette.background)
-						love.graphics.setColor(currentPalette.gradient)
-						--love.graphics.draw(gBackgroundImage,0,0,0,self.x*2/1920, self.y*2/1080)
 						love.graphics.resetColor()
+						love.graphics.setColor(currentPalette.bgObjects)
 						centeredTriangles = center_points(self.x, self.y, self.triangles)
 						love.graphics.setColor(currentPalette.bgObjects)
 						for i, v in ipairs(centeredTriangles) do
@@ -112,7 +111,9 @@ gBackgroundDefs = {
 						allpoints = {}
 						love.graphics.setLineWidth(10)
 						centeredSquares = center_points(self.x, self.y, self.squares)
-
+						love.graphics.setColor(currentPalette.gradient)
+						love.graphics.draw(gBackgroundImage,0,0,0,self.x*2/1920, self.y*2/1080)
+						love.graphics.resetColor()
 						love.graphics.setColor(currentPalette.bgObjects)
 						for i, v in ipairs(centeredSquares) do
 							love.graphics.polygon("line", v)
