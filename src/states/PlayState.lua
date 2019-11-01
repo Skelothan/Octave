@@ -123,7 +123,7 @@ function PlayState:enter(params)
 	
 	--print("Delay before notes: " .. self.delay_before_notes)
 	
-	self.note_travel_time = (gSpawnDistance / self.noteSpeed)
+	self.note_travel_time = ((gSpawnDistance - centerRadius) / self.noteSpeed)
 	
 	--print("Note travel time: " .. (gSpawnDistance / self.noteSpeed))
 
@@ -133,8 +133,8 @@ function PlayState:enter(params)
 	
 	self.audioStarted = false
 	gAudioPlayer:stopAudio()
-	-- Delay before audio syncs to MIDI: 85 milliseconds, more or less exactly
-	self.audioDelay = 0.085 + (gSpawnDistance / self.noteSpeed) + self.delay_before_notes -- TODO: read from JSON
+	-- Delay before audio syncs to MIDI for Drop In, Flip Out: 85 milliseconds, more or less exactly
+	self.audioDelay = 2 * 0.085 + self.note_travel_time + self.delay_before_notes -- TODO: read from JSON
 	gAudioPlayer:changeAudio(love.audio.newSource("sfx/Drop_In_Flip_Out.mp3", "stream"))
 	gAudioPlayer:setLooping(false)
 end
@@ -158,6 +158,7 @@ function PlayState:update(dt)
 	self.audioDelay = math.max(self.audioDelay-dt, 0)
 	if self.audioDelay == 0 and not self.audioStarted then
 		gAudioPlayer:playAudio()
+		self.audioStarted = true
 	end
 	
 	for k, pad in pairs(self.pads) do
@@ -229,8 +230,7 @@ function PlayState:update(dt)
 	for k, note in pairs(self.notes) do
 		note:update(dt)
 		-- Change directions of notes once they reach center of pad
-		--if note.lane ~= 2 and not note.directionChanged then
-		if not note.directionChanged then
+		if note.lane ~= 2 and not note.directionChanged then
 			local pad = note.pad
 			if (note.noteAngle == 4 or note.noteAngle == 8) then
 				-- Try changing based on x position, since the note travels horizontally
@@ -262,9 +262,8 @@ function PlayState:update(dt)
 		pad:update(dt)
 	end
 
-	self.timer = self.timer + dt
-	
 	-- Note Spawning
+	self.timer = self.timer + dt
 	if self.noteIndex <= #gMapNotes and self.timer >= gMapNotes[self.noteIndex].start_time * self.note_time_multiplier then
 		--print(gMapNotes[self.noteIndex].pad)
 		self:newNote(20, gMapNotes[self.noteIndex].pad, gMapNotes[self.noteIndex].lane, 1)
