@@ -37,7 +37,7 @@ function love.load()
 	love.keyboard.inputs = {}
 	love.keyboard.keysDown = {}
 
-	gAudioPlayer = AudioPlayer:init(love.audio.newSource("sfx/Welcome_to_Octave.wav", "stream"))
+	gAudioPlayer = AudioPlayer:init(love.audio.newSource("sfx/menu.mp3", "stream"))
 	gAudioPlayer:setLooping(true)
 	gAudioPlayer:playAudio()
 end
@@ -45,18 +45,19 @@ end
 
 function love.update(dt)
 	gBackground:update(dt)
-	gAudioPlayer:update(dt)
 	
 	gStateMachine:update(dt)
 	
 	love.keyboard.keysPressed = {}
 	--stores the actual inputs
-	love.keyboard.inputs = {}	
+	love.keyboard.inputs = {}
+
+	winWidth = love.graphics.getWidth()
+	winHeight = love.graphics.getHeight()
 end
 
 function love.resize(x, y)
-	winWidth = love.graphics.getWidth()
-	winHeight = love.graphics.getHeight()
+	
 end
 
 --INPUT HANDLING BEGIN
