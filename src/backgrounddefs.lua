@@ -196,7 +196,7 @@ gBackgroundDefs = {
 						gBackgroundImage = nil
 						self.timer1 = 0
 						self.timer2 = math.pi/2
-						love.graphics.setBackgroundColor(gPalette[currentPalette].background)
+						love.graphics.setBackgroundColor(currentPalette.background)
 						self.bounds = math.max(love.graphics.getHeight(), love.graphics.getWidth())
 					end,
 			update = function(self, dt)
@@ -208,7 +208,7 @@ gBackgroundDefs = {
 						local margin = self.bounds * 1/4 * 1/8
 						local size = self.bounds*1/4*3/4
 						love.graphics.push()
-						love.graphics.setColor(gPalette[currentPalette].bgObjects)
+						love.graphics.setColor(currentPalette.bgObjects)
 						love.graphics.translate(margin,love.graphics.getHeight()/2 + margin)
 						love.graphics.shear(math.tan(self.timer1), 0)
 						for i=1,4 do
@@ -218,7 +218,7 @@ gBackgroundDefs = {
 						end
 						love.graphics.pop()
 						love.graphics.push()
-						love.graphics.setColor(gPalette[currentPalette].background2)
+						love.graphics.setColor(currentPalette.background2)
 						love.graphics.translate(margin,love.graphics.getHeight()/2 + margin)
 						love.graphics.shear(-math.tan(self.timer2), 0)
 						for i=1,4 do
