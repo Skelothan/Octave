@@ -74,8 +74,9 @@ gBackgroundDefs = {
 			render = function(self)
 						love.graphics.setLineWidth(10)
 						love.graphics.setBackgroundColor(currentPalette.background)
+						love.graphics.setColor(currentPalette.gradient)
+						--love.graphics.draw(gBackgroundImage,0,0,0,self.x*2/1920, self.y*2/1080)
 						love.graphics.resetColor()
-						love.graphics.setColor(currentPalette.bgObjects)
 						centeredTriangles = center_points(self.x, self.y, self.triangles)
 						love.graphics.setColor(currentPalette.bgObjects)
 						for i, v in ipairs(centeredTriangles) do
@@ -93,7 +94,7 @@ gBackgroundDefs = {
 						self.squares = {{-self.y/4,-self.y/4, self.y/4,-self.y/4, self.y/4,self.y/4,-self.y/4,self.y/4},
 										rotate_object({-self.y/4,-self.y/4, self.y/4,-self.y/4, self.y/4,self.y/4,-self.y/4,self.y/4}, math.pi/4),
 										{-self.y/2,-self.y/2, self.y/2,-self.y/2, self.y/2,self.y/2,-self.y/2,self.y/2},
-											rotate_object({-self.y/2,-self.y/2, self.y/2,-self.y/2, self.y/2,self.y/2,-self.y/2,self.y/2}, math.pi/4)}
+										rotate_object({-self.y/2,-self.y/2, self.y/2,-self.y/2, self.y/2,self.y/2,-self.y/2,self.y/2}, math.pi/4)}
 						self.circleRad = self.y/16
 						self.angle = math.pi/2048
 						love.graphics.resetColor()
@@ -111,9 +112,7 @@ gBackgroundDefs = {
 						allpoints = {}
 						love.graphics.setLineWidth(10)
 						centeredSquares = center_points(self.x, self.y, self.squares)
-						love.graphics.setColor(currentPalette.gradient)
-						love.graphics.draw(gBackgroundImage,0,0,0,self.x*2/1920, self.y*2/1080)
-						love.graphics.resetColor()
+
 						love.graphics.setColor(currentPalette.bgObjects)
 						for i, v in ipairs(centeredSquares) do
 							love.graphics.polygon("line", v)
@@ -174,9 +173,6 @@ gBackgroundDefs = {
 						love.graphics.setLineWidth(10)
 						centeredCircles = center_points(self.x, self.y, self.circles)
 						centeredTriangles = center_points(self.x, self.y, self.triangles)
-						love.graphics.setColor(currentPalette.gradient)
-						love.graphics.draw(gBackgroundImage,0,0,0,self.x*2/1920, self.y*2/1080)
-						love.graphics.resetColor()
 						love.graphics.setColor(currentPalette.bgObjects)
 						for i, v in ipairs(centeredCircles) do
 							for k, w in ipairs(v) do
@@ -188,45 +184,6 @@ gBackgroundDefs = {
 						for i,v in ipairs(centeredTriangles) do
 							love.graphics.polygon("line", v)
 						end 
-						love.graphics.resetColor()
-					end
-	},
-	["shearSquares"] = {
-			init2 = function(self)
-						gBackgroundImage = nil
-						self.timer1 = 0
-						self.timer2 = math.pi/2
-						love.graphics.setBackgroundColor(currentPalette.background)
-						self.bounds = math.max(love.graphics.getHeight(), love.graphics.getWidth())
-					end,
-			update = function(self, dt)
-						self.timer1 = (self.timer1 + dt * 3/4) % (2 * math.pi)
-						self.timer2 = (self.timer2 + dt * 3/4) % (2 * math.pi)
-						
-					end,
-			render = function(self)
-						local margin = self.bounds * 1/4 * 1/8
-						local size = self.bounds*1/4*3/4
-						love.graphics.push()
-						love.graphics.setColor(currentPalette.bgObjects)
-						love.graphics.translate(margin,love.graphics.getHeight()/2 + margin)
-						love.graphics.shear(math.tan(self.timer1), 0)
-						for i=1,4 do
-							for j=1,4 do
-								love.graphics.rectangle("fill", self.bounds*((i-1)/4)+1/8, self.bounds*((j-3)/4)+1/8, size, size)
-							end
-						end
-						love.graphics.pop()
-						love.graphics.push()
-						love.graphics.setColor(currentPalette.background2)
-						love.graphics.translate(margin,love.graphics.getHeight()/2 + margin)
-						love.graphics.shear(-math.tan(self.timer2), 0)
-						for i=1,4 do
-							for j=1,4 do
-								love.graphics.rectangle("fill", self.bounds*((i-1)/4)+5/8, self.bounds*((j-3)/4)+5/8, size, size)
-							end
-						end
-						love.graphics.pop()
 						love.graphics.resetColor()
 					end
 	}
