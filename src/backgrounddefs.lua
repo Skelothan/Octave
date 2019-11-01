@@ -88,7 +88,7 @@ gBackgroundDefs = {
 			init2 = function(self) 
 						self.x = love.graphics.getWidth()/2
 						self.y = love.graphics.getHeight()/2
-						gBackgroundImage = love.graphics.newImage("graphics/menubackground2.png")
+						gBackgroundImage = love.graphics.newImage("graphics/radialGradient.png")
 						love.graphics.setBackgroundColor(currentPalette.background)
 						self.squares = {{-self.y/4,-self.y/4, self.y/4,-self.y/4, self.y/4,self.y/4,-self.y/4,self.y/4},
 										rotate_object({-self.y/4,-self.y/4, self.y/4,-self.y/4, self.y/4,self.y/4,-self.y/4,self.y/4}, math.pi/4),
@@ -130,7 +130,7 @@ gBackgroundDefs = {
 		init2 = function(self) 
 						self.x = love.graphics.getWidth()/2
 						self.y = love.graphics.getHeight()/2
-						gBackgroundImage = love.graphics.newImage("graphics/menubackground2.png")
+						gBackgroundImage = love.graphics.newImage("graphics/radialGradient.png")
 						love.graphics.setBackgroundColor(currentPalette.background)
 						self.circles = {{-self.y/4,-self.y/4, self.y/4,-self.y/4, self.y/4,self.y/4,-self.y/4,self.y/4},
 										rotate_object({-self.y/4,-self.y/4, self.y/4,-self.y/4, self.y/4,self.y/4,-self.y/4,self.y/4}, math.pi/4),
