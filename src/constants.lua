@@ -113,3 +113,11 @@ noteSpawnCoords = {
 		love.graphics.getHeight()/2 + gSpawnDistance/rootTwo
 	},
 }
+
+
+
+
+
+
+
+
