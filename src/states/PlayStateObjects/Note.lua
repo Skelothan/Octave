@@ -46,9 +46,6 @@ function Note:init(params, playState)
 	
 	self.score = params.score or 2000
 	
-	gSounds["back"]:stop()
-	gSounds["back"]:play()
-	
 	return table.deepcopy(o)
 end
 
@@ -84,8 +81,6 @@ function Note:changeDirection()
 	self.laneAngle = 2
 	self:setSpeeds()
 	self.directionChanged = true
-	gSounds["scroll"]:stop()
-	gSounds["scroll"]:play()
 end
 
 function Note:render()

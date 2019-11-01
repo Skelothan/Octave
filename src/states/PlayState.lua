@@ -106,27 +106,32 @@ function PlayState:enter(params)
 	--needs a way to pass in midi file
 	gMidiReader = MidiReader:init("maps/drop_in_flip_out_map_tempo_noleadin.mid")
 	gMapNotes = gMidiReader:get_notes()
+	--[[
 	for k, note in pairs(gMapNotes) do
 		print(note.start_time)
 	end
-	--self.delay_before_notes = (gSpawnDistance / self.noteSpeed)
-	--self.delay_before_notes = 2.7
-	--self.delay_before_notes = (gSpawnDistance / self.noteSpeed)
+	]]
+
+	-- Was originally necessary because there was lead-in time in the MIDI. We no longer use lead-in time.
 	self.delay_before_notes = 0
 	--self.note_time_multiplier = 100/176
 	--self.note_time_multiplier = 120/176
-	self.note_time_multiplier = 0.7102 --derived with excel, logic pro, and pain
 	
-	print("Delay before notes: " .. self.delay_before_notes)
+	-- This coefficient converts the time units in the score to seconds. Luckily, it seems to be constant per file.
+	self.note_time_multiplier = 0.7102 --derived with excel, logic pro, and pain. Works for Drop In, Flip Out at least...
+	-- For this track, seems to be equal to 125 / BPM
+	
+	--print("Delay before notes: " .. self.delay_before_notes)
 	
 	self.note_travel_time = (gSpawnDistance / self.noteSpeed)
 	
-	print("Note travel time: " .. (gSpawnDistance / self.noteSpeed))
+	--print("Note travel time: " .. (gSpawnDistance / self.noteSpeed))
 
 	--DELAY BEFORE NOTES ENTER - make it longer to make them come sooner
 	self.timer = self.delay_before_notes
 	self.noteIndex = 1
-
+	
+	self.audioStarted = false
 	gAudioPlayer:stopAudio()
 	-- Delay before audio syncs to MIDI: 85 milliseconds, more or less exactly
 	self.audioDelay = 0.085 + (gSpawnDistance / self.noteSpeed) + self.delay_before_notes -- TODO: read from JSON
@@ -151,7 +156,7 @@ end
 function PlayState:update(dt)
 	
 	self.audioDelay = math.max(self.audioDelay-dt, 0)
-	if self.audioDelay == 0 and not gAudioPlayer:isPlaying() then
+	if self.audioDelay == 0 and not self.audioStarted then
 		gAudioPlayer:playAudio()
 	end
 	
@@ -264,7 +269,7 @@ function PlayState:update(dt)
 		--print(gMapNotes[self.noteIndex].pad)
 		self:newNote(20, gMapNotes[self.noteIndex].pad, gMapNotes[self.noteIndex].lane, 1)
 		self.noteIndex = self.noteIndex + 1
-		print("Spawned a note! Time is " .. self.timer)
+		--print("Spawned a note! Time is " .. self.timer)
 	end
 
   --[[
@@ -288,6 +293,4 @@ function PlayState:render()
 		note:render()
 	end
 	self.healthBar:render()
-	love.graphics.printf(self.timer, 0, 0, winWidth, "left")
-	love.graphics.printf(gMapNotes[self.noteIndex].start_time, 0, 28, winWidth, "left")
 end
