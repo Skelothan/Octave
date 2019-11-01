@@ -169,7 +169,7 @@ function PlayState:update(dt)
 			self.audioDoneTimer = self.audioDoneTimer - dt
 		else
 			gStateMachine:change("gameOver", {
-			score = self.healthbar.score, 
+			score = self.healthBar.score, 
 			isWon = true,
 		})
 		end
