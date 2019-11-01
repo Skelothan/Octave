@@ -27,10 +27,8 @@ end
 function HealthBar:update(dt)
 	if self.health <= 0 then 
 		gStateMachine:change("gameOver", {
-			score = dScore, 
+			score = self.score, 
 			isWon = false,
-			backgroundColor = self.outlineColor,
-			textColor = self.textColor
 		})
 	end
 end
@@ -47,7 +45,7 @@ function HealthBar:restoreHealth()
 end
 
 function HealthBar:incrementScore(dScore)
-	self.score = math.max(self.score + dScore, 0)
+	self.score = math.max(math.floor(self.score + dScore), 0)
 end
 
 function HealthBar:render()
