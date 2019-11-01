@@ -31,6 +31,7 @@ function love.load()
 	loadSounds()
 	gBackgroundImage = nil
 	gBackground = Background:init("spinTriangle", gPalette["standard"])
+
 	gCurrentPalette = gPalette["standard"]
 	
 	love.keyboard.keysPressed = {}
