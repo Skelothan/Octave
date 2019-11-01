@@ -2,6 +2,6 @@ name = "Song Name"
 artist = "Artist Name"
 difficulty = 4
 highScores = {
-"name", 420
-"John", 69
+"name", score
+"John", 420
 }

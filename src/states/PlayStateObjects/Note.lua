@@ -7,26 +7,32 @@ function Note:init(params)
 	self.__index = self
 	
 	self.isDestroyed = false
+	self.isHit = false
 	
+	-- Corresponds to pad angle. 
+	self.pad = params.pad or 1
+	--table.insert(self.pad.notes, self)
+
 	-- When drawn, centered on radius.
 	-- Exact size will be determined by screen size.
 	self.x = params.x
 	self.y = params.y
-	self.radius = params.radius
+
+	self.radius = self.pad.radius
 	
-	-- Corresponds to pad angle. 
-	self.pad = params.pad or 1
+	
 	
 	-- 1 = counterclockwise, 2 = normal, 3 = clockwise
 	self.lane = params.lane or 2
 	
 	local speed = params.speed
-	local angle = (self.pad + (self.lane - 2)) % 8
+	--local angle = (self.pad.index + (self.lane.angle - 2)) % 8
+	local angle = self.lane.angle
 	
 	local theta = math.pi / 4 * angle
 	
-	self.dx = speed * math.cos(theta)
-	self.dy = speed * math.sin(theta)
+	self.dx = -speed * math.cos(theta)
+	self.dy = -speed * math.sin(theta)
 	
 	-- 1: bottom, 2: top, 3: both
 	self.noteType = params.noteType or 1
@@ -40,13 +46,23 @@ function Note:init(params)
 end
 
 function Note:update(dt)
-	self.x = self.x + self.dx * dt
-	self.y = self.y + self.dy * dt	
+	if(self.isHit == false) then
+		self.x = self.x + self.dx * dt
+		self.y = self.y + self.dy * dt	
+	else
+		self.destroyTimer = math.max(self.destroyTimer - dt, 0)
+		if self.destroyTimer == 0 then
+			self.isDestroyed = true
+		else
+			self.outlineColor = {self.outlineColor[1],self.outlineColor[2],self.outlineColor[3],self.outlineColor[4]-dt*6}
+			self.noteColor = {self.noteColor[1],self.noteColor[2],self.noteColor[3],self.noteColor[4]-dt*6}
+		end
+	end
 end
 
 function Note:onHit()
-	self.isDestroyed = true
-	
+	self.isHit = true -- triggers destroying animation, will be destroyed when isDestroyed is true
+	self.destroyTimer = 10/60
 end
 
 function Note:render()

@@ -11,21 +11,20 @@ function TitleState:init()
 end
 
 function TitleState:enter(params)
-	createAudioPlayer = AudioPlayer:init(love.audio.newSource("sfx/Drop_In_Flip_Out.mp3", "stream"))
-	createAudioPlayer:playAudio()
 	self.palette = params.palette
 end
 
 function TitleState:update(dt)
 	if love.keyboard.wasInput("topArrow") or 
 	love.keyboard.wasInput("bottomArrow") then
+		gSounds["start"]:play()
 		gStateMachine:change("menu", {})
 	end
 	if love.keyboard.wasInput("topArrow2") or
 	love.keyboard.wasInput("bottomArrow2") then
-		createAudioPlayer:takeDamage()
+		gAudioPlayer:takeDamage()
 	end
-	createAudioPlayer:update(dt)
+	gAudioPlayer:update(dt)
 end
 
 function TitleState:render() 
