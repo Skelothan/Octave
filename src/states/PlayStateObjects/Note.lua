@@ -44,7 +44,7 @@ function Note:init(params, playState)
 	self.outlineColor = params.outlineColor or {0, 0, 0, 1}
 	self.noteColor = params.noteColor or {0, 127/255, 1, 1}
 	
-	self.score = params.score or 2000
+	self.score = params.score or 10000
 	
 	return table.deepcopy(o)
 end

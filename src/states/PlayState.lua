@@ -49,7 +49,8 @@ function PlayState:newNote(nRadius, pad, lane, nNoteType)
 			pad = pad,
 			lane = lane,
 			speed = self.noteSpeed,
-			noteType = nNoteType
+			noteType = nNoteType,
+			score = 10000
 		})
 	)
 end
@@ -137,6 +138,8 @@ function PlayState:enter(params)
 	self.audioDelay = 2 * 0.085 + self.note_travel_time + self.delay_before_notes -- TODO: read from JSON
 	gAudioPlayer:changeAudio(love.audio.newSource("sfx/Drop_In_Flip_Out.mp3", "stream"))
 	gAudioPlayer:setLooping(false)
+	self.audioDoneTimer = 3
+	
 end
 
 function PlayState:init()
@@ -159,6 +162,17 @@ function PlayState:update(dt)
 	if self.audioDelay == 0 and not self.audioStarted then
 		gAudioPlayer:playAudio()
 		self.audioStarted = true
+	end
+	
+	if not gAudioPlayer:isPlaying() and self.audioStarted then
+		if self.audioDoneTimer > 0 then
+			self.audioDoneTimer = self.audioDoneTimer - dt
+		else
+			gStateMachine:change("gameOver", {
+			score = self.healthbar.score, 
+			isWon = true,
+		})
+		end
 	end
 	
 	for k, pad in pairs(self.pads) do
@@ -215,7 +229,23 @@ function PlayState:update(dt)
 				for k, note in pairs(self.notes) do --notes is populated from within note.lua when spawned
 					coll_collides, coll_dist = noteCollision(pad, note)
 					if coll_collides == true and note.isHit == false then
-						note:onHit()
+						note:onHit() --TODO: onHit takes in an accuracy parameter, which causes different sounds to be played
+						pad.active = false
+						--print(coll_dist)
+						if coll_dist < 0.1 then -- Perfect
+							self.healthBar:incrementScore(note.score)
+							self.healthBar:restoreHealth()
+						elseif coll_dist < 0.3 then -- Great
+							self.healthBar:incrementScore(note.score * 0.9)
+							self.healthBar:restoreHealth()
+						elseif coll_dist < 0.5 then -- Good
+							self.healthBar:incrementScore(note.score * 0.75)
+						elseif coll_dist < 1 then -- OK
+							self.healthBar:incrementScore(note.score * 0.50)
+						else -- Miss
+							--TODO: play note miss sfx instead of hit
+						end
+						
 					end
 				end
 			end
@@ -251,7 +281,7 @@ function PlayState:update(dt)
 		-- Health bar/note collision
 		if circleCollision(note.x, note.y, note.radius, self.healthBar.x, self.healthBar.y, self.healthBar.radius - 2.5 * note.radius) then
 			note.isDestroyed = true
-			--self.healthBar:takeDamage(note.score)
+			self.healthBar:takeDamage(note.score)
 		end
 		if note.isDestroyed then
 			table.remove(self.notes, k)
