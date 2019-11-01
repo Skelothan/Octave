@@ -44,7 +44,7 @@ function Note:init(params, playState)
 	self.outlineColor = params.outlineColor or {0, 0, 0, 1}
 	self.noteColor = params.noteColor or {0, 127/255, 1, 1}
 	
-	self.score = params.score or 2000
+	self.score = params.score or 10000
 	
 	return table.deepcopy(o)
 end
@@ -74,7 +74,9 @@ end
 
 function Note:onHit()
 	self.isHit = true -- triggers destroying animation, stops movement, will be destroyed when isDestroyed is true
-	self.destroyTimer = 10/60
+	gSounds["noteHit"]:stop()
+	gSounds["noteHit"]:play()
+	self.destroyTimer = 3/60
 end
 
 function Note:changeDirection()

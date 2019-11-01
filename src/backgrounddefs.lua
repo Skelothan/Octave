@@ -93,7 +93,7 @@ gBackgroundDefs = {
 						self.squares = {{-self.y/4,-self.y/4, self.y/4,-self.y/4, self.y/4,self.y/4,-self.y/4,self.y/4},
 										rotate_object({-self.y/4,-self.y/4, self.y/4,-self.y/4, self.y/4,self.y/4,-self.y/4,self.y/4}, math.pi/4),
 										{-self.y/2,-self.y/2, self.y/2,-self.y/2, self.y/2,self.y/2,-self.y/2,self.y/2},
-											rotate_object({-self.y/2,-self.y/2, self.y/2,-self.y/2, self.y/2,self.y/2,-self.y/2,self.y/2}, math.pi/4)}
+										rotate_object({-self.y/2,-self.y/2, self.y/2,-self.y/2, self.y/2,self.y/2,-self.y/2,self.y/2}, math.pi/4)}
 						self.circleRad = self.y/16
 						self.angle = math.pi/2048
 						love.graphics.resetColor()
@@ -174,9 +174,6 @@ gBackgroundDefs = {
 						love.graphics.setLineWidth(10)
 						centeredCircles = center_points(self.x, self.y, self.circles)
 						centeredTriangles = center_points(self.x, self.y, self.triangles)
-						love.graphics.setColor(currentPalette.gradient)
-						love.graphics.draw(gBackgroundImage,0,0,0,self.x*2/1920, self.y*2/1080)
-						love.graphics.resetColor()
 						love.graphics.setColor(currentPalette.bgObjects)
 						for i, v in ipairs(centeredCircles) do
 							for k, w in ipairs(v) do

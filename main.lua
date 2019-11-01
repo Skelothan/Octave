@@ -7,6 +7,9 @@ function love.load()
 	-- Fullscreen, retina display
 	love.window.setMode(0, 0, {fullscreen = true, highdpi = true, msaa = 2})
 	
+	-- Contains constants
+	require "src/constants"
+
 	-- Seed RNG, just in case we use it
 	math.randomseed(os.time())
 	
@@ -20,7 +23,7 @@ function love.load()
 		["play"] = function() return PlayState:init() end, 
 		["gameOver"] = function() return GameOverState:init() end
 	})
-	gStateMachine:change("title", {palette = gPalette["standard"]})
+	gStateMachine:change("title", {})
 
 	
 	-- initialize global assets
@@ -28,6 +31,8 @@ function love.load()
 	loadSounds()
 	gBackgroundImage = nil
 	gBackground = Background:init("spinTriangle", gPalette["standard"])
+
+	gCurrentPalette = gPalette["standard"]
 	
 	love.keyboard.keysPressed = {}
 	love.keyboard.inputs = {}
