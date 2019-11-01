@@ -148,12 +148,16 @@ function PlayState:init()
 	self.__index = self
 	setmetatable(PlayState, BaseState) -- inheritance: arg a inherits arg b
 	
+	self.pads = {}
+	self.lanes = {}
+	self.healthBar = {}
+	self.notes = {}
 	return table.deepcopy(o)
 end
 
 function PlayState:spawnNote() --for testing, for now
 	local rand = math.random(24)
-	self:newNote(20, rand, 200, 1)
+	self:newNote(30, self.pads[math.floor((rand-1)/3) + 1], self.lanes[rand], 500, 1)
 end
 
 function PlayState:update(dt)
@@ -178,9 +182,10 @@ function PlayState:update(dt)
 	for k, pad in pairs(self.pads) do
 		pad.selected = false
 	end
-	
+
 	--selecting with joystick
 	if love.keyboard.isHeld("down") and love.keyboard.isHeld("left") then 
+		
 		self.pads[3].selected = true
 	elseif love.keyboard.isHeld("up") and love.keyboard.isHeld("left") then 
 		self.pads[5].selected = true
@@ -197,32 +202,32 @@ function PlayState:update(dt)
 	elseif love.keyboard.isHeld("right") then
 		self.pads[8].selected = true
 	end
-	
+
 	--actually hitting buttons
 	if love.keyboard.wasInput("topArrow") and love.keyboard.wasInput("bottomArrow") then 
 		for k, pad in pairs(self.pads) do
-			if pad.selected then
+			if(pad.selected == true) then
 				pad:onPress("bothArrows")
 				break
 			end
 		end
 	elseif love.keyboard.wasInput("topArrow") then
 		for k, pad in pairs(self.pads) do
-			if pad.selected then
+			if(pad.selected == true) then
 				pad:onPress("topArrow")
 				break
 			end
 		end
 	elseif love.keyboard.wasInput("bottomArrow") then
 		for k, pad in pairs(self.pads) do
-			if pad.selected then
+			if(pad.selected == true) then
 				pad:onPress("bottomArrow")
 				break
 			end
 		end
 	end
 		
-	-- Pad/note collision
+	--collision
 	if love.keyboard.wasInput("topArrow") or love.keyboard.wasInput("bottomArrow") then
 		for k, pad in pairs(self.pads) do
 			if pad.active then
@@ -287,11 +292,10 @@ function PlayState:update(dt)
 			table.remove(self.notes, k)
 		end
 	end
-
 	for k, pad in pairs(self.pads) do
 		pad:update(dt)
 	end
-
+	
 	-- Note Spawning
 	self.timer = self.timer + dt
 	if self.noteIndex <= #gMapNotes and self.timer >= gMapNotes[self.noteIndex].start_time * self.note_time_multiplier then
@@ -301,13 +305,9 @@ function PlayState:update(dt)
 		--print("Spawned a note! Time is " .. self.timer)
 	end
 
-  --[[
 	if love.keyboard.wasInput("unbound") then
 		self:spawnNote()
 	end
-  ]]
-
-	self.healthBar:update(dt)
 
 end
 
@@ -322,4 +322,7 @@ function PlayState:render()
 		note:render()
 	end
 	self.healthBar:render()
+	for k, note in pairs(self.notes) do
+		note:render()
+	end
 end

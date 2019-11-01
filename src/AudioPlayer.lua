@@ -7,18 +7,18 @@ function AudioPlayer:init(audio)
     self.__index = self
     self.audio = audio:clone()
 
-    self.highgain = 1
-    self.highgainRate = 6
-    self.highgainMin = .0001
+    highgain_ = 1
+    highgain_rate = 6
+    highgain_min = .0001
     return o
 end
 
 function AudioPlayer:update(dt)
-	self.highgain = math.min(self.highgain + self.highgain * self.highgainRate * dt, 1)
+	highgain_ = math.min(highgain_+highgain_*highgain_rate*dt, 1)
 	self.audio:setFilter{
 		type = "lowpass",
 		volume = 1,
-		highgain = self.highgain,
+		highgain = highgain_,
 	}
 end
 
@@ -27,18 +27,12 @@ function AudioPlayer:setLooping(loop)
 end
 
 function AudioPlayer:takeDamage()
-	self.highgain = self.highgainMin
-	-- following five lines probably unnecessary
+	highgain_ = highgain_min
 	self.audio:setFilter{
 		type = "lowpass",
 		volume = 1,
-		highgain = self.highgain,
+		highgain = highgain_,
 	}
-end
-
-function AudioPlayer:changeAudio(newAudio)
-	self.audio:stop()
-	self.audio = newAudio:clone()
 end
 
 function AudioPlayer:playAudio()
