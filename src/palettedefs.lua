@@ -79,7 +79,7 @@ gPalette = {
 	healthColor = {255/255, 30/255, 0/255, 1},
 	noteColorTop = {100/255, 190/255, 255/255, 1},
 	noteColorBottom = {20/255, 40/255, 229/255, 1},
-	noteColorBoth ={250/255, 60/2 5, 140/255, 255/255}
+	noteColorBoth = {250/255, 60/255, 140/255, 255/255}
 },
 ["skysTheLimit"] = {
 	background = {54/255, 209/255, 220/255, 255/255},
