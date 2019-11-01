@@ -235,15 +235,24 @@ function PlayState:update(dt)
 						if coll_dist < 0.1 then -- Perfect
 							self.healthBar:incrementScore(note.score)
 							self.healthBar:restoreHealth()
+							gSounds["noteHit"]:stop()
+							gSounds["noteHit"]:play()
 						elseif coll_dist < 0.3 then -- Great
 							self.healthBar:incrementScore(note.score * 0.9)
 							self.healthBar:restoreHealth()
+							gSounds["noteHit"]:stop()
+							gSounds["noteHit"]:play()
 						elseif coll_dist < 0.5 then -- Good
 							self.healthBar:incrementScore(note.score * 0.75)
-						elseif coll_dist < 1 then -- OK
+							gSounds["noteHit"]:stop()
+							gSounds["noteHit"]:play()
+						elseif coll_dist < 1.1 then -- OK
 							self.healthBar:incrementScore(note.score * 0.50)
+							gSounds["noteHit"]:stop()
+							gSounds["noteHit"]:play()
 						else -- Miss
-							--TODO: play note miss sfx instead of hit
+							gSounds["noteMiss"]:stop()
+							gSounds["noteMiss"]:play()
 						end
 						
 					end

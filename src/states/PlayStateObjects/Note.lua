@@ -74,8 +74,6 @@ end
 
 function Note:onHit()
 	self.isHit = true -- triggers destroying animation, stops movement, will be destroyed when isDestroyed is true
-	gSounds["noteHit"]:stop()
-	gSounds["noteHit"]:play()
 	self.destroyTimer = 3/60
 end
 
