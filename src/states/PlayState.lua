@@ -40,22 +40,22 @@ function PlayState:newPad(pX, pY, pRadius, pNum)
 	table.insert(self.lanes, lane13)
 end
 --noteType: 1: bottom, 2: top, 3: both
-function PlayState:newNote(nRadius, pad, lane, nSpeed, nNoteType)
+function PlayState:newNote(nRadius, pad, lane, nNoteType)
 	local nLane = self.lanes[lane]
 	table.insert(self.notes, Note:init({
-			x = nLane.endpointX,
-			y = nLane.endpointY,
+			x = noteSpawnCoords[lane][1],
+			y = noteSpawnCoords[lane][2],
 			radius = nRadius,
 			pad = pad,
 			lane = lane,
-			speed = nSpeed,
+			speed = self.noteSpeed,
 			noteType = nNoteType
 		})
 	)
 end
 
 function PlayState:makePads()
-	local centerRadius = math.min(love.graphics.getHeight(), love.graphics.getWidth())/8
+	--local centerRadius = math.min(love.graphics.getHeight(), love.graphics.getWidth())/8
 	local pRadius = 20
 	--Add pads:
 
@@ -97,23 +97,46 @@ function PlayState:enter(params)
 	self.healthBar = HealthBar:init({healthColor = gCurrentPalette.healthColor})
 	self.notes = {}
 	
+	-- Note speed must be constant for correct syncing
+	self.noteSpeed = 0.3 * math.max(love.graphics.getHeight(), love.graphics.getWidth())
+	
 	self:makePads()
 	
 
 	--needs a way to pass in midi file
-	gMidiReader = MidiReader:init("maps/drop_in_flip_out_map_tempo.mid")
+	gMidiReader = MidiReader:init("maps/drop_in_flip_out_map_tempo_noleadin.mid")
 	gMapNotes = gMidiReader:get_notes()
-	self.delay_before_notes = 2.7
-	self.note_time_multiplier = 120/176
+	--[[
+	for k, note in pairs(gMapNotes) do
+		print(note.start_time)
+	end
+	]]
+
+	-- Was originally necessary because there was lead-in time in the MIDI. We no longer use lead-in time.
+	self.delay_before_notes = 0
+	--self.note_time_multiplier = 100/176
+	--self.note_time_multiplier = 120/176
+	
+	-- This coefficient converts the time units in the score to seconds. Luckily, it seems to be constant per file.
+	self.note_time_multiplier = 0.7102 --derived with excel, logic pro, and pain. Works for Drop In, Flip Out at least...
+	-- For this track, seems to be equal to 125 / BPM
+	
+	--print("Delay before notes: " .. self.delay_before_notes)
+	
+	self.note_travel_time = (gSpawnDistance / self.noteSpeed)
+	
+	--print("Note travel time: " .. (gSpawnDistance / self.noteSpeed))
 
 	--DELAY BEFORE NOTES ENTER - make it longer to make them come sooner
 	self.timer = self.delay_before_notes
 	self.noteIndex = 1
-
+	
+	self.audioStarted = false
 	gAudioPlayer:stopAudio()
+	-- Delay before audio syncs to MIDI: 85 milliseconds, more or less exactly
+	self.audioDelay = 0.085 + (gSpawnDistance / self.noteSpeed) + self.delay_before_notes -- TODO: read from JSON
 	gAudioPlayer:changeAudio(love.audio.newSource("sfx/Drop_In_Flip_Out.mp3", "stream"))
 	gAudioPlayer:setLooping(false)
-	gAudioPlayer:playAudio()
 end
 
 function PlayState:init()
@@ -130,7 +153,13 @@ function PlayState:spawnNote() --for testing, for now
 	self:newNote(20, rand, 200, 1)
 end
 
-function PlayState:update(dt) 
+function PlayState:update(dt)
+	
+	self.audioDelay = math.max(self.audioDelay-dt, 0)
+	if self.audioDelay == 0 and not self.audioStarted then
+		gAudioPlayer:playAudio()
+	end
+	
 	for k, pad in pairs(self.pads) do
 		pad.selected = false
 	end
@@ -194,13 +223,14 @@ function PlayState:update(dt)
 	
 	-- Debug: spawning notes
 	if love.keyboard.wasInput("unbound") then
-		self:spawnNote()
+		print(self.timer)
 	end
 	
 	for k, note in pairs(self.notes) do
 		note:update(dt)
 		-- Change directions of notes once they reach center of pad
-		if note.lane ~= 2 and not note.directionChanged then
+		--if note.lane ~= 2 and not note.directionChanged then
+		if not note.directionChanged then
 			local pad = note.pad
 			if (note.noteAngle == 4 or note.noteAngle == 8) then
 				-- Try changing based on x position, since the note travels horizontally
@@ -219,9 +249,9 @@ function PlayState:update(dt)
 			end
 		end
 		-- Health bar/note collision
-		if circleCollision(note.x, note.y, note.radius, self.healthBar.x, self.healthBar.y, self.healthBar.radius - 2.25 * note.radius) then
+		if circleCollision(note.x, note.y, note.radius, self.healthBar.x, self.healthBar.y, self.healthBar.radius - 2.5 * note.radius) then
 			note.isDestroyed = true
-			self.healthBar:takeDamage(note.score)
+			--self.healthBar:takeDamage(note.score)
 		end
 		if note.isDestroyed then
 			table.remove(self.notes, k)
@@ -233,11 +263,13 @@ function PlayState:update(dt)
 	end
 
 	self.timer = self.timer + dt
-	--print(self.timer)
+	
+	-- Note Spawning
 	if self.noteIndex <= #gMapNotes and self.timer >= gMapNotes[self.noteIndex].start_time * self.note_time_multiplier then
 		--print(gMapNotes[self.noteIndex].pad)
-		self:newNote(20, gMapNotes[self.noteIndex].pad, gMapNotes[self.noteIndex].lane, 500, 1)
+		self:newNote(20, gMapNotes[self.noteIndex].pad, gMapNotes[self.noteIndex].lane, 1)
 		self.noteIndex = self.noteIndex + 1
+		--print("Spawned a note! Time is " .. self.timer)
 	end
 
   --[[

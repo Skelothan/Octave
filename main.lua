@@ -7,6 +7,9 @@ function love.load()
 	-- Fullscreen, retina display
 	love.window.setMode(0, 0, {fullscreen = true, highdpi = true, msaa = 2})
 	
+	-- Contains constants
+	require "src/constants"
+
 	-- Seed RNG, just in case we use it
 	math.randomseed(os.time())
 	
