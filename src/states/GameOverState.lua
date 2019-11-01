@@ -10,7 +10,6 @@ function GameOverState:init(params)
 end
 
 function GameOverState:enter(params)
-	gAudioPlayer:stopAudio()
 	self.score = params.score or 0;
 	self.fadeTextColor = gCurrentPalette.menuText
 	self.isWon = params.isWon or false
