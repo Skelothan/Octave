@@ -30,7 +30,7 @@ function love.load()
 	loadFonts()
 	loadSounds()
 	gBackgroundImage = nil
-	gBackground = Background:init("spinTriangle", gPalette["standard"])
+	gBackground = Background:init("squares", gPalette["standard"])
 
 	gCurrentPalette = gPalette["standard"]
 	
