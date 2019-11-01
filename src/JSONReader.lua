@@ -21,11 +21,6 @@
 --   "album" : "Octave OST Vol. 1",
 --   "source" : "Flip Flop",
 --   "year" : 2019,
---   "leaderboard" : {
---     "name": 12345,
---     "name2": 2345,
---     "name3": 345, 
---   }
 -- }
 -- 
 -- JSONReader converts JSON file to following format under self.data
@@ -62,11 +57,6 @@
 --     bgObjects = {
 --     }
 --   },
---   leaderboard = {
---     name = { 12345 },
---     name2 = { 2345 },
---     name3 = { 345 }  
---   },
 --   source = "Flip Flop",
 --   title = "Drop In, Flip Out",
 --   background = "artsy",
@@ -88,6 +78,24 @@ function JSONReader:init(filename)
   self.data = json.decode(io.read("*all"))
 
   return table.deepcopy(o)
+end
+
+------------
+-- This can be refactored
+------------
+
+-- Perhaps it should also take in the current file path, see comment below
+function JSONReader:addScore(name, score)
+  for i=1, #self.data.highscores do
+    if self.data.highscores[i].score <= score then
+      table.insert( self.data.highscores, i, { name = name, score = score} )
+      break
+    end
+  end
+  table.insert( self.data.highscores, { name = name, score = score })
+  -- This should be rewritten to save to the current song's highscore json file
+  io.output("highscores.json")
+  io.write(json.encode(self.data))
 end
 
 return JSONReader
