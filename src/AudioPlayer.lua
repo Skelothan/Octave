@@ -38,3 +38,15 @@ end
 function AudioPlayer:playAudio()
     self.audio:play()
 end
+
+function AudioPlayer:stopAudio()
+	self.audio:stop()
+end
+
+function AudioPlayer:pauseAudio()
+	self.audio:pause()
+end
+
+function AudioPlayer:isPlaying()
+	return self.audio:isPlaying()
+end

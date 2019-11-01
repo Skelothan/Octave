@@ -40,7 +40,7 @@ function Note:init(params)
 	self.outlineColor = params.outlineColor or {0, 0, 0, 1}
 	self.noteColor = params.noteColor or {0, 127/255, 1, 1}
 	
-	self.score = params.score or 2000
+	self.score = params.score or 10000
 	
 	return table.deepcopy(o)
 end
@@ -61,8 +61,10 @@ function Note:update(dt)
 end
 
 function Note:onHit()
-	self.isHit = true -- triggers destroying animation, will be destroyed when isDestroyed is true
-	self.destroyTimer = 10/60
+	self.isHit = true -- triggers destroying animation, stops movement, will be destroyed when isDestroyed is true
+	gSounds["noteHit"]:stop()
+	gSounds["noteHit"]:play()
+	self.destroyTimer = 3/60
 end
 
 function Note:render()

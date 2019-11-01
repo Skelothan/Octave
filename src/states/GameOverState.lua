@@ -11,26 +11,36 @@ end
 
 function GameOverState:enter(params)
 	self.score = params.score or 0;
-	self.backgroundColor = params.backgroundColor or {0, 0, 0, 1}
-	self.textColor = params.textColor or {1, 1, 1, 1}
+	self.fadeTextColor = gCurrentPalette.menuText
 	self.isWon = params.isWon or false
+	self.stopInputTimer = 4
 end
 
 function GameOverState:update(dt)
-	if love.keyboard.wasInput("topArrow") then
+	self.stopInputTimer = math.max(self.stopInputTimer - dt, 0)
+	if self.stopInputTimer <= 0 and love.keyboard.wasInput("bottomArrow") then
+		gAudioPlayer:changeAudio(love.audio.newSource("sfx/Welcome_to_Octave.wav", "stream"))
+		gAudioPlayer:setLooping(true)
+		gAudioPlayer:playAudio()
 		gStateMachine:change("menu", {})
 	end
 end
 
 function GameOverState:render()
-	love.graphics.setBackgroundColor(self.backgroundColor)
-	love.graphics.setColor(self.textColor)
+	love.graphics.setColor(gCurrentPalette.menuText)
 	
 	if self.isWon then
 		love.graphics.printf("You Win!", gFonts["AvenirLight64"], 0, love.graphics.getHeight() / 3, love.graphics.getWidth(), "center")
 	else
 		love.graphics.printf("Game Over", gFonts["AvenirLight64"], 0, love.graphics.getHeight() / 3, love.graphics.getWidth(), "center")
 	end
+	
 	love.graphics.printf("Your Score: " .. self.score, gFonts["AvenirLight32"], 0, love.graphics.getHeight()/2, love.graphics.getWidth(), "center")
 
+	if self.stopInputTimer <= 0.5 then
+		if self.fadeTextColor[4] ~= 1 then
+			self.fadeTextColor = 1 - 2 * self.stopInputTimer
+		end
+		love.graphics.printf("Press [down triangle] to return", gFonts["AvenirLight32"], 0, love.graphics.getHeight()*0.75, love.graphics.getWidth(), "center")
+	end
 end
