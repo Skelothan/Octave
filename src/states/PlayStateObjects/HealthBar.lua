@@ -10,6 +10,7 @@ function HealthBar:init(params)
 	self.y = love.graphics.getHeight() / 2
 	
 	self.score = 0
+	self.scoreText = "0"
 	self.notesPerHP = 12
 	self.health = 4 * self.notesPerHP
 	self.maxHealth = 4 * self.notesPerHP
@@ -46,6 +47,7 @@ end
 
 function HealthBar:incrementScore(dScore)
 	self.score = math.max(math.floor(self.score + dScore), 0)
+	self.scoreText = comma_value(self.score)
 end
 
 function HealthBar:render()
@@ -64,7 +66,7 @@ function HealthBar:render()
 	love.graphics.line(self.x - segmentRadius, self.y, self.x + segmentRadius, self.y)
 	-- Draw score text
 	love.graphics.setColor(self.textColor)
-	love.graphics.printf(self.score, gFonts["AvenirLight16"], self.x - self.radius, self.y - self.radius / 3, self.radius * 2, "center")
+	love.graphics.printf(self.scoreText, gFonts["AvenirLight16"], self.x - self.radius, self.y - self.radius / 3, self.radius * 2, "center")
 	-- Reset draw color
 	love.graphics.resetColor()
 end
