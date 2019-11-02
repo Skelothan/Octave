@@ -46,6 +46,8 @@ function Note:init(params, playState)
 	
 	self.score = params.score or 10000
 	
+	--self.timeAlive = 0
+		
 	return table.deepcopy(o)
 end
 
@@ -58,6 +60,7 @@ function Note:setSpeeds()
 end
 
 function Note:update(dt)
+	--self.timeAlive = self.timeAlive + dt
 	if not self.isHit then
 		self.x = self.x + self.dx * dt
 		self.y = self.y + self.dy * dt
@@ -78,9 +81,13 @@ function Note:onHit()
 end
 
 function Note:changeDirection()
+	--print(self.timeAlive)
 	self.laneAngle = 2
 	self:setSpeeds()
 	self.directionChanged = true
+	
+	--gSounds["noteHit"]:stop()
+	--gSounds["noteHit"]:play()
 end
 
 function Note:render()

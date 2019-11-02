@@ -99,7 +99,8 @@ function PlayState:enter(params)
 	self.notes = {}
 	
 	-- Note speed must be constant for correct syncing
-	self.noteSpeed = 0.3 * math.max(love.graphics.getHeight(), love.graphics.getWidth())
+	self.speedCoeff = 0.28 --todo: set from JSON
+	self.noteSpeed = self.speedCoeff * math.max(love.graphics.getHeight(), love.graphics.getWidth())
 	
 	self:makePads()
 	
@@ -126,7 +127,7 @@ function PlayState:enter(params)
 	
 	self.note_travel_time = ((gSpawnDistance - centerRadius) / self.noteSpeed)
 	
-	--print("Note travel time: " .. (gSpawnDistance / self.noteSpeed))
+	print("Note travel time: " .. self.note_travel_time)
 
 	--DELAY BEFORE NOTES ENTER - make it longer to make them come sooner
 	self.timer = self.delay_before_notes
@@ -134,8 +135,11 @@ function PlayState:enter(params)
 	
 	self.audioStarted = false
 	gAudioPlayer:stopAudio()
+	
+	--self.audioDelay = 2 * midiOffset + self.note_travel_time. Old, doesn't work well.
+	
 	-- Delay before audio syncs to MIDI for Drop In, Flip Out: 85 milliseconds, more or less exactly
-	self.audioDelay = 2 * 0.085 + self.note_travel_time + self.delay_before_notes -- TODO: read from JSON
+	self.audioDelay = 1 / (2 * self.speedCoeff) - 0.085 -- TODO: read from JSON
 	gAudioPlayer:changeAudio(love.audio.newSource("sfx/Drop_In_Flip_Out.mp3", "stream"))
 	gAudioPlayer:setLooping(false)
 	self.audioDoneTimer = 3
@@ -261,6 +265,15 @@ function PlayState:update(dt)
 		end
 	end
 	
+	-- Note Spawning
+	self.timer = self.timer + dt
+	if self.noteIndex <= #gMapNotes and self.timer >= gMapNotes[self.noteIndex].start_time * self.note_time_multiplier then
+		--print(gMapNotes[self.noteIndex].pad)
+		self:newNote(20, gMapNotes[self.noteIndex].pad, gMapNotes[self.noteIndex].lane, 1)
+		self.noteIndex = self.noteIndex + 1
+		--print("Spawned a note! Time is " .. self.timer)
+	end
+	
 	-- Debug: spawning notes
 	if love.keyboard.wasInput("unbound") then
 		print(self.timer)
@@ -269,7 +282,8 @@ function PlayState:update(dt)
 	for k, note in pairs(self.notes) do
 		note:update(dt)
 		-- Change directions of notes once they reach center of pad
-		if note.lane ~= 2 and not note.directionChanged then
+		if not note.directionChanged then
+		--if note.lane ~= 2 and not note.directionChanged then
 			local pad = note.pad
 			if (note.noteAngle == 4 or note.noteAngle == 8) then
 				-- Try changing based on x position, since the note travels horizontally
@@ -301,15 +315,6 @@ function PlayState:update(dt)
 		pad:update(dt)
 	end
 
-	-- Note Spawning
-	self.timer = self.timer + dt
-	if self.noteIndex <= #gMapNotes and self.timer >= gMapNotes[self.noteIndex].start_time * self.note_time_multiplier then
-		--print(gMapNotes[self.noteIndex].pad)
-		self:newNote(20, gMapNotes[self.noteIndex].pad, gMapNotes[self.noteIndex].lane, 1)
-		self.noteIndex = self.noteIndex + 1
-		--print("Spawned a note! Time is " .. self.timer)
-	end
-
   --[[
 	if love.keyboard.wasInput("unbound") then
 		self:spawnNote()
@@ -331,4 +336,6 @@ function PlayState:render()
 		note:render()
 	end
 	self.healthBar:render()
+	-- Debug:
+	--love.graphics.printf("Time: " .. self.timer, 0, 0, winWidth, "left")
 end
