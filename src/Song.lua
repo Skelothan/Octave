@@ -7,7 +7,7 @@ function Song:init(params)
 	self.__index = self
 	
 	self.name = params.title or "Song Name"
-	self.artist = "Artist Name"
+	self.artist = params.artist or "Artist Name"
 	self.image = params.image or "graphics/noteImage.png"
 	self.difficulty = params.difficulty or 4
 	self.menuColor = gPalette[params.palette].menuColor or {0.9, 0.3, 0.6, 1}
