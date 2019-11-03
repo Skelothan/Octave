@@ -10,43 +10,25 @@ function MenuState:init()
 	
 	self.songs = {}
 	self.currentSong = 1
+	self.numSongs = 0	
 	
-	-- TODO: reading this data from JSON
-	local song1 = Song:init({
-		name = "Song Name",
-		artist = "Artist Name",
-		image = "graphics/noteImage.png", 
-		difficulty = 4,
-		palette = "standard",
-		highScores = { 
-			{name = "Score Name", score = 42069},
-			{name = "Bob", score = 19800},
-			{name = "Ted", score = 15256} 
-		}
-	})
-	local song2 = Song:init({
-		name = "Song 2",
-		artist = "Artist 2",
-		image = "graphics/songImage.jpg",
-		difficulty = 3,
-		palette = "standard",
-		highScores = {
-			{name = "Score Name", score = 1234},
-			{name = "Anon", score = 452}
-		}
-	})
-	local song3 = Song:init({
-		name = "Song 3",
-		artist = "Artist 3",
-		--image = love.graphics.newImage("graphics/noteImage.png"),
-		difficulty = 1,
-		palette = "standard",
-		highScores = {}
-	})
-	table.insert(self.songs, song1)
-	table.insert(self.songs, song2)
-	table.insert(self.songs, song3)
-	self.numSongs = 3
+	local files = love.filesystem.getDirectoryItems("/maps")
+	for i, file in ipairs(files) do
+		if file ~= ".DS_Store" then
+			files[i] = "maps/" .. file
+		end
+	end
+	--JSONReader:init("maps/database.json").data["songs"]
+
+
+	for i, song in ipairs(files) do
+		local params = JSONReader:init(song .. "/data.json").data
+		if params ~= nil then
+			local s = Song:init(params)
+			table.insert(self.songs, s)
+			self.numSongs = self.numSongs + 1
+		end
+	end
 
 	self.menuColor = self.songs[self.currentSong].menuColor or {1,1,1,1}
 	self.textColor = self.songs[self.currentSong].textColor or {0, 0, 0, 1}
@@ -78,7 +60,7 @@ function MenuState:update(dt)
 	if love.keyboard.wasInput("bottomArrow") then
 		gSounds["startExt"]:stop()
 		gSounds["startExt"]:play()
-		gStateMachine:change("play", {})
+		gStateMachine:change("play", {song = self.songs[self.currentSong]})
 	end
 	if love.keyboard.wasInput("topArrow") then
 		gSounds["back"]:stop()
@@ -92,6 +74,7 @@ function MenuState:render()
 		local opacity = 0.85/(math.abs(i-self.currentSong)+1)
 
 		if i == self.currentSong then 
+			
 			song:render(i, self.currentSong, opacity, true)
 		end
 

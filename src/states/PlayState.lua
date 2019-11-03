@@ -97,16 +97,14 @@ function PlayState:enter(params)
 	self.lanes = {}
 	self.healthBar = HealthBar:init({healthColor = gCurrentPalette.healthColor})
 	self.notes = {}
-	
+	self.song = params.song
 	-- Note speed must be constant for correct syncing
-	self.speedCoeff = 0.28 --todo: set from JSON
+	self.speedCoeff = self.song.speedCoeff 
 	self.noteSpeed = self.speedCoeff * math.max(love.graphics.getHeight(), love.graphics.getWidth())
 	
 	self:makePads()
 	
-
-	--needs a way to pass in midi file
-	gMidiReader = MidiReader:init("maps/drop_in_flip_out_map_tempo_noleadin.mid")
+	gMidiReader = MidiReader:init(self.song.midi)
 	gMapNotes = gMidiReader:get_notes()
 	--[[
 	for k, note in pairs(gMapNotes) do
@@ -120,8 +118,9 @@ function PlayState:enter(params)
 	--self.note_time_multiplier = 120/176
 	
 	-- This coefficient converts the time units in the score to seconds. Luckily, it seems to be constant per file.
-	self.note_time_multiplier = 0.7102 --derived with excel, logic pro, and pain. Works for Drop In, Flip Out at least...
+	self.note_time_multiplier =  125 / self.song.bpm--derived with excel, logic pro, and pain. Works for Drop In, Flip Out at least...
 	-- For this track, seems to be equal to 125 / BPM
+	--Drop in - 0.7102
 	
 	--print("Delay before notes: " .. self.delay_before_notes)
 	
@@ -140,7 +139,7 @@ function PlayState:enter(params)
 	
 	-- Delay before audio syncs to MIDI for Drop In, Flip Out: 85 milliseconds, more or less exactly
 	self.audioDelay = 1 / (2 * self.speedCoeff) - 0.085 -- TODO: read from JSON
-	gAudioPlayer:changeAudio(love.audio.newSource("sfx/Drop_In_Flip_Out.mp3", "stream"))
+	gAudioPlayer:changeAudio(love.audio.newSource(self.song.audio, "stream"))
 	gAudioPlayer:setLooping(false)
 	self.audioDoneTimer = 3
 	
@@ -175,6 +174,7 @@ function PlayState:update(dt)
 			gStateMachine:change("gameOver", {
 			score = self.healthBar.score, 
 			isWon = true,
+			file = self.song.highScoreFile
 		})
 		end
 	end
@@ -201,38 +201,42 @@ function PlayState:update(dt)
 	elseif love.keyboard.isHeld("right") then
 		self.pads[8].selected = true
 	end
-	
-	--actually hitting buttons
-	if love.keyboard.wasInput("topArrow") and love.keyboard.wasInput("bottomArrow") then 
-		for k, pad in pairs(self.pads) do
-			if pad.selected then
-				pad:onPress("bothArrows")
-				break
+		
+	for k, pad in pairs(self.pads) do
+		pad:update(dt)
+	end
+
+	-- Pad/note collision
+	if love.keyboard.wasInput("topArrow") or love.keyboard.wasInput("bottomArrow") then
+
+		if love.keyboard.wasInput("topArrow") then
+			for k, pad in pairs(self.pads) do
+				if pad.selected then
+					pad:onPress("topArrow")
+					break
+				end
 			end
 		end
-	elseif love.keyboard.wasInput("topArrow") then
-		for k, pad in pairs(self.pads) do
-			if pad.selected then
-				pad:onPress("topArrow")
-				break
-			end
-		end
-	elseif love.keyboard.wasInput("bottomArrow") then
-		for k, pad in pairs(self.pads) do
-			if pad.selected then
-				pad:onPress("bottomArrow")
-				break
+		if love.keyboard.wasInput("bottomArrow") then
+			for k, pad in pairs(self.pads) do
+				if pad.selected then
+					pad:onPress("bottomArrow")
+					break
+				end
 			end
 		end
 	end
-		
-	-- Pad/note collision
-	if love.keyboard.wasInput("topArrow") or love.keyboard.wasInput("bottomArrow") then
-		for k, pad in pairs(self.pads) do
+
+	for k, pad in pairs(self.pads) do
 			if pad.active then
-				for k, note in pairs(self.notes) do --notes is populated from within note.lua when spawned
+				for j, note in pairs(self.notes) do --notes is populated from within note.lua when spawned
 					coll_collides, coll_dist = noteCollision(pad, note)
-					if coll_collides == true and note.isHit == false then
+					
+					print(note.noteType)
+					print("Pad number: " .. k)
+					print("Note Type: " .. pad.noteTypePressed);
+					print("Note Type abs: " .. self.pads[2].noteTypePressed);
+					if coll_collides == true and note.isHit == false and note.noteType == pad.noteTypePressed then
 						note:onHit() --TODO: onHit takes in an accuracy parameter, which causes different sounds to be played
 						pad.active = false
 						--print(coll_dist)
@@ -262,14 +266,14 @@ function PlayState:update(dt)
 					end
 				end
 			end
-		end
+		
 	end
 	
 	-- Note Spawning
 	self.timer = self.timer + dt
 	if self.noteIndex <= #gMapNotes and self.timer >= gMapNotes[self.noteIndex].start_time * self.note_time_multiplier then
 		--print(gMapNotes[self.noteIndex].pad)
-		self:newNote(20, gMapNotes[self.noteIndex].pad, gMapNotes[self.noteIndex].lane, 1)
+		self:newNote(20, gMapNotes[self.noteIndex].pad, gMapNotes[self.noteIndex].lane, gMapNotes[self.noteIndex].type)
 		self.noteIndex = self.noteIndex + 1
 		--print("Spawned a note! Time is " .. self.timer)
 	end
@@ -311,9 +315,7 @@ function PlayState:update(dt)
 		end
 	end
 
-	for k, pad in pairs(self.pads) do
-		pad:update(dt)
-	end
+	
 
   --[[
 	if love.keyboard.wasInput("unbound") then
@@ -338,4 +340,5 @@ function PlayState:render()
 	self.healthBar:render()
 	-- Debug:
 	--love.graphics.printf("Time: " .. self.timer, 0, 0, winWidth, "left")
+	love.graphics.printf("Note Type: " .. self.pads[2].noteTypePressed, 0, 0, winWidth, "left")
 end

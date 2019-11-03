@@ -15,6 +15,7 @@ function GameOverState:enter(params)
 	self.fadeTextColor = gCurrentPalette.menuText
 	self.isWon = params.isWon or false
 	self.stopInputTimer = 4
+	self.file = params.file
 end
 
 function GameOverState:update(dt)
