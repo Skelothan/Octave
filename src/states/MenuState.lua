@@ -70,8 +70,7 @@ function MenuState:render()
 		local opacity = 0.85/(math.abs(i-self.currentSong)+1)
 
 		if i == self.currentSong then 
-			gBackground = Background:init("squares", gPalette["standard"])
-			gCurrentPalette = gPalette["standard"]
+			
 			song:render(i, self.currentSong, opacity, true)
 		end
 
