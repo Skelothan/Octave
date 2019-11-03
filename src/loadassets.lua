@@ -18,4 +18,14 @@ function loadSounds()
 		["startExt"] = love.audio.newSource("sfx/start_ext.mp3", "static")
 	}
 end 
--- TODO: functions for images, frames, sfx, etc
+
+function loadImages()
+	gImages = {
+		["damage"] = love.graphics.newImage("graphics/damageVignette.png")
+	
+	
+	
+	
+	}
+end
+-- TODO: functions for frames, sfx, etc

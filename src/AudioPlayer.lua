@@ -8,12 +8,17 @@ function AudioPlayer:init(audio)
     self.audio = audio:clone()
 
     self.highgain = 1
-    self.highgainRate = 6
-    self.highgainMin = .0001
+    self.highgainRate = 9
+    self.highgainMin = .001
+    
+    self.alpha = 0
+    self.alphaRate = 0.75
+    self.damageColor = table.deepcopy(gCurrentPalette.menuText)
     return o
 end
 
 function AudioPlayer:update(dt)
+	self.alpha = math.max(self.alpha - dt * self.alphaRate, 0)
 	self.highgain = math.min(self.highgain + self.highgain * self.highgainRate * dt, 1)
 	self.audio:setFilter{
 		type = "lowpass",
@@ -28,6 +33,7 @@ end
 
 function AudioPlayer:takeDamage()
 	self.highgain = self.highgainMin
+	self.alpha = 1
 	-- following five lines probably unnecessary
 	self.audio:setFilter{
 		type = "lowpass",
@@ -39,6 +45,7 @@ end
 function AudioPlayer:changeAudio(newAudio)
 	self.audio:stop()
 	self.audio = newAudio:clone()
+	self.damageColor = table.deepcopy(gCurrentPalette.menuText)
 end
 
 function AudioPlayer:playAudio()
@@ -55,4 +62,10 @@ end
 
 function AudioPlayer:isPlaying()
 	return self.audio:isPlaying()
+end
+
+function AudioPlayer:render()
+	self.damageColor[4] = self.alpha
+	love.graphics.setColor(self.damageColor)
+	love.graphics.draw(gImages["damage"], 0, 0, 0, winWidth/960, winHeight/540)
 end

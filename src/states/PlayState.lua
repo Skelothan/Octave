@@ -336,6 +336,12 @@ function PlayState:render()
 		note:render()
 	end
 	self.healthBar:render()
+	-- Sadly, this seems to only make my computer be un
+	--[[
+	if gAudioPlayer.alpha > 0 then
+		gAudioPlayer:render()
+	end
+	]]
 	-- Debug:
 	--love.graphics.printf("Time: " .. self.timer, 0, 0, winWidth, "left")
 end

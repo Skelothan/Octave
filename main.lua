@@ -29,6 +29,7 @@ function love.load()
 	-- initialize global assets
 	loadFonts()
 	loadSounds()
+	loadImages()
 	gBackgroundImage = nil
 	gBackground = Background:init("squares", gPalette["standard"])
 
