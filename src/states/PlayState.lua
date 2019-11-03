@@ -202,6 +202,8 @@ function PlayState:update(dt)
 		self.pads[8].selected = true
 	end
 	
+	--I don't think we need this part?
+	--[[]
 	--actually hitting buttons
 	if love.keyboard.wasInput("topArrow") and love.keyboard.wasInput("bottomArrow") then 
 		for k, pad in pairs(self.pads) do
@@ -225,14 +227,43 @@ function PlayState:update(dt)
 			end
 		end
 	end
+	]]--
 		
+	for k, pad in pairs(self.pads) do
+		pad:update(dt)
+	end
+
 	-- Pad/note collision
 	if love.keyboard.wasInput("topArrow") or love.keyboard.wasInput("bottomArrow") then
-		for k, pad in pairs(self.pads) do
+
+		if love.keyboard.wasInput("topArrow") then
+			for k, pad in pairs(self.pads) do
+				if pad.selected then
+					pad:onPress("topArrow")
+					break
+				end
+			end
+		end
+		if love.keyboard.wasInput("bottomArrow") then
+			for k, pad in pairs(self.pads) do
+				if pad.selected then
+					pad:onPress("bottomArrow")
+					break
+				end
+			end
+		end
+	end
+
+	for k, pad in pairs(self.pads) do
 			if pad.active then
-				for k, note in pairs(self.notes) do --notes is populated from within note.lua when spawned
+				for j, note in pairs(self.notes) do --notes is populated from within note.lua when spawned
 					coll_collides, coll_dist = noteCollision(pad, note)
-					if coll_collides == true and note.isHit == false then
+					
+					print(note.noteType)
+					print("Pad number: " .. k)
+					print("Note Type: " .. pad.noteTypePressed);
+					print("Note Type abs: " .. self.pads[2].noteTypePressed);
+					if coll_collides == true and note.isHit == false and note.noteType == pad.noteTypePressed then
 						note:onHit() --TODO: onHit takes in an accuracy parameter, which causes different sounds to be played
 						pad.active = false
 						--print(coll_dist)
@@ -262,7 +293,7 @@ function PlayState:update(dt)
 					end
 				end
 			end
-		end
+		
 	end
 	
 	-- Note Spawning
@@ -311,9 +342,7 @@ function PlayState:update(dt)
 		end
 	end
 
-	for k, pad in pairs(self.pads) do
-		pad:update(dt)
-	end
+	
 
   --[[
 	if love.keyboard.wasInput("unbound") then
@@ -338,4 +367,5 @@ function PlayState:render()
 	self.healthBar:render()
 	-- Debug:
 	--love.graphics.printf("Time: " .. self.timer, 0, 0, winWidth, "left")
+	love.graphics.printf("Note Type: " .. self.pads[2].noteTypePressed, 0, 0, winWidth, "left")
 end
