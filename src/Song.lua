@@ -152,7 +152,7 @@ function Song:renderRight(opacity)
 			rectX + winWidth/64*1.5,
 			rectY + winWidth/64*1.5 + 40 + (i-1)*30
 		)
-		love.graphics.printf(score.score,
+		love.graphics.printf(comma_value(score.score),
 			gFonts["AvenirLight24"],
 			rectX+winWidth/64*1.5,
 			rectY + winWidth/64*1.5 + 40 + (i-1)*30,
