@@ -11,7 +11,15 @@ function MenuState:init()
 	self.songs = {}
 	self.currentSong = 1
 	self.numSongs = 0	
-	local songFiles = JSONReader:init("maps/database.json").data["songs"]
+	
+	local files = love.filesystem.getDirectoryItems("/maps")
+	local songFiles = {}
+	for i, file in ipairs(files) do
+		local jsonFile = "maps/" .. file .. "/database.json"
+		table.insert(JSONReader:init(jsonFile).data["songs"], songFiles)
+	end
+	--JSONReader:init("maps/database.json").data["songs"]
+
 
 	for i, song in ipairs(songFiles) do
 		local params = JSONReader:init(song).data
