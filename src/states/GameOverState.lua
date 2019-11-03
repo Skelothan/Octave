@@ -12,7 +12,12 @@ end
 function GameOverState:enter(params)
 	gAudioPlayer:stopAudio()
 	self.score = params.score or 0;
-	self.fadeTextColor = gCurrentPalette.menuText
+	self.fadeTextColor = table.deepcopy(gCurrentPalette.menuText)
+	
+	self.fadeTextColor[4] = 0
+	for i, c in pairs(self.fadeTextColor) do
+		print(c)
+	end
 	self.isWon = params.isWon or false
 	self.stopInputTimer = 4
 end
@@ -24,6 +29,9 @@ function GameOverState:update(dt)
 		gAudioPlayer:setLooping(true)
 		gAudioPlayer:playAudio()
 		gStateMachine:change("menu", {})
+	end
+	if self.stopInputTimer <= 0.5 and self.fadeTextColor[4] ~= 1 then
+		self.fadeTextColor[4] = 1 - 2 * self.stopInputTimer
 	end
 end
 
@@ -39,9 +47,7 @@ function GameOverState:render()
 	love.graphics.printf("Your Score: " .. comma_value(self.score), gFonts["AvenirLight32"], 0, love.graphics.getHeight()/2, love.graphics.getWidth(), "center")
 
 	if self.stopInputTimer <= 0.5 then
-		if self.fadeTextColor[4] ~= 1 then
-			self.fadeTextColor = 1 - 2 * self.stopInputTimer
-		end
+		love.graphics.setColor(self.fadeTextColor)
 		love.graphics.printf("Press [down triangle] to return", gFonts["AvenirLight32"], 0, love.graphics.getHeight()*0.75, love.graphics.getWidth(), "center")
 	end
 end
