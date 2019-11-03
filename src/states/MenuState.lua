@@ -10,7 +10,8 @@ function MenuState:init()
 	
 	self.songs = {}
 	self.currentSong = 1
-	self.numSongs = 0	
+	self.numSongs = 0
+	self.prevSong = 0	
 	
 	local files = love.filesystem.getDirectoryItems("/maps")
 	for i, file in ipairs(files) do
@@ -70,8 +71,12 @@ function MenuState:render()
 		local opacity = 0.85/(math.abs(i-self.currentSong)+1)
 
 		if i == self.currentSong then 
-			
+			if self.prevSong ~= i then
+				gBackground = Background:init(song.background, gPalette[song.palette])
+				gCurrentPalette = gPalette[song.palette]
+			end
 			song:render(i, self.currentSong, opacity, true)
+			self.prevSong = i
 		end
 
 		song:render(i, self.currentSong, opacity, false)

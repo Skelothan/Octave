@@ -20,6 +20,8 @@ function Song:init(params)
 	self.speedCoeff = params.speedCoeff
 	self.audio = params.audio
 	self.audioDelay = params.audioDelay
+	self.background = params.background
+	self.palette = params.palette
 	
 	return table.deepcopy(o)
 end

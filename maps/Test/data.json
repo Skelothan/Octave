@@ -11,7 +11,7 @@
   "highScores" : "maps/Test/highScores.json",
   "midi" : "maps/Test/drop_in_flip_out_map_tempo_noleadin.mid",
   "speedCoeff": 0.28,
-  "audioDelay": 1.7007142857142857142857142857143,
+  "audioDelay": 0.085,
   "audio": "sfx/Drop_In_Flip_Out.mp3"
 }
 
