@@ -118,8 +118,9 @@ function PlayState:enter(params)
 	--self.note_time_multiplier = 120/176
 	
 	-- This coefficient converts the time units in the score to seconds. Luckily, it seems to be constant per file.
-	self.note_time_multiplier = 0.7102 --derived with excel, logic pro, and pain. Works for Drop In, Flip Out at least...
+	self.note_time_multiplier =  125 / self.song.bpm--derived with excel, logic pro, and pain. Works for Drop In, Flip Out at least...
 	-- For this track, seems to be equal to 125 / BPM
+	--Drop in - 0.7102
 	
 	--print("Delay before notes: " .. self.delay_before_notes)
 	
@@ -200,33 +201,6 @@ function PlayState:update(dt)
 	elseif love.keyboard.isHeld("right") then
 		self.pads[8].selected = true
 	end
-	
-	--I don't think we need this part?
-	--[[]
-	--actually hitting buttons
-	if love.keyboard.wasInput("topArrow") and love.keyboard.wasInput("bottomArrow") then 
-		for k, pad in pairs(self.pads) do
-			if pad.selected then
-				pad:onPress("bothArrows")
-				break
-			end
-		end
-	elseif love.keyboard.wasInput("topArrow") then
-		for k, pad in pairs(self.pads) do
-			if pad.selected then
-				pad:onPress("topArrow")
-				break
-			end
-		end
-	elseif love.keyboard.wasInput("bottomArrow") then
-		for k, pad in pairs(self.pads) do
-			if pad.selected then
-				pad:onPress("bottomArrow")
-				break
-			end
-		end
-	end
-	]]--
 		
 	for k, pad in pairs(self.pads) do
 		pad:update(dt)

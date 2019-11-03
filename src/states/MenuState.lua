@@ -14,16 +14,20 @@ function MenuState:init()
 	
 	local files = love.filesystem.getDirectoryItems("/maps")
 	for i, file in ipairs(files) do
-		files[i] = "maps/" .. file
+		if file ~= ".DS_Store" then
+			files[i] = "maps/" .. file
+		end
 	end
 	--JSONReader:init("maps/database.json").data["songs"]
 
 
 	for i, song in ipairs(files) do
 		local params = JSONReader:init(song .. "/data.json").data
-		local s = Song:init(params)
-		table.insert(self.songs, s)
-		self.numSongs = self.numSongs + 1
+		if params ~= nil then
+			local s = Song:init(params)
+			table.insert(self.songs, s)
+			self.numSongs = self.numSongs + 1
+		end
 	end
 
 	self.menuColor = self.songs[self.currentSong].menuColor or {1,1,1,1}

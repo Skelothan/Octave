@@ -19,6 +19,7 @@ function Song:init(params)
 	self.midi = params.midi
 	self.speedCoeff = params.speedCoeff
 	self.audio = params.audio
+	self.bpm = params.bpm
 	self.audioDelay = params.audioDelay
 	
 	return table.deepcopy(o)
