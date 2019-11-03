@@ -46,11 +46,11 @@ function MidiReader:init(filename)
         --end
         -- assign type
         if self.midiData[i][j][6] <= 45 then
-          self.midiData[i][j].type = "down"
+          self.midiData[i][j].type = 1
         elseif self.midiData[i][j][6] > 45 and self.midiData[i][j][6] <= 85 then
-          self.midiData[i][j].type = "both"
+          self.midiData[i][j].type = 3
         elseif self.midiData[i][j][6] > 85 then
-          self.midiData[i][j].type = "up"
+          self.midiData[i][j].type = 2
         end
       end
     end

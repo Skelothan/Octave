@@ -106,7 +106,7 @@ function PlayState:enter(params)
 	
 
 	--needs a way to pass in midi file
-	gMidiReader = MidiReader:init("maps/drop_in_flip_out_map_tempo_noleadin.mid")
+	gMidiReader = MidiReader:init("maps/test_notes.mid")
 	gMapNotes = gMidiReader:get_notes()
 	--[[
 	for k, note in pairs(gMapNotes) do
@@ -269,7 +269,7 @@ function PlayState:update(dt)
 	self.timer = self.timer + dt
 	if self.noteIndex <= #gMapNotes and self.timer >= gMapNotes[self.noteIndex].start_time * self.note_time_multiplier then
 		--print(gMapNotes[self.noteIndex].pad)
-		self:newNote(20, gMapNotes[self.noteIndex].pad, gMapNotes[self.noteIndex].lane, 1)
+		self:newNote(20, gMapNotes[self.noteIndex].pad, gMapNotes[self.noteIndex].lane, gMapNotes[self.noteIndex].type)
 		self.noteIndex = self.noteIndex + 1
 		--print("Spawned a note! Time is " .. self.timer)
 	end
