@@ -8,6 +8,7 @@
   "image" : "graphics/noteImage.png",
   "source" : "Flip Flop",
   "year" : 2019,
-  "highScores" : "maps/Test/highScores.json"
+  "highScores" : "maps/Test/highScores.json",
+  "midi" : "maps/Test/drop_in_flip_out_map_tempo.mid"
 }
 
