@@ -56,7 +56,7 @@ function MenuState:update(dt)
 	if love.keyboard.wasInput("bottomArrow") then
 		gSounds["startExt"]:stop()
 		gSounds["startExt"]:play()
-		gStateMachine:change("play", {})
+		gStateMachine:change("play", {song = self.songs[self.currentSong]})
 	end
 	if love.keyboard.wasInput("topArrow") then
 		gSounds["back"]:stop()

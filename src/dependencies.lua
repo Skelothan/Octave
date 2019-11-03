@@ -3,6 +3,7 @@ require "lib/deepcopy"
 
 require "src/helpers"
 require "src/collision"
+require "lib/comma_value"
 
 -- A class library. I don't think we'll use it, but it's here just in case.
 -- Class = require "lib/class"
@@ -15,9 +16,6 @@ json = require 'lib/json'
 
 -- Contains asset-loading functions used in love.load().
 require "src/loadassets"
-
--- Contains constants
-require "src/constants"
 
 -- Audio player
 require "src/AudioPlayer"

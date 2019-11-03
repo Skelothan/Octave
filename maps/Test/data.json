@@ -9,6 +9,9 @@
   "source" : "Flip Flop",
   "year" : 2019,
   "highScores" : "maps/Test/highScores.json",
-  "midi" : "maps/Test/drop_in_flip_out_map_tempo.mid"
+  "midi" : "maps/Test/drop_in_flip_out_map_tempo_noleadin.mid",
+  "speedCoeff": 0.28,
+  "audioDelay": 1.7007142857142857142857142857143,
+  "audio": "sfx/Drop_In_Flip_Out.mp3"
 }
 

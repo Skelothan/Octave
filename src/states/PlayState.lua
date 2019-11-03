@@ -40,22 +40,23 @@ function PlayState:newPad(pX, pY, pRadius, pNum)
 	table.insert(self.lanes, lane13)
 end
 --noteType: 1: bottom, 2: top, 3: both
-function PlayState:newNote(nRadius, pad, lane, nSpeed, nNoteType)
+function PlayState:newNote(nRadius, pad, lane, nNoteType)
 	local nLane = self.lanes[lane]
 	table.insert(self.notes, Note:init({
-			x = nLane.endpointX,
-			y = nLane.endpointY,
+			x = noteSpawnCoords[lane][1],
+			y = noteSpawnCoords[lane][2],
 			radius = nRadius,
 			pad = pad,
 			lane = lane,
-			speed = nSpeed,
-			noteType = nNoteType
+			speed = self.noteSpeed,
+			noteType = nNoteType,
+			score = 10000
 		})
 	)
 end
 
 function PlayState:makePads()
-	local centerRadius = math.min(love.graphics.getHeight(), love.graphics.getWidth())/8
+	--local centerRadius = math.min(love.graphics.getHeight(), love.graphics.getWidth())/8
 	local pRadius = 20
 	--Add pads:
 
@@ -96,24 +97,51 @@ function PlayState:enter(params)
 	self.lanes = {}
 	self.healthBar = HealthBar:init({healthColor = gCurrentPalette.healthColor})
 	self.notes = {}
+	self.song = params.song
+	-- Note speed must be constant for correct syncing
+	self.speedCoeff = self.song.speedCoeff 
+	self.noteSpeed = self.speedCoeff * math.max(love.graphics.getHeight(), love.graphics.getWidth())
 	
 	self:makePads()
 	
-
-	--needs a way to pass in midi file
-	gMidiReader = MidiReader:init("maps/Test/drop_in_flip_out_map_tempo.mid")
+	gMidiReader = MidiReader:init(self.song.midi)
 	gMapNotes = gMidiReader:get_notes()
-	self.delay_before_notes = 2.7
-	self.note_time_multiplier = 120/176
+	--[[
+	for k, note in pairs(gMapNotes) do
+		print(note.start_time)
+	end
+	]]
+
+	-- Was originally necessary because there was lead-in time in the MIDI. We no longer use lead-in time.
+	self.delay_before_notes = 0
+	--self.note_time_multiplier = 100/176
+	--self.note_time_multiplier = 120/176
+	
+	-- This coefficient converts the time units in the score to seconds. Luckily, it seems to be constant per file.
+	self.note_time_multiplier = 0.7102 --derived with excel, logic pro, and pain. Works for Drop In, Flip Out at least...
+	-- For this track, seems to be equal to 125 / BPM
+	
+	--print("Delay before notes: " .. self.delay_before_notes)
+	
+	self.note_travel_time = ((gSpawnDistance - centerRadius) / self.noteSpeed)
+	
+	print("Note travel time: " .. self.note_travel_time)
 
 	--DELAY BEFORE NOTES ENTER - make it longer to make them come sooner
 	self.timer = self.delay_before_notes
 	self.noteIndex = 1
-
+	
+	self.audioStarted = false
 	gAudioPlayer:stopAudio()
-	gAudioPlayer:changeAudio(love.audio.newSource("sfx/Drop_In_Flip_Out.mp3", "stream"))
+	
+	--self.audioDelay = 2 * midiOffset + self.note_travel_time. Old, doesn't work well.
+	
+	-- Delay before audio syncs to MIDI for Drop In, Flip Out: 85 milliseconds, more or less exactly
+	self.audioDelay = 1 / (2 * self.speedCoeff) - 0.085 -- TODO: read from JSON
+	gAudioPlayer:changeAudio(love.audio.newSource(self.song.audio, "stream"))
 	gAudioPlayer:setLooping(false)
-	gAudioPlayer:playAudio()
+	self.audioDoneTimer = 3
+	
 end
 
 function PlayState:init()
@@ -130,7 +158,26 @@ function PlayState:spawnNote() --for testing, for now
 	self:newNote(20, rand, 200, 1)
 end
 
-function PlayState:update(dt) 
+function PlayState:update(dt)
+	
+	self.audioDelay = math.max(self.audioDelay-dt, 0)
+	if self.audioDelay == 0 and not self.audioStarted then
+		gAudioPlayer:playAudio()
+		self.audioStarted = true
+	end
+	
+	if not gAudioPlayer:isPlaying() and self.audioStarted then
+		if self.audioDoneTimer > 0 then
+			self.audioDoneTimer = self.audioDoneTimer - dt
+		else
+			gStateMachine:change("gameOver", {
+			score = self.healthBar.score, 
+			isWon = true,
+			file = self.song.highScoreFile
+		})
+		end
+	end
+	
 	for k, pad in pairs(self.pads) do
 		pad.selected = false
 	end
@@ -185,22 +232,57 @@ function PlayState:update(dt)
 				for k, note in pairs(self.notes) do --notes is populated from within note.lua when spawned
 					coll_collides, coll_dist = noteCollision(pad, note)
 					if coll_collides == true and note.isHit == false then
-						note:onHit()
+						note:onHit() --TODO: onHit takes in an accuracy parameter, which causes different sounds to be played
+						pad.active = false
+						--print(coll_dist)
+						if coll_dist < 0.1 then -- Perfect
+							self.healthBar:incrementScore(note.score)
+							self.healthBar:restoreHealth()
+							gSounds["noteHit"]:stop()
+							gSounds["noteHit"]:play()
+						elseif coll_dist < 0.3 then -- Great
+							self.healthBar:incrementScore(note.score * 0.9)
+							self.healthBar:restoreHealth()
+							gSounds["noteHit"]:stop()
+							gSounds["noteHit"]:play()
+						elseif coll_dist < 0.5 then -- Good
+							self.healthBar:incrementScore(note.score * 0.75)
+							gSounds["noteHit"]:stop()
+							gSounds["noteHit"]:play()
+						elseif coll_dist < 1.1 then -- OK
+							self.healthBar:incrementScore(note.score * 0.50)
+							gSounds["noteHit"]:stop()
+							gSounds["noteHit"]:play()
+						else -- Miss
+							gSounds["noteMiss"]:stop()
+							gSounds["noteMiss"]:play()
+						end
+						
 					end
 				end
 			end
 		end
 	end
 	
+	-- Note Spawning
+	self.timer = self.timer + dt
+	if self.noteIndex <= #gMapNotes and self.timer >= gMapNotes[self.noteIndex].start_time * self.note_time_multiplier then
+		--print(gMapNotes[self.noteIndex].pad)
+		self:newNote(20, gMapNotes[self.noteIndex].pad, gMapNotes[self.noteIndex].lane, gMapNotes[self.noteIndex].type)
+		self.noteIndex = self.noteIndex + 1
+		--print("Spawned a note! Time is " .. self.timer)
+	end
+	
 	-- Debug: spawning notes
 	if love.keyboard.wasInput("unbound") then
-		self:spawnNote()
+		print(self.timer)
 	end
 	
 	for k, note in pairs(self.notes) do
 		note:update(dt)
 		-- Change directions of notes once they reach center of pad
-		if note.lane ~= 2 and not note.directionChanged then
+		if not note.directionChanged then
+		--if note.lane ~= 2 and not note.directionChanged then
 			local pad = note.pad
 			if (note.noteAngle == 4 or note.noteAngle == 8) then
 				-- Try changing based on x position, since the note travels horizontally
@@ -219,7 +301,7 @@ function PlayState:update(dt)
 			end
 		end
 		-- Health bar/note collision
-		if circleCollision(note.x, note.y, note.radius, self.healthBar.x, self.healthBar.y, self.healthBar.radius - 2.25 * note.radius) then
+		if circleCollision(note.x, note.y, note.radius, self.healthBar.x, self.healthBar.y, self.healthBar.radius - 2.5 * note.radius) then
 			note.isDestroyed = true
 			self.healthBar:takeDamage(note.score)
 		end
@@ -230,14 +312,6 @@ function PlayState:update(dt)
 
 	for k, pad in pairs(self.pads) do
 		pad:update(dt)
-	end
-
-	self.timer = self.timer + dt
-	--print(self.timer)
-	if self.noteIndex <= #gMapNotes and self.timer >= gMapNotes[self.noteIndex].start_time * self.note_time_multiplier then
-		--print(gMapNotes[self.noteIndex].pad)
-		self:newNote(20, gMapNotes[self.noteIndex].pad, gMapNotes[self.noteIndex].lane, 500, 1)
-		self.noteIndex = self.noteIndex + 1
 	end
 
   --[[
@@ -261,4 +335,6 @@ function PlayState:render()
 		note:render()
 	end
 	self.healthBar:render()
+	-- Debug:
+	--love.graphics.printf("Time: " .. self.timer, 0, 0, winWidth, "left")
 end

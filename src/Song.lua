@@ -15,7 +15,11 @@ function Song:init(params)
 	self.menuColor = params.palette.menuColor or {0.9, 0.3, 0.6, 1}
 	self.textColor = params.palette.menuText or {1, 1, 1, 1}
 	self.highScores = JSONReader:init(params.highScores).data["highScores"] or {}
+	self.highScoreFile = params.highScores .. "/highScores.json"
 	self.midi = params.midi
+	self.speedCoeff = params.speedCoeff
+	self.audio = params.audio
+	self.audioDelay = params.audioDelay
 	
 	return table.deepcopy(o)
 end
