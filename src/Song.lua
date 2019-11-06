@@ -10,8 +10,8 @@ function Song:init(params)
 	self.artist = "Artist Name"
 	self.image = params.image or "graphics/noteImage.png"
 	self.difficulty = params.difficulty or 4
-	self.menuColor = gPalette[params.palette].menuColor or {0.9, 0.3, 0.6, 1}
-	self.textColor = gPalette[params.palette].textColor or {1, 1, 1, 1}
+	self.menuColor = gCurrentPalette.menuColor or {0.9, 0.3, 0.6, 1}
+	self.textColor = gCurrentPalette.textColor or {1, 1, 1, 1}
 	self.highScores = params.highScores or {}
 	
 	return table.deepcopy(o)

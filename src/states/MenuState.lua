@@ -17,7 +17,6 @@ function MenuState:init()
 		artist = "Artist Name",
 		image = "graphics/noteImage.png", 
 		difficulty = 4,
-		palette = "standard",
 		highScores = { 
 			{name = "Score Name", score = 42069},
 			{name = "Bob", score = 19800},
@@ -29,7 +28,6 @@ function MenuState:init()
 		artist = "Artist 2",
 		image = "graphics/songImage.jpg",
 		difficulty = 3,
-		palette = "standard",
 		highScores = {
 			{name = "Score Name", score = 1234},
 			{name = "Anon", score = 452}
@@ -40,7 +38,6 @@ function MenuState:init()
 		artist = "Artist 3",
 		--image = love.graphics.newImage("graphics/noteImage.png"),
 		difficulty = 1,
-		palette = "standard",
 		highScores = {}
 	})
 	table.insert(self.songs, song1)

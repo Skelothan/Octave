@@ -30,9 +30,10 @@ function love.load()
 	loadFonts()
 	loadSounds()
 	gBackgroundImage = nil
-	gBackground = Background:init("squares", gPalette["standard"])
 
-	gCurrentPalette = gPalette["standard"]
+	gCurrentPalette = gPalette["bluepink"]
+
+	gBackground = Background:init("circleFlower")
 	
 	love.keyboard.keysPressed = {}
 	love.keyboard.inputs = {}
