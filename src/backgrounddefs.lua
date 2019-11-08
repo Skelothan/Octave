@@ -248,5 +248,37 @@ gBackgroundDefs = {
 						love.graphics.circle("fill", self.cx, self.cy - self.dist * (self.cirPos2), self.circleSize)
 						love.graphics.pop()
 					end
+	},
+	["scrollSquares"] = {
+			init2 = function(self)
+						gBackgroundImage = nil
+						self.timer1 = 0
+						self.cx = winWidth
+						self.cy = winHeight / 2
+						self.circleSize = love.graphics.getHeight()*0.2
+						self.dist = math.min(winWidth, winHeight) / 4
+						gBackgroundImage = love.graphics.newImage("graphics/linearGradientBottom.png")
+						love.graphics.setBackgroundColor(gCurrentPalette.background)
+						self.margin = winHeight * 1/16
+						self.size = winHeight * 1/4 - self.margin
+					end,
+			update = function(self, dt)
+						self.timer1 = (self.timer1 - 100 * dt)
+					end,
+			render = function(self)
+						love.graphics.push()
+						-- rotate around center
+						--love.graphics.translate(self.cx, self.cy)
+						--love.graphics.rotate(self.timer2)
+						--love.graphics.translate(-self.cx, -self.cy)
+						love.graphics.translate(self.timer1, 0)
+						
+						love.graphics.setColor(gCurrentPalette.bgObjects)
+						for i=1,7,2 do
+							love.graphics.rectangle("fill", self.cx, winHeight * i/8 - self.margin, self.size, self.size)
+						end
+						love.graphics.pop()
+					end
 	}
+	
 }
