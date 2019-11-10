@@ -16,8 +16,12 @@ function Song:init(params)
 
 	self.menuColor = self.palette.menuColor or {0.9, 0.3, 0.6, 1}
 	self.textColor = self.palette.textColor or {1, 1, 1, 1}
+	--print("params.highScores:" .. params.highScores)
 	self.highScores = JSONReader:init(params.highScores).data["highScores"] or {}
+	if type(self.highScores) ~= "table" then self.highScores = {} end
+	--self.highScores = JSONReader:init(params.highScores).data or {}
 	self.highScoreFile = params.highScores .. "/highScores.json"
+	-- is self.highScoreFile even being used? It's also inaccurate.
 	self.midi = params.midi
 	self.speedCoeff = params.speedCoeff
 	self.noteDelay = params.noteDelay
@@ -149,6 +153,7 @@ function Song:renderRight(opacity)
 		rectX + winWidth/64*1.5,
 		rectY + winWidth/64*1.5
 	)
+	--print("self.highScoreFile: " .. self.highScoreFile)
 	for i, score in ipairs(self.highScores) do
 		love.graphics.print(score.name,
 			gFonts["AvenirLight24"],

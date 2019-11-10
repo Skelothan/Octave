@@ -8,7 +8,7 @@
   "image" : "graphics/noteImage.png",
   "source" : "Octave",
   "year" : 2019,
-  "highScores" : "maps/Test/highScores.json",
+  "highScores" : "maps/Dawn's Light/highScores.json",
   "midi" : "maps/Dawn's Light/dawns_light_map_noleadin.mid",
   "speedCoeff": 0.22,
   "noteDelay": 0.066,
