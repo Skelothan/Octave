@@ -81,12 +81,18 @@ function Song:renderLeft(opacity)
 	local imageY = (winHeight/5) 
 	local textY = (winHeight*0.5) + (winWidth/64)
 
-	local star = love.graphics.newImage("graphics/star.png")
+	local star = {}
+
+	for i=1,5 do
+		star[4*i-3] = winWidth/48*math.sin(math.pi+i*2*math.pi/5) *3/4
+		star[4*i-2] = winWidth/48*math.cos(math.pi+i*2*math.pi/5) *3/4
+		star[4*i-1] = winWidth/96*math.sin(math.pi+math.pi/5+i*2*math.pi/5) *3/4
+		star[4*i] = winWidth/96*math.cos(math.pi+math.pi/5+i*2*math.pi/5) *3/4
+	end
+
 	local image = love.graphics.newImage(self.image)
 	local scaleX = winWidth/6/image:getWidth()
 	local scaleY = winWidth/6/image:getHeight()
-	local starScaleX = (winWidth/24)/star:getWidth()
-	local starScaleY = (winWidth/24)/star:getHeight()
 
 	self.menuColor[4] = opacity
 	self.textColor[4] = opacity
@@ -116,9 +122,18 @@ function Song:renderLeft(opacity)
 	)
 
 	love.graphics.setColor(1,1,1, opacity)
+	love.graphics.setLineWidth(5)
 
 	for i = 0, self.difficulty-1, 1 do
-		love.graphics.draw(star, imageX - winWidth/32 + (3*i*winWidth/64), textY + 70, 0, starScaleX, starScaleY, 0, 0)
+		localStar = table.deepcopy(star)
+		for j=1,20 do
+			if j%2 == 1 then
+				localStar[j] = localStar[j] + imageX - winWidth/32 + (3*i*winWidth/64) + 60
+			else
+				localStar[j] = localStar[j] +textY + 70 + 40
+			end
+		end
+		love.graphics.polygon("line", localStar)
 	end
 end
 
