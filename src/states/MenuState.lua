@@ -39,6 +39,10 @@ function MenuState:init()
 	end
 
 	self.currentSong = 1
+
+	gCurrentPalette = self.songs[self.currentSong].palette
+	gBackground = Background:init(self.songs[self.currentSong].background)
+
 	self.menuColor = self.songs[self.currentSong].menuColor or {1,1,1,1}
 	self.textColor = self.songs[self.currentSong].textColor or {0, 0, 0, 1}
 	self.lastUp = 0
@@ -59,11 +63,19 @@ function MenuState:update(dt)
 		gSounds["scroll"]:stop()
 		gSounds["scroll"]:play()
 		self.currentSong = self.currentSong - 1
+
+		gCurrentPalette = self.songs[self.currentSong].palette
+		gBackground = Background:init(self.songs[self.currentSong].background)
+
 		self.lastUp = 0
 	elseif self.lastDown >= 0.15 and love.keyboard.isHeld("down") and self.currentSong < self.numSongs then
 		gSounds["scroll"]:stop()
 		gSounds["scroll"]:play()
 		self.currentSong = self.currentSong + 1
+
+		gCurrentPalette = self.songs[self.currentSong].palette
+		gBackground = Background:init(self.songs[self.currentSong].background)
+
 		self.lastDown = 0
 	end
 	if love.keyboard.wasInput("bottomArrow") then

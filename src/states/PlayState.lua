@@ -3,8 +3,10 @@ PlayState.__index = PlayState
 
 function PlayState:newPad(pX, pY, pRadius, pNum)
 	color = gCurrentPalette.pad1
+	laneColor = gCurrentPalette.laneColor
 	if pNum % 2 == 1 then
 		color = gCurrentPalette.pad2
+		laneColor = gCurrentPalette.laneColor2
 	end
 	table.insert(self.pads, Pad:init({
 		x = pX, 
@@ -19,7 +21,7 @@ function PlayState:newPad(pX, pY, pRadius, pNum)
 		padY = pY, 
 		padR = pRadius,
 		angle = math.oimod((pNum), 8),
-		laneColor = gCurrentPalette.laneColor
+		laneColor = laneColor
 	})
 	table.insert(self.lanes, lane11)
 	local lane12 = Lane:init({
@@ -27,7 +29,7 @@ function PlayState:newPad(pX, pY, pRadius, pNum)
 		padY = pY, 
 		padR = pRadius,
 		angle = math.oimod((pNum+1), 8),
-		laneColor = gCurrentPalette.laneColor
+		laneColor = laneColor
 	})
 	table.insert(self.lanes, lane12)
 	local lane13 = Lane:init({
@@ -35,7 +37,7 @@ function PlayState:newPad(pX, pY, pRadius, pNum)
 		padY = pY, 
 		padR = pRadius,
 		angle = math.oimod((pNum+2), 8),
-		laneColor = gCurrentPalette.laneColor
+		laneColor = laneColor
 	})
 	table.insert(self.lanes, lane13)
 end

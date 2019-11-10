@@ -10,10 +10,12 @@ function Song:init(params)
 	self.artist = params.artist or "Artist Name"
 	self.image = params.image or "graphics/noteImage.png"
 	self.difficulty = params.difficulty or 4
-	self.menuColor = gPalette[params.palette].menuColor or {0.9, 0.3, 0.6, 1}
-	self.textColor = gPalette[params.palette].textColor or {1, 1, 1, 1}
-	self.menuColor = params.palette.menuColor or {0.9, 0.3, 0.6, 1}
-	self.textColor = params.palette.menuText or {1, 1, 1, 1}
+
+	self.background = params.background or "spinTriangle"
+	self.palette = gPalette[params.palette] or gPalette["bluepink"]
+
+	self.menuColor = self.palette.menuColor or {0.9, 0.3, 0.6, 1}
+	self.textColor = self.palette.textColor or {1, 1, 1, 1}
 	self.highScores = JSONReader:init(params.highScores).data["highScores"] or {}
 	self.highScoreFile = params.highScores .. "/highScores.json"
 	self.midi = params.midi
@@ -22,6 +24,7 @@ function Song:init(params)
 	self.audio = params.audio
 	self.bpm = params.bpm
 	self.audioDelay = params.audioDelay
+
 	
 	return table.deepcopy(o)
 end
