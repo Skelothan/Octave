@@ -19,10 +19,10 @@ function MenuState:init()
 		print(file)
 		if file ~= ".DS_Store" then
 			usefiles[counter] = "maps/" .. file
-			print("Adding " .. usefiles[counter])
+			--print("Adding " .. usefiles[counter])
 			counter = counter + 1
 		else
-			print("Skipping .DS_Store")
+			--print("Skipping .DS_Store")
 		end
 	end
 	--JSONReader:init("maps/database.json").data["songs"]
