@@ -128,7 +128,7 @@ function PlayState:enter(params)
 	
 	self.note_travel_time = ((gSpawnDistance - centerRadius) / self.noteSpeed)
 	
-	print("Note travel time: " .. self.note_travel_time)
+	--print("Note travel time: " .. self.note_travel_time)
 
 	--DELAY BEFORE NOTES ENTER - make it longer to make them come sooner
 	self.timer = self.delay_before_notes
@@ -234,10 +234,12 @@ function PlayState:update(dt)
 				for j, note in pairs(self.notes) do --notes is populated from within note.lua when spawned
 					coll_collides, coll_dist = noteCollision(pad, note)
 					
+					--[[
 					print(note.noteType)
 					print("Pad number: " .. k)
 					print("Note Type: " .. pad.noteTypePressed);
 					print("Note Type abs: " .. self.pads[2].noteTypePressed);
+					]]
 					if coll_collides == true and note.isHit == false and note.noteType == pad.noteTypePressed then
 						note:onHit() --TODO: onHit takes in an accuracy parameter, which causes different sounds to be played
 						pad.active = false
