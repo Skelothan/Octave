@@ -21,8 +21,8 @@ function Song:init(params)
 	self.bpm = params.bpm
 	self.audioDelay = params.audioDelay
 
-	self.background = params.background
-	self.palette = gPalette[params.palette]
+	self.background = params.background or "spinTriangle"
+	self.palette = gPalette[params.palette] or gPalette["bluepink"]
 	
 	return table.deepcopy(o)
 end

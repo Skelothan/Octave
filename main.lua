@@ -10,7 +10,7 @@ function love.load()
 	-- Contains constants
 	require "src/constants"
 
-	-- Seed RNG, just in case we use it
+	-- Seed RNG, just in caswe we use it
 	math.randomseed(os.time())
 	
 	-- Set window title
@@ -33,7 +33,7 @@ function love.load()
 
 	gCurrentPalette = gPalette["bluepink"]
 
-	gBackground = Background:init("circleFlower")
+	gBackground = Background:init("spinTriangle")
 	
 	love.keyboard.keysPressed = {}
 	love.keyboard.inputs = {}

@@ -126,56 +126,6 @@ gBackgroundDefs = {
 						love.graphics.resetColor()
 					end
 	},
-	["circleFlower"] = {
-		init2 = function(self) 
-						self.x = love.graphics.getWidth()/2
-						self.y = love.graphics.getHeight()/2
-						gBackgroundImage = love.graphics.newImage("graphics/radialGradient.png")
-						love.graphics.setBackgroundColor(gCurrentPalette.background)
-						self.circles = {{-self.y/4,-self.y/4, self.y/4,-self.y/4, self.y/4,self.y/4,-self.y/4,self.y/4},
-										rotate_object({-self.y/4,-self.y/4, self.y/4,-self.y/4, self.y/4,self.y/4,-self.y/4,self.y/4}, math.pi/4),
-										rotate_object({-self.y/4,-self.y/4, self.y/4,-self.y/4, self.y/4,self.y/4,-self.y/4,self.y/4}, math.pi/4),
-										{-self.y/4,-self.y/4, self.y/4,-self.y/4, self.y/4,self.y/4,-self.y/4,self.y/4}
-									}
-						love.graphics.resetColor()
-						love.graphics.setColor(gCurrentPalette.bgObjects)
-						self.canvas = love.graphics.newCanvas(1920, 1920)
-						for i=1,16 do
-							points = rotate_object({self.x, self.y/4+self.y, -self.y/4 * math.sqrt(3)/2+self.x,-self.y/4 * 1/2+self.y,self.y/4 * math.sqrt(3)/2+self.x,-self.y/4 * 1/2+self.y}, math.pi/8*i)
-							self.canvas:renderTo(function() love.graphics.polygon("line",points) end)
-						end
-						self.circleRad = self.y/16
-						love.graphics.resetColor()		
-					end,
-			update = function(self, dt) 
-						for j, u in ipairs(self.circles) do
-							if j%2 == 0 then
-								self.circles[j] = rotate_object(self.circles[j],math.pi/2048)
-							else
-								self.circles[j] = rotate_object(self.circles[j],-math.pi/2048)
-							end
-						end 
-						love.graphics.translate(self.x, self.y)
-						love.graphics.rotate(angle)
-						love.graphics.translate(-self.x, -self.y)
-					end,
-			render = function(self)
-						allpoints = {}
-						love.graphics.setLineWidth(10)
-						centeredCircles = center_points(self.x, self.y, self.circles)
-						centeredTriangles = center_points(self.x, self.y, self.triangles)
-						love.graphics.setColor(gCurrentPalette.bgObjects)
-						for i, v in ipairs(centeredCircles) do
-							for k, w in ipairs(v) do
-								if (k%2) == 1 then
-									love.graphics.circle("line",v[k], v[k+1], self.circleRad)
-								end
-							end 
-						end
-						love.graphics.draw(self.canvas,0,0)
-						love.graphics.resetColor()
-					end
-	},
 	["shearSquares"] = {
 			init2 = function(self)
 						gBackgroundImage = nil
