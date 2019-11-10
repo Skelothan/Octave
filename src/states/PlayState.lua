@@ -240,7 +240,7 @@ function PlayState:update(dt)
 					print("Note Type: " .. pad.noteTypePressed);
 					print("Note Type abs: " .. self.pads[2].noteTypePressed);
 					]]
-					if coll_collides == true and note.isHit == false and note.noteType == pad.noteTypePressed then
+					if pad.active and coll_collides == true and note.isHit == false and note.noteType == pad.noteTypePressed then
 						note:onHit() --TODO: onHit takes in an accuracy parameter, which causes different sounds to be played
 						pad.active = false
 						--print(coll_dist)
