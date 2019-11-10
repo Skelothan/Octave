@@ -18,6 +18,7 @@ function Song:init(params)
 	self.highScoreFile = params.highScores .. "/highScores.json"
 	self.midi = params.midi
 	self.speedCoeff = params.speedCoeff
+	self.noteDelay = params.noteDelay
 	self.audio = params.audio
 	self.bpm = params.bpm
 	self.audioDelay = params.audioDelay

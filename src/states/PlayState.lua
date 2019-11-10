@@ -138,7 +138,7 @@ function PlayState:enter(params)
 	--self.audioDelay = 2 * midiOffset + self.note_travel_time. Old, doesn't work well.
 	
 	-- Delay before audio syncs to MIDI for Drop In, Flip Out: 85 milliseconds, more or less exactly
-	self.audioDelay = 1 / (2 * self.speedCoeff) - 0.085 -- TODO: read from JSON
+	self.audioDelay = 1 / (2 * self.speedCoeff) - self.song.noteDelay -- TODO: read from JSON
 	gAudioPlayer:changeAudio(love.audio.newSource(self.song.audio, "stream"))
 	gAudioPlayer:setLooping(false)
 	self.audioDoneTimer = 3
