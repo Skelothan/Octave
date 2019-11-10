@@ -6,13 +6,23 @@ function Song:init(params)
 	setmetatable(o, self)
 	self.__index = self
 	
-	self.name = params.name or "Song Name"
-	self.artist = "Artist Name"
+	self.name = params.title or "Song Name"
+	self.artist = params.artist or "Artist Name"
 	self.image = params.image or "graphics/noteImage.png"
 	self.difficulty = params.difficulty or 4
+
 	self.menuColor = gCurrentPalette.menuColor or {0.9, 0.3, 0.6, 1}
 	self.textColor = gCurrentPalette.textColor or {1, 1, 1, 1}
-	self.highScores = params.highScores or {}
+	self.highScores = JSONReader:init(params.highScores).data["highScores"] or {}
+	self.highScoreFile = params.highScores .. "/highScores.json"
+	self.midi = params.midi
+	self.speedCoeff = params.speedCoeff
+	self.audio = params.audio
+	self.bpm = params.bpm
+	self.audioDelay = params.audioDelay
+
+	self.background = params.background
+	self.palette = gPalette[params.palette]
 	
 	return table.deepcopy(o)
 end
@@ -26,6 +36,8 @@ function Song:render(index, currentSong, opacity, isCurrentSong)
 end
 
 function Song:renderSong(index, currentSong, opacity)
+	local winWidth = love.graphics.getWidth()
+	local winHeight = love.graphics.getHeight()
 	local songWidth = (winWidth/3) - (winWidth/32)
 	local songHeight = (winHeight/6) - (winHeight/32)
 	local songX = (winWidth * 0.5) - (songWidth*0.5)
@@ -54,13 +66,16 @@ function Song:renderSong(index, currentSong, opacity)
 	)
 	love.graphics.print(
 		self.artist,
-		gFonts["AvenirLight16"],
+		gFonts["AvenirLight24"],
 		songX + (songWidth/16),
 		songY + (songHeight/16) + 40
 	)
 end
 
 function Song:renderLeft(opacity)
+	local winWidth = love.graphics.getWidth()
+	local winHeight = love.graphics.getHeight()
+
 	local imageX = (winWidth/6) - (winWidth/6/2)
 	local imageY = (winHeight/5) 
 	local textY = (winHeight*0.5) + (winWidth/64)
@@ -94,7 +109,7 @@ function Song:renderLeft(opacity)
 	)
 	love.graphics.print(
 		self.artist,
-		gFonts["AvenirLight16"],
+		gFonts["AvenirLight24"],
 		imageX - winWidth/64,
 		textY + 40
 	)
@@ -107,6 +122,9 @@ function Song:renderLeft(opacity)
 end
 
 function Song:renderRight(opacity) 
+	local winWidth = love.graphics.getWidth()
+	local winHeight = love.graphics.getHeight()
+
 	local rectWidth = winWidth/3 - winWidth/16
 	local rectHeight = winHeight/2
 	local rectX = (5*winWidth/6) - (winWidth/6/2) - (3*winWidth/64)
@@ -131,14 +149,14 @@ function Song:renderRight(opacity)
 	)
 	for i, score in ipairs(self.highScores) do
 		love.graphics.print(score.name,
-			gFonts["AvenirLight16"],
+			gFonts["AvenirLight24"],
 			rectX + winWidth/64*1.5,
-			rectY + winWidth/64*1.5 + 40 + (i-1)*20
+			rectY + winWidth/64*1.5 + 40 + (i-1)*30
 		)
 		love.graphics.printf(score.score,
-			gFonts["AvenirLight16"],
+			gFonts["AvenirLight24"],
 			rectX+winWidth/64*1.5,
-			rectY + winWidth/64*1.5 + 40 + (i-1)*20,
+			rectY + winWidth/64*1.5 + 40 + (i-1)*30,
 			rectWidth - winWidth/64*3,
 			"right",
 			0, 1, 1, 0, 0, 0, 0

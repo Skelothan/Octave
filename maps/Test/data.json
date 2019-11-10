@@ -1,0 +1,17 @@
+{
+  "difficulty" : 3,
+  "background" : "spinTriangle",
+  "palette" : "standard",
+  "title" : "Drop In, Flip Out",
+  "artist" : "Skelothan",
+  "album" : "Octave OST Vol. 1",
+  "image" : "graphics/noteImage.png",
+  "source" : "Flip Flop",
+  "year" : 2019,
+  "highScores" : "maps/Test/highScores.json",
+  "midi" : "maps/Test/drop_in_flip_out_map_tempo_noleadin.mid",
+  "speedCoeff": 0.28,
+  "bpm" : 176,
+  "audio": "sfx/Drop_In_Flip_Out.mp3"
+}
+

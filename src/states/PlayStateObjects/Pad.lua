@@ -23,26 +23,53 @@ function Pad:init(params)
 	self.padColor = params.padColor or {0, 127/255, 1, 1}
 
 	self.activeColor = params.activeColor or {1, 1, 1, 1}
-	self.activeOpacity = 0;
+	self.activeOpacity = 0
+	self.noteTypePressed = 0
+
 	
 	return table.deepcopy(o)
 end
 
 function Pad:update(dt)
-
 	-- decrement active timer, deactivate once over
 	self.activeTimer = math.max(self.activeTimer - dt, 0)
 	if self.activeTimer == 0 then
 		self.active = false
 	end
-
+	if not self.active then
+		self.topArrowPressed = false
+		self.bottomArrowPressed = false
+		self.noteTypePressed = 0
+	else
+		if self.topArrowPressed and self.bottomArrowPressed then
+			self.noteTypePressed = 3
+		elseif self.topArrowPressed then
+			self.noteTypePressed = 2
+		elseif self.bottomArrowPressed then
+			self.noteTypePressed = 1
+		end
+	end
+	--print(self.active)
+	--[[
+	print("top " )
+	print(self.topArrowPressed)
+	print("bottom") 
+	print(self.bottomArrowPressed)
+	]]--
 end
 
 function Pad:onPress(input)
 	self.active = true
 	self.activeOpacity = 1
 	-- Current window is two frames. Should playtest if this is too big/small.
-	self.activeTimer = 2/60
+	self.activeTimer = 10/60
+	if(input == "topArrow") then
+
+		self.topArrowPressed = true;
+	elseif(input == "bottomArrow") then
+		self.bottomArrowPressed = true
+	end
+
 end
 
 function Pad:render()

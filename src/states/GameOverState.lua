@@ -15,6 +15,7 @@ function GameOverState:enter(params)
 	self.fadeTextColor = gCurrentPalette.menuText
 	self.isWon = params.isWon or false
 	self.stopInputTimer = 4
+	self.file = params.file
 end
 
 function GameOverState:update(dt)
@@ -36,7 +37,7 @@ function GameOverState:render()
 		love.graphics.printf("Game Over", gFonts["AvenirLight64"], 0, love.graphics.getHeight() / 3, love.graphics.getWidth(), "center")
 	end
 	
-	love.graphics.printf("Your Score: " .. self.score, gFonts["AvenirLight32"], 0, love.graphics.getHeight()/2, love.graphics.getWidth(), "center")
+	love.graphics.printf("Your Score: " .. comma_value(self.score), gFonts["AvenirLight32"], 0, love.graphics.getHeight()/2, love.graphics.getWidth(), "center")
 
 	if self.stopInputTimer <= 0.5 then
 		if self.fadeTextColor[4] ~= 1 then

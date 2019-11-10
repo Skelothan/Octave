@@ -1,0 +1,13 @@
+{
+  "difficulty" : 4,
+  "background" : "spinTriangle",
+  "palette" : "standard",
+  "title" : "Untitled",
+  "artist" : "Skelothan",
+  "album" : "Octave OST Vol. 1",
+  "image" : "graphics/songImage.jpg",
+  "source" : "Flip Flop",
+  "year" : 2019,
+  "highScores" : "maps/Test2/highScores.json"
+}
+
