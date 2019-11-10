@@ -3,7 +3,7 @@ PlayState.__index = PlayState
 
 function PlayState:newPad(pX, pY, pRadius, pNum)
 	color = gCurrentPalette.pad1
-	lanecolor = gCurrentPalette.laneColor
+	laneColor = gCurrentPalette.laneColor
 	if pNum % 2 == 1 then
 		color = gCurrentPalette.pad2
 		laneColor = gCurrentPalette.laneColor2

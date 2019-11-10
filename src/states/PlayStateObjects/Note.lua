@@ -42,9 +42,9 @@ function Note:init(params, playState)
 	self.noteType = params.noteType or 1
 	
 	self.outlineColor = params.outlineColor or {0, 0, 0, 1}
-	if noteType == 1 then
+	if self.noteType == 1 then
 		self.noteColor = gCurrentPalette.noteColorBottom
-	elseif noteType == 2 then
+	elseif self.noteType == 2 then
 		self.noteColor = gCurrentPalette.noteColorTop
 	else 
 		self.noteColor = gCurrentPalette.noteColorBoth

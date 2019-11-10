@@ -57,13 +57,15 @@ gBackgroundDefs = {
 			init2 = function(self)
 						self.x = love.graphics.getWidth()/2
 						self.y = love.graphics.getHeight()/2
-						gBackgroundImage = love.graphics.newImage("graphics/menubackground.png")
+						gBackgroundImage = love.graphics.newImage("graphics/linearGradientBottom.png")
+						love.graphics.setBackgroundColor(gCurrentPalette.background)
 						self.triangles = {{0, self.y/2, -self.y/2 * math.sqrt(3)/2,-self.y/2 * 1/2,self.y/2 * math.sqrt(3)/2,-self.y/2 * 1/2},
 							{0, self.y/2, -self.y/2 * math.sqrt(3)/2,-self.y/2 * 1/2,self.y/2 * math.sqrt(3)/2,-self.y/2 * 1/2},
 							{0, self.y/2, -self.y/2 * math.sqrt(3)/2,-self.y/2 * 1/2,self.y/2 * math.sqrt(3)/2,-self.y/2 * 1/2},
 							{0, self.y/2, -self.y/2 * math.sqrt(3)/2,-self.y/2 * 1/2,self.y/2 * math.sqrt(3)/2,-self.y/2 * 1/2},
 							{0, self.y/2, -self.y/2 * math.sqrt(3)/2,-self.y/2 * 1/2,self.y/2 * math.sqrt(3)/2,-self.y/2 * 1/2}}
 						self.angle = 0
+						love.graphics.resetColor()
 					end,
 			update = function(self, dt)
 						self.angle = (self.angle + dt) % (2 * math.pi)
@@ -73,7 +75,8 @@ gBackgroundDefs = {
 					end,
 			render = function(self)
 						love.graphics.setLineWidth(10)
-						love.graphics.setBackgroundColor(gCurrentPalette.background)
+						love.graphics.setColor(gCurrentPalette.gradient)
+						love.graphics.draw(gBackgroundImage,0,0,0,self.x*2/1920, self.y*2/1080)
 						love.graphics.resetColor()
 						love.graphics.setColor(gCurrentPalette.bgObjects)
 						centeredTriangles = center_points(self.x, self.y, self.triangles)
