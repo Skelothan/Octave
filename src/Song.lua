@@ -128,7 +128,7 @@ function Song:renderLeft(opacity)
 		localStar = table.deepcopy(star)
 		for j=1,20 do
 			if j%2 == 1 then
-				localStar[j] = localStar[j] + imageX - winWidth/32 + (3*i*winWidth/64) + 60
+				localStar[j] = localStar[j] + imageX - winWidth/32 + (3*i*winWidth/64*5/6) + 40
 			else
 				localStar[j] = localStar[j] +textY + 70 + 40
 			end
