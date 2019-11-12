@@ -247,21 +247,21 @@ function PlayState:update(dt)
 						if coll_dist < 0.1 then -- Perfect
 							self.healthBar:incrementScore(note.score)
 							self.healthBar:restoreHealth()
-							gSounds["noteHit"]:stop()
-							gSounds["noteHit"]:play()
+							gSounds["noteHitPerfect"]:stop()
+							gSounds["noteHitPerfect"]:play()
 						elseif coll_dist < 0.3 then -- Great
 							self.healthBar:incrementScore(note.score * 0.9)
 							self.healthBar:restoreHealth()
-							gSounds["noteHit"]:stop()
-							gSounds["noteHit"]:play()
+							gSounds["noteHitGreat"]:stop()
+							gSounds["noteHitGreat"]:play()
 						elseif coll_dist < 0.5 then -- Good
 							self.healthBar:incrementScore(note.score * 0.75)
-							gSounds["noteHit"]:stop()
-							gSounds["noteHit"]:play()
+							gSounds["noteHitGood"]:stop()
+							gSounds["noteHitGood"]:play()
 						elseif coll_dist < 1.1 then -- OK
 							self.healthBar:incrementScore(note.score * 0.50)
-							gSounds["noteHit"]:stop()
-							gSounds["noteHit"]:play()
+							gSounds["noteHitOk"]:stop()
+							gSounds["noteHitOk"]:play()
 						else -- Miss
 							gSounds["noteMiss"]:stop()
 							gSounds["noteMiss"]:play()
@@ -312,6 +312,8 @@ function PlayState:update(dt)
 		-- Health bar/note collision
 		if circleCollision(note.x, note.y, note.radius, self.healthBar.x, self.healthBar.y, self.healthBar.radius - 2.5 * note.radius) then
 			note.isDestroyed = true
+			gSounds["damage"]:stop()
+			gSounds["damage"]:play()
 			self.healthBar:takeDamage(note.score)
 		end
 		if note.isDestroyed then
