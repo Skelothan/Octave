@@ -12,9 +12,9 @@ function loadSounds()
 	gSounds = {
 		["back"] = love.audio.newSource("sfx/back.mp3", "static"),
 		["damage"] = love.audio.newSource("sfx/hurt.wav", "static"),
-		["noteHitPerfect"] = love.audio.newSource("sfx/note_hit_4.wav", "static"),
-		["noteHitGreat"] = love.audio.newSource("sfx/note_hit_3.wav", "static"),
-		["noteHitGood"] = love.audio.newSource("sfx/note_hit_2.wav", "static"),
+		["noteHitPerfect"] = love.audio.newSource("sfx/note_hit_2.wav", "static"),
+		["noteHitGreat"] = love.audio.newSource("sfx/note_hit_2.wav", "static"),
+		["noteHitGood"] = love.audio.newSource("sfx/note_hit_3.wav", "static"),
 		["noteHitOk"] = love.audio.newSource("sfx/note_hit_1.wav", "static"),
 		["noteMiss"] = love.audio.newSource("sfx/note_miss.wav", "static"),
 		["scroll"] =  love.audio.newSource("sfx/scroll.wav", "static"),
