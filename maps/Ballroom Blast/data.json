@@ -1,0 +1,18 @@
+{
+  "difficulty" : 1,
+  "background" : "spinTriangle",
+  "palette" : "standard",
+  "title" : "Ballroom Blast",
+  "artist" : "Poshon",
+  "album" : "Octave OST Vol. 1",
+  "image" : "graphics/songImage.jpg",
+  "source" : "Danger Dancer",
+  "year" : 2018,
+  "highScores" : "maps/Ballroom Blast/highScores.json",
+  "midi" : "maps/Ballroom Blast/ballroom_blast_map.mid",
+  "speedCoeff": 0.27,
+  "noteDelay": 0.085,
+  "bpm" : 127,
+  "audio" : "sfx/Ballroom_Blast.mp3"
+}
+
