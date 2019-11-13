@@ -9,19 +9,27 @@ function MenuState:init()
 	setmetatable(MenuState, BaseState) -- inheritance: arg a inherits arg b	
 	
 	self.songs = {}
-	self.currentSong = 1
+	
 	self.numSongs = 0	
 	
 	local files = love.filesystem.getDirectoryItems("/maps")
+	local usefiles = {}
+	local counter = 1
 	for i, file in ipairs(files) do
+		--print(file)
 		if file ~= ".DS_Store" then
-			files[i] = "maps/" .. file
+			usefiles[counter] = "maps/" .. file
+			--print("Adding " .. usefiles[counter])
+			counter = counter + 1
+		else
+			--print("Skipping .DS_Store")
 		end
 	end
 	--JSONReader:init("maps/database.json").data["songs"]
 
 
-	for i, song in ipairs(files) do
+	for i, song in ipairs(usefiles) do
+		--print(song .. "/data.json")
 		local params = JSONReader:init(song .. "/data.json").data
 		if params ~= nil then
 			local s = Song:init(params)
@@ -30,6 +38,8 @@ function MenuState:init()
 		end
 	end
 
+	self.currentSong = 1
+
 	gCurrentPalette = self.songs[self.currentSong].palette
 	gBackground = Background:init(self.songs[self.currentSong].background)
 
@@ -37,7 +47,7 @@ function MenuState:init()
 	self.textColor = self.songs[self.currentSong].textColor or {0, 0, 0, 1}
 	self.lastUp = 0
 	self.lastDown = 0
-  
+
 	return table.deepcopy(o)
 end
 

@@ -8,10 +8,8 @@ function Background:init(backgroundName)
 	setmetatable(o, self)
 	self.__index = self
 	
-	print(type(o))
 	self:setFunctions(backgroundName or "oscCircle")
 	self:init2()
-	print(type(o))
 	
 	return table.deepcopy(o)
 	--return o

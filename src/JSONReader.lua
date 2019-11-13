@@ -85,7 +85,7 @@ function JSONReader:init(filename)
 	self.__index = self
   if(love.filesystem.getInfo(filename)) then
     --filesystem.read(filename)()
-    print(love.filesystem.read(filename))
+    --print(love.filesystem.read(filename))
     self.data = json.decode(love.filesystem.read(filename))
   end
 

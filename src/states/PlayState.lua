@@ -128,7 +128,7 @@ function PlayState:enter(params)
 	
 	self.note_travel_time = ((gSpawnDistance - centerRadius) / self.noteSpeed)
 	
-	print("Note travel time: " .. self.note_travel_time)
+	--print("Note travel time: " .. self.note_travel_time)
 
 	--DELAY BEFORE NOTES ENTER - make it longer to make them come sooner
 	self.timer = self.delay_before_notes
@@ -140,7 +140,7 @@ function PlayState:enter(params)
 	--self.audioDelay = 2 * midiOffset + self.note_travel_time. Old, doesn't work well.
 	
 	-- Delay before audio syncs to MIDI for Drop In, Flip Out: 85 milliseconds, more or less exactly
-	self.audioDelay = 1 / (2 * self.speedCoeff) - 0.085 -- TODO: read from JSON
+	self.audioDelay = 1 / (2 * self.speedCoeff) - self.song.noteDelay -- TODO: read from JSON
 	gAudioPlayer:changeAudio(love.audio.newSource(self.song.audio, "stream"))
 	gAudioPlayer:setLooping(false)
 	self.audioDoneTimer = 3
@@ -234,11 +234,13 @@ function PlayState:update(dt)
 				for j, note in pairs(self.notes) do --notes is populated from within note.lua when spawned
 					coll_collides, coll_dist = noteCollision(pad, note)
 					
+					--[[
 					print(note.noteType)
 					print("Pad number: " .. k)
 					print("Note Type: " .. pad.noteTypePressed);
 					print("Note Type abs: " .. self.pads[2].noteTypePressed);
-					if coll_collides == true and note.isHit == false and note.noteType == pad.noteTypePressed then
+					]]
+					if pad.active and coll_collides == true and note.isHit == false and note.noteType == pad.noteTypePressed then
 						note:onHit() --TODO: onHit takes in an accuracy parameter, which causes different sounds to be played
 						pad.active = false
 						--print(coll_dist)
@@ -342,5 +344,5 @@ function PlayState:render()
 	self.healthBar:render()
 	-- Debug:
 	--love.graphics.printf("Time: " .. self.timer, 0, 0, winWidth, "left")
-	love.graphics.printf("Note Type: " .. self.pads[2].noteTypePressed, 0, 0, winWidth, "left")
+	--love.graphics.printf("Note Type: " .. self.pads[2].noteTypePressed, 0, 0, winWidth, "left")
 end
