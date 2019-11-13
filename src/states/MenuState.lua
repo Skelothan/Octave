@@ -17,6 +17,7 @@ function MenuState:init()
 	local counter = 1
 	for i, file in ipairs(files) do
 		--print(file)
+		--TODO: replace with table.insert
 		if file ~= ".DS_Store" then
 			usefiles[counter] = "maps/" .. file
 			--print("Adding " .. usefiles[counter])
@@ -31,7 +32,7 @@ function MenuState:init()
 	for i, song in ipairs(usefiles) do
 		--print(song .. "/data.json")
 		local params = JSONReader:init(song .. "/data.json").data
-		if params ~= nil then
+		if params and params ~= {} then
 			local s = Song:init(params)
 			table.insert(self.songs, s)
 			self.numSongs = self.numSongs + 1

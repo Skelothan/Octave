@@ -16,12 +16,14 @@ function Song:init(params)
 
 	self.menuColor = self.palette.menuColor or {0.9, 0.3, 0.6, 1}
 	self.textColor = self.palette.textColor or {1, 1, 1, 1}
-	--print("params.highScores:" .. params.highScores)
-	self.highScores = JSONReader:init(params.highScores).data["highScores"] or {}
-	if type(self.highScores) ~= "table" then self.highScores = {} end
-	--self.highScores = JSONReader:init(params.highScores).data or {}
-	self.highScoreFile = params.highScores .. "/highScores.json"
-	-- is self.highScoreFile even being used? It's also inaccurate.
+	
+	if not params.highScores or not love.filesystem.getInfo(params.highScores) then 
+		self.highScores = {}
+	else
+		self.highScores = JSONReader:init(params.highScores).data["highScores"] or {}
+		if type(self.highScores) ~= "table" then self.highScores = {} end
+	end
+
 	self.midi = params.midi
 	self.speedCoeff = params.speedCoeff
 	self.noteDelay = params.noteDelay
