@@ -232,6 +232,31 @@ gBackgroundDefs = {
 						end
 						love.graphics.pop()
 					end
+	},
+	["waveRectangles"] = {
+			init2 = function(self)
+						gBackgroundImage = nil
+						self.timer1 = 0
+						self.x = winWidth/8
+						self.y = winHeight /2
+						self.dist = math.min(winWidth, winHeight) / 4
+						gBackgroundImage = love.graphics.newImage("graphics/linearGradientBottom.png")
+						love.graphics.setBackgroundColor(gCurrentPalette.background)
+						self.margin = winWidth * 1/16
+						self.size = winHeight * 1/4 - self.margin
+					end,
+			update = function(self, dt)
+						self.timer1 = (self.timer1 + dt)
+					end,
+			render = function(self)
+						love.graphics.setColor(gCurrentPalette.gradient)
+						love.graphics.draw(gBackgroundImage,0,0,0,winWidth/1920, winHeight*2/1080)
+						love.graphics.resetColor()
+
+						love.graphics.setColor(gCurrentPalette.bgObjects2)
+						for i=1,7 do
+							love.graphics.rectangle("fill", winWidth * i/8 - self.margin +self.size/2, self.y-self.size/2 + 100*math.cos(self.timer1+math.pi/2*i), self.size/2, 2*self.y)
+						end
+					end
 	}
-	
 }
