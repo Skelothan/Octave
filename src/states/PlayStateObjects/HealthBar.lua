@@ -16,6 +16,9 @@ function HealthBar:init(params)
 	self.health = 4 * self.notesPerHP
 	self.maxHealth = 4 * self.notesPerHP
 	
+	self.maxIFrames = 1.5
+	self.iFrames = 0
+	
 	self.radius = math.min(love.graphics.getHeight(), love.graphics.getWidth()) / 12
 	
 	-- Numerically indexed tables
@@ -27,6 +30,7 @@ function HealthBar:init(params)
 end
 
 function HealthBar:update(dt)
+	self.iFrames = math.max(self.iFrames - dt, 0)
 	if self.health <= 0 then 
 		gStateMachine:change("gameOver", {
 			score = self.score, 
@@ -36,11 +40,15 @@ function HealthBar:update(dt)
 end
 
 function HealthBar:takeDamage(dScore)
-	gAudioPlayer:takeDamage()
-	self.health = math.max(self.health - self.notesPerHP, 0)
-	self:incrementScore(-dScore)
-	self:resetMultiplier()
-	
+	if self.iFrames == 0 then
+		gSounds["damage"]:stop()
+		gSounds["damage"]:play()
+		gAudioPlayer:takeDamage()
+		self.health = math.max(self.health - self.notesPerHP, 0)
+		self:incrementScore(-dScore)
+		self:resetMultiplier()
+		self.iFrames = self.maxIFrames
+	end
 end
 
 function HealthBar:restoreHealth()
@@ -77,7 +85,12 @@ function HealthBar:render()
 	-- Draw score text
 	love.graphics.setColor(self.textColor)
 	love.graphics.printf(self.scoreText, gFonts["AvenirLight16"], self.x - self.radius, self.y - self.radius / 3, self.radius * 2, "center")
-	local multiplierText = "x " .. tostring(self.scoreMultiplier)
+	local multiplierText = ""
+	if self.iFrames > 0 then
+		multiplierText = "Ouch!"
+	else
+		multiplierText = "x " .. tostring(self.scoreMultiplier)
+	end
 	love.graphics.printf(multiplierText, gFonts["AvenirLight24"], self.x - self.radius, self.y, self.radius * 2, "center")
 	-- Reset draw color
 	love.graphics.resetColor()

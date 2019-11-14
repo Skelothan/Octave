@@ -316,8 +316,6 @@ function PlayState:update(dt)
 		-- Health bar/note collision
 		if circleCollision(note.x, note.y, note.radius, self.healthBar.x, self.healthBar.y, self.healthBar.radius - 2.5 * note.radius) then
 			note.isDestroyed = true
-			gSounds["damage"]:stop()
-			gSounds["damage"]:play()
 			self.healthBar:takeDamage(note.score)
 		end
 		if note.isDestroyed then
