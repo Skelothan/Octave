@@ -31,11 +31,11 @@ function love.load()
 	loadSounds()
 	gBackgroundImage = nil
 
-	gCurrentPalette = gPalette["midnight"]
+	gCurrentPalette = gPalette["bluepink"]
+
 
 	gBackground = Background:init("dualWaveRectangles")
 	gCurrentSong = 1
-	
 	love.keyboard.keysPressed = {}
 	love.keyboard.inputs = {}
 	love.keyboard.keysDown = {}
