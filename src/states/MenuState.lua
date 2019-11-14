@@ -47,6 +47,11 @@ function MenuState:init()
 	self.textColor = self.songs[self.currentSong].textColor or {0, 0, 0, 1}
 	self.lastUp = 0
 	self.lastDown = 0
+	
+	
+	self.maxMenuOffset = love.graphics.getHeight() / 72
+	self.menuOffset = 0
+	self.movedDown = true
 
 	return table.deepcopy(o)
 end
@@ -58,6 +63,12 @@ end
 function MenuState:update(dt)
 	self.lastUp = self.lastUp + dt
 	self.lastDown = self.lastDown + dt
+	
+	if self.movedDown then
+		self.menuOffset = math.min(0, self.menuOffset + self.maxMenuOffset * 4 * dt)
+	else
+		self.menuOffset = math.max(0, self.menuOffset - self.maxMenuOffset * 4 * dt)
+	end
 
 	if self.lastUp >= 0.15 and love.keyboard.isHeld("up") and self.currentSong > 1 then
 		gSounds["scroll"]:stop()
@@ -68,6 +79,9 @@ function MenuState:update(dt)
 		gBackground = Background:init(self.songs[self.currentSong].background)
 
 		self.lastUp = 0
+		
+		self.menuOffset = self.maxMenuOffset
+		self.movedDown = false
 	elseif self.lastDown >= 0.15 and love.keyboard.isHeld("down") and self.currentSong < self.numSongs then
 		gSounds["scroll"]:stop()
 		gSounds["scroll"]:play()
@@ -77,6 +91,9 @@ function MenuState:update(dt)
 		gBackground = Background:init(self.songs[self.currentSong].background)
 
 		self.lastDown = 0
+		
+		self.menuOffset = -self.maxMenuOffset
+		self.movedDown = true
 	end
 	if love.keyboard.wasInput("bottomArrow") then
 		gSounds["startExt"]:stop()
@@ -96,9 +113,9 @@ function MenuState:render()
 
 		if i == self.currentSong then 
 			
-			song:render(i, self.currentSong, opacity, true)
+			song:render(i, self.currentSong, opacity, true, self.menuOffset)
 		end
 
-		song:render(i, self.currentSong, opacity, false)
+		song:render(i, self.currentSong, opacity, false, self.menuOffset)
 	end
 end
