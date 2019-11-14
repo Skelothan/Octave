@@ -52,7 +52,7 @@ function PlayState:newNote(nRadius, pad, lane, nNoteType)
 			lane = lane,
 			speed = self.noteSpeed,
 			noteType = nNoteType,
-			score = 10000
+			score = 1000
 		})
 	)
 end
@@ -247,24 +247,28 @@ function PlayState:update(dt)
 						if coll_dist < 0.1 then -- Perfect
 							self.healthBar:incrementScore(note.score)
 							self.healthBar:restoreHealth()
-							gSounds["noteHit"]:stop()
-							gSounds["noteHit"]:play()
+							gSounds["noteHitPerfect"]:stop()
+							gSounds["noteHitPerfect"]:play()
+							self.healthBar:incrementMultiplier()
 						elseif coll_dist < 0.3 then -- Great
 							self.healthBar:incrementScore(note.score * 0.9)
 							self.healthBar:restoreHealth()
-							gSounds["noteHit"]:stop()
-							gSounds["noteHit"]:play()
+							gSounds["noteHitGreat"]:stop()
+							gSounds["noteHitGreat"]:play()
+							self.healthBar:incrementMultiplier()
 						elseif coll_dist < 0.5 then -- Good
 							self.healthBar:incrementScore(note.score * 0.75)
-							gSounds["noteHit"]:stop()
-							gSounds["noteHit"]:play()
+							gSounds["noteHitGood"]:stop()
+							gSounds["noteHitGood"]:play()
+							self.healthBar:incrementMultiplier()
 						elseif coll_dist < 1.1 then -- OK
 							self.healthBar:incrementScore(note.score * 0.50)
-							gSounds["noteHit"]:stop()
-							gSounds["noteHit"]:play()
+							gSounds["noteHitOk"]:stop()
+							gSounds["noteHitOk"]:play()
 						else -- Miss
 							gSounds["noteMiss"]:stop()
 							gSounds["noteMiss"]:play()
+							self.healthBar:resetMultiplier()
 						end
 						
 					end

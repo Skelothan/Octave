@@ -83,7 +83,7 @@ function Pad:render()
 		outlineRadius = self.radius * 1.2
 	end
 	
-	love.graphics.circle("fill", self.x, self.y, outlineRadius, 40)
+	love.graphics.circle("fill", self.x, self.y, outlineRadius - 1.1 * self.activeTimer * 6, 40)
 	-- Draw pad
 	
 	love.graphics.setColor(self.padColor)

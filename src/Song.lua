@@ -33,15 +33,15 @@ function Song:init(params)
 	return table.deepcopy(o)
 end
 
-function Song:render(index, currentSong, opacity, isCurrentSong)
-	self:renderSong(index, currentSong, opacity)
+function Song:render(index, currentSong, opacity, isCurrentSong, menuOffset)
+	self:renderSong(index, currentSong, opacity, menuOffset)
 	if isCurrentSong then
 		self:renderLeft(1)
 		self:renderRight(1)
 	end
 end
 
-function Song:renderSong(index, currentSong, opacity)
+function Song:renderSong(index, currentSong, opacity, menuOffset)
 	local winWidth = love.graphics.getWidth()
 	local winHeight = love.graphics.getHeight()
 	local songWidth = (winWidth/3) - (winWidth/32)
@@ -54,6 +54,9 @@ function Song:renderSong(index, currentSong, opacity)
 	local textColor = self.textColor
 	textColor[4] = opacity
 
+	love.graphics.push()
+	love.graphics.translate(0, menuOffset)
+	
 	love.graphics.setColor(menuColor)
 	love.graphics.rectangle(
 		"fill",
@@ -76,6 +79,8 @@ function Song:renderSong(index, currentSong, opacity)
 		songX + (songWidth/16),
 		songY + (songHeight/16) + 40
 	)
+	
+	love.graphics.pop()
 end
 
 function Song:renderLeft(opacity)

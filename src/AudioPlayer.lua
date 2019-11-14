@@ -8,8 +8,8 @@ function AudioPlayer:init(audio)
     self.audio = audio:clone()
 
     self.highgain = 1
-    self.highgainRate = 6
-    self.highgainMin = .0001
+    self.highgainRate = 9
+    self.highgainMin = .001
     return o
 end
 

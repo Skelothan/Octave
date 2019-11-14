@@ -122,7 +122,7 @@ end
 --INPUT HANDLING END
 
 function love.draw()
-	if gBackgroundImage then
+	if false and gBackgroundImage then
 		love.graphics.resetColor()
 		love.graphics.draw(gBackgroundImage,0,0,0,love.graphics.getWidth()/1920, love.graphics.getHeight()/1080)
 	end
