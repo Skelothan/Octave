@@ -17,6 +17,7 @@ function MenuState:init()
 	local counter = 1
 	for i, file in ipairs(files) do
 		--print(file)
+		--TODO: replace with table.insert
 		if file ~= ".DS_Store" then
 			usefiles[counter] = "maps/" .. file
 			--print("Adding " .. usefiles[counter])
@@ -31,14 +32,14 @@ function MenuState:init()
 	for i, song in ipairs(usefiles) do
 		--print(song .. "/data.json")
 		local params = JSONReader:init(song .. "/data.json").data
-		if params ~= nil then
+		if params and params ~= {} then
 			local s = Song:init(params)
 			table.insert(self.songs, s)
 			self.numSongs = self.numSongs + 1
 		end
 	end
 
-	self.currentSong = 1
+	self.currentSong = gCurrentSong
 
 	gCurrentPalette = self.songs[self.currentSong].palette
 	gBackground = Background:init(self.songs[self.currentSong].background)
@@ -98,6 +99,7 @@ function MenuState:update(dt)
 	if love.keyboard.wasInput("bottomArrow") then
 		gSounds["startExt"]:stop()
 		gSounds["startExt"]:play()
+		gCurrentSong = self.currentSong
 		gStateMachine:change("play", {song = self.songs[self.currentSong]})
 	end
 	if love.keyboard.wasInput("topArrow") then
