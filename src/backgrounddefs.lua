@@ -170,7 +170,7 @@ gBackgroundDefs = {
 	},
 	["pulseCircles"] = {
 			init2 = function(self)
-						gBackgroundImage = nil
+						gBackgroundImage = love.graphics.newImage("graphics/linearGradientBottom.png")
 						self.timer1 = 0
 						self.timer2 = 0
 						self.cirPos = 0
@@ -188,6 +188,8 @@ gBackgroundDefs = {
 						self.timer2 = (self.timer2 + dt * 1/7) % (2 * math.pi)
 					end,
 			render = function(self)
+						love.graphics.setColor(gCurrentPalette.gradient)
+						love.graphics.draw(gBackgroundImage,0,0,0,self.x*2/1920, self.y*2/1080)
 						love.graphics.push()
 						-- rotate around center
 						love.graphics.translate(self.cx, self.cy)
@@ -204,7 +206,6 @@ gBackgroundDefs = {
 	},
 	["scrollSquares"] = {
 			init2 = function(self)
-						gBackgroundImage = nil
 						self.timer1 = 0
 						self.cx = winWidth
 						self.cy = winHeight / 2
