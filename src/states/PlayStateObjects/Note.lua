@@ -50,7 +50,7 @@ function Note:init(params, playState)
 		self.noteColor = gCurrentPalette.noteColorBoth
 	end
 	
-	self.score = params.score or 10000
+	self.score = params.score or 1000
 	
 	--self.timeAlive = 0
 		
