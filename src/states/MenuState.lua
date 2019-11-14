@@ -39,7 +39,7 @@ function MenuState:init()
 		end
 	end
 
-	self.currentSong = 1
+	self.currentSong = gCurrentSong
 
 	gCurrentPalette = self.songs[self.currentSong].palette
 	gBackground = Background:init(self.songs[self.currentSong].background)
@@ -82,6 +82,7 @@ function MenuState:update(dt)
 	if love.keyboard.wasInput("bottomArrow") then
 		gSounds["startExt"]:stop()
 		gSounds["startExt"]:play()
+		gCurrentSong = self.currentSong
 		gStateMachine:change("play", {song = self.songs[self.currentSong]})
 	end
 	if love.keyboard.wasInput("topArrow") then

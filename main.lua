@@ -33,7 +33,8 @@ function love.load()
 
 	gCurrentPalette = gPalette["midnight"]
 
-	gBackground = Background:init("waveRectangles")
+	gBackground = Background:init("dualWaveRectangles")
+	gCurrentSong = 1
 	
 	love.keyboard.keysPressed = {}
 	love.keyboard.inputs = {}

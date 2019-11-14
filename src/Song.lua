@@ -15,7 +15,7 @@ function Song:init(params)
 	self.palette = gPalette[params.palette] or gPalette["bluepink"]
 
 	self.menuColor = self.palette.menuColor or {0.9, 0.3, 0.6, 1}
-	self.textColor = self.palette.textColor or {1, 1, 1, 1}
+	self.textColor = table.deepcopy(self.palette.menuText) or {1, 1, 1, 1}
 	
 	if not params.highScores or not love.filesystem.getInfo(params.highScores) then 
 		self.highScores = {}
@@ -128,7 +128,7 @@ function Song:renderLeft(opacity)
 		textY + 40
 	)
 
-	love.graphics.setColor(1,1,1, opacity)
+	love.graphics.setColor(self.textColor)
 	love.graphics.setLineWidth(5)
 
 	for i = 0, self.difficulty-1, 1 do
