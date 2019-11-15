@@ -262,6 +262,7 @@ gBackgroundDefs = {
 			init2 = function(self)
 						gBackgroundImage = nil
 						self.timer1 = 0
+						self.x = winWidth / 2
 						self.y = winHeight /2
 						gBackgroundImage = love.graphics.newImage("graphics/linearGradientBottom.png")
 						love.graphics.setBackgroundColor(gCurrentPalette.background)
@@ -273,8 +274,7 @@ gBackgroundDefs = {
 					end,
 			render = function(self)
 						love.graphics.setColor(gCurrentPalette.gradient)
-						love.graphics.draw(gBackgroundImage,0,0,0,winWidth/1920, winHeight*2/1080)
-						love.graphics.resetColor()
+						love.graphics.draw(gBackgroundImage,0,0,0,self.x*2/1920, self.y*2/1080)
 
 						love.graphics.setColor(gCurrentPalette.bgObjects2)
 						for i=1,15 do
