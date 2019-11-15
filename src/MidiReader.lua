@@ -53,6 +53,7 @@ function MidiReader:init(filename)
             self.midiData[i][j].type = 2
           end
         end
+        --table.print(self.midiData[i][j])
       end
     end
   end
@@ -60,14 +61,20 @@ function MidiReader:init(filename)
 end
 
 function MidiReader:get_notes()
-  -- limited to single track MIDIs
-  local notes = {}
-  for i=1, #self.midiData[2] do
-    if self.midiData[2][i][1] == 'note' then
-      notes[#notes+1] = self.midiData[2][i]
-    end
-  end
-  return notes
+	-- limited to single track MIDIs
+	local notes = {}
+	--print("\nself.mididata:")
+	--table.print(self.midiData)
+	for i=2, #self.midiData do
+		for j=1, #self.midiData[i] do
+			if self.midiData[i][j][1] == 'note' then
+				table.insert(notes, self.midiData[i][j])
+			end
+		end
+	end
+	--print("\nnotes:")
+	--table.print(notes)
+	return notes
 end
 
-return MidiReader
+--return MidiReader
