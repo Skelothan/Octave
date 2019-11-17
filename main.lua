@@ -40,6 +40,8 @@ function love.load()
 	love.keyboard.inputs = {}
 	love.keyboard.keysDown = {}
 
+	gMidiReader = MidiReader:init(nil)
+
 	gAudioPlayer = AudioPlayer:init(love.audio.newSource("sfx/Welcome_to_Octave.wav", "stream"))
 	gAudioPlayer:setLooping(true)
 	gAudioPlayer:playAudio()

@@ -106,7 +106,8 @@ function PlayState:enter(params)
 	
 	self:makePads()
 	
-	gMidiReader = MidiReader:init(self.song.midi)
+	--gMidiReader = MidiReader:init(self.song.midi)
+	gMidiReader:setFile(self.song.midi)
 	gMapNotes = gMidiReader:get_notes()
 	--[[
 	for k, note in pairs(gMapNotes) do

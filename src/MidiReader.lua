@@ -1,7 +1,7 @@
 MidiReader = {}
 MidiReader.__index = MidiReader
 
-local convertNote = {
+convertNote = {
   "None", "None", "None", "None", "None", "None", "None", "None", "None", "None", "None", "None",
   "None", "None", "None", "None", "None", "None", "None", "None", "None", "None", "None", "None",
   "C1", "C#1", "D1", "Eb1", "E1", "F1", "F#1", "G1", "Ab1", "A1", "Bb1", "B1",
@@ -17,9 +17,18 @@ local convertNote = {
 }
 
 function MidiReader:init(filename)
-  local o = o or {}   -- create object if user does not provide one
-	setmetatable(o, self)
-	self.__index = self
+    local o = o or {}   -- create object if user does not provide one
+    setmetatable(o, self)
+    self.__index = self
+
+    if filename ~= nil then
+      self:setFile(filename)
+    end
+
+    return table.deepcopy(o)
+end
+
+function MidiReader:setFile(filename)
 
   if(love.filesystem.getInfo(filename)) then
     self.midiData = MIDI.midi2score(love.filesystem.read(filename))
@@ -57,7 +66,7 @@ function MidiReader:init(filename)
       end
     end
   end
-  return table.deepcopy(o)
+  
 end
 
 function MidiReader:get_notes()
