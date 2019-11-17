@@ -6,8 +6,10 @@ function Song:init(params)
 	setmetatable(o, self)
 	self.__index = self
 	
-	self.name = params.title or "Song Name"
-	self.artist = params.artist or "Artist Name"
+	self.name = params.title or "Untitled"
+	self.artist = params.artist or "Unknown Artist"
+	self.source = params.source or "Unknown Source"
+	self.year = params.year or 1970
 	self.image = params.image or "graphics/noteImage.png"
 	self.difficulty = params.difficulty or 4
 
@@ -90,9 +92,9 @@ function Song:renderLeft(opacity)
 	local winWidth = love.graphics.getWidth()
 	local winHeight = love.graphics.getHeight()
 
-	local imageX = (winWidth/6) - (winWidth/6/2)
-	local imageY = (winHeight/5) 
-	local textY = (winHeight*0.5) + (winWidth/64)
+	local imageX = (winWidth/6) - (winWidth/6/2) 
+	local imageY = (winHeight/5) - 20
+	local textY = (winHeight*0.5) + (winWidth/64) - 30
 
 	local star = {}
 
@@ -113,11 +115,11 @@ function Song:renderLeft(opacity)
 	love.graphics.rectangle(
 		"fill",
 		imageX - 3 * winWidth/64,
-		imageY - winWidth/24,
+		imageY - winWidth/24 + 20,
 		winWidth/3 - winWidth/16,
 		2*winHeight/3
 	)
-	love.graphics.setColor(1,1,1,opacity)
+	love.graphics.setColor(self.textColor)
 	love.graphics.draw(image, imageX, imageY, 0, scaleX, scaleY, 0, 0)
 
 	love.graphics.setColor(self.textColor)
@@ -134,6 +136,20 @@ function Song:renderLeft(opacity)
 		textY + 40
 	)
 
+	love.graphics.print(
+		self.source .. " (" .. self.year .. ")",
+		gFonts["AvenirLight24"],
+		imageX - winWidth/64,
+		textY + 70
+	)
+
+	love.graphics.print(
+		"Difficulty:",
+		gFonts["AvenirLight24"],
+		imageX - winWidth/64,
+		textY + 120
+	)
+
 	love.graphics.setColor(self.textColor)
 	love.graphics.setLineWidth(5)
 
@@ -143,7 +159,7 @@ function Song:renderLeft(opacity)
 			if j%2 == 1 then
 				localStar[j] = localStar[j] + imageX - winWidth/32 + (3*i*winWidth/64*5/6) + 40
 			else
-				localStar[j] = localStar[j] +textY + 70 + 40
+				localStar[j] = localStar[j] +textY + 190
 			end
 		end
 		love.graphics.polygon("line", localStar)
