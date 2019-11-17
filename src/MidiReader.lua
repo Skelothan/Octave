@@ -20,7 +20,7 @@ function MidiReader:init(filename)
   local o = o or {}   -- create object if user does not provide one
 	setmetatable(o, self)
 	self.__index = self
-
+  print(filename)
   if(love.filesystem.getInfo(filename)) then
     self.midiData = MIDI.midi2score(love.filesystem.read(filename))
 
