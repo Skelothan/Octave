@@ -8,6 +8,10 @@ function TitleState:init()
 	self.__index = self
 	setmetatable(TitleState, BaseState) -- inheritance: arg a inherits arg b
 	
+	return table.deepcopy(o)
+end
+
+function TitleState:enter(params)
 	self.submenu = Submenu:init({
 		
 		x = winWidth * 0.25,
@@ -16,6 +20,8 @@ function TitleState:init()
 		font = "AvenirLight32",
 		align = "center",
 		
+		selectedOption = params.selectedOption or 1,
+		
 		options = {
 			{"Play", 
 			function() 
@@ -23,14 +29,19 @@ function TitleState:init()
 				gSounds["start"]:play()
 				gStateMachine:change("menu")
 			end},
+			{"Credits", 
+			function() 
+				--gSounds["start"]:stop()
+				--gSounds["start"]:play()
+				gStateMachine:change("credits")
+			end},
 			{"Quit", function() love.event.quit(0) end}
 		}
 	})
 	
-	return table.deepcopy(o)
-end
-
-function TitleState:enter(params)
+	if params.submenuActive then
+		self.submenu:activate()
+	end
 end
 
 function TitleState:update(dt)

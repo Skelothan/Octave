@@ -29,7 +29,8 @@ function love.load()
 		["title"] = function() return TitleState:init() end,
 		["menu"] = function() return MenuState:init() end,
 		["play"] = function() return PlayState:init() end, 
-		["gameOver"] = function() return GameOverState:init() end
+		["gameOver"] = function() return GameOverState:init() end,
+		["credits"] = function() return CreditsState:init() end
 	})
 	gStateMachine:change("title", {})
 

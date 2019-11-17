@@ -33,14 +33,18 @@ function Submenu:deactivate()
 end
 
 function Submenu:up()
-	gSounds["scroll"]:stop()
-	gSounds["scroll"]:play()
+	if self.selectedOption ~= 1 then
+		gSounds["scroll"]:stop()
+		gSounds["scroll"]:play()
+	end
 	self.selectedOption = math.max(1, self.selectedOption - 1)
 end
 
 function Submenu:down()
-	gSounds["scroll"]:stop()
-	gSounds["scroll"]:play()
+	if self.selectedOption ~= #self.options then
+		gSounds["scroll"]:stop()
+		gSounds["scroll"]:play()
+	end
 	self.selectedOption = math.min(#self.options, self.selectedOption + 1)
 end
 
