@@ -10,11 +10,19 @@ function love.load()
 	-- Contains constants
 	require "src/constants"
 
-	-- Seed RNG, just in caswe we use it
+	-- Seed RNG, just in case we use it
 	math.randomseed(os.time())
 	
 	-- Set window title
 	love.window.setTitle("Octave")
+	
+	-- initialize global assets
+	loadFonts()
+	loadSounds()
+	gBackgroundImage = nil
+	
+	-- initialize palette
+	gCurrentPalette = gPalette["bluepink"]
 	
 	-- initialize state machine
 	gStateMachine = StateMachine:init({
@@ -24,14 +32,6 @@ function love.load()
 		["gameOver"] = function() return GameOverState:init() end
 	})
 	gStateMachine:change("title", {})
-
-	
-	-- initialize global assets
-	loadFonts()
-	loadSounds()
-	gBackgroundImage = nil
-
-	gCurrentPalette = gPalette["bluepink"]
 
 
 	gBackground = Background:init("dualWaveRectangles")

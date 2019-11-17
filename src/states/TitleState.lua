@@ -7,6 +7,26 @@ function TitleState:init()
 	setmetatable(o, self)
 	self.__index = self
 	setmetatable(TitleState, BaseState) -- inheritance: arg a inherits arg b
+	
+	self.submenu = Submenu:init({
+		
+		x = winWidth * 0.25,
+		y = winHeight * 0.75,
+		width = winWidth * 0.5,
+		font = "AvenirLight32",
+		align = "center",
+		
+		options = {
+			{"Play", 
+			function() 
+				gSounds["start"]:stop()
+				gSounds["start"]:play()
+				gStateMachine:change("menu")
+			end},
+			{"Quit", function() love.event.quit(0) end}
+		}
+	})
+	
 	return table.deepcopy(o)
 end
 
@@ -14,11 +34,17 @@ function TitleState:enter(params)
 end
 
 function TitleState:update(dt)
+	if self.submenu.active then
+		self:updateSubmenu(dt)
+	else
+		self:updateNormal(dt)
+	end
+end
+
+function TitleState:updateNormal(dt)
 	if love.keyboard.wasInput("topArrow") or 
 	love.keyboard.wasInput("bottomArrow") then
-		gSounds["start"]:stop()
-		gSounds["start"]:play()
-		gStateMachine:change("menu")
+		self.submenu:activate()
 	end
 	--[[
 	if love.keyboard.wasInput("topArrow2") or
@@ -26,12 +52,37 @@ function TitleState:update(dt)
 		gAudioPlayer:takeDamage()
 	end
 	]]
-	gAudioPlayer:update(dt)
 end
 
-function TitleState:render() 
+function TitleState:updateSubmenu(dt)
+	if love.keyboard.wasInput("up") then
+		self.submenu:up()
+	elseif love.keyboard.wasInput("down") then
+		self.submenu:down()
+	end
+	
+	if love.keyboard.wasInput("topArrow") then
+		self.submenu:deactivate()
+	elseif love.keyboard.wasInput("bottomArrow") then
+		self.submenu:select()
+	end
+end
+
+function TitleState:render()
 	love.graphics.setColor(gCurrentPalette.menuText)
 	love.graphics.printf("Octave", gFonts["AvenirLight64"], 0, love.graphics.getHeight()*0.25, love.graphics.getWidth(), "center")
-	love.graphics.printf("Press [down triangle]", gFonts["AvenirLight32"], 0, love.graphics.getHeight()*0.75, love.graphics.getWidth(), "center")
-	love.graphics.resetColor()
+	if self.submenu.active then
+		self:renderSubmenu(dt)
+	else
+		self:renderNormal(dt)
+	end
+end
+
+function TitleState:renderNormal() 
+	love.graphics.printf("Press any button", gFonts["AvenirLight32"], 0, love.graphics.getHeight()*0.75, love.graphics.getWidth(), "center")
+
+end
+
+function TitleState:renderSubmenu()
+	self.submenu:render()
 end

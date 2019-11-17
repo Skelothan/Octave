@@ -26,10 +26,13 @@ require "src/MidiReader"
 -- JSON Reader
 require "src/JSONReader"
 
+-- Submenu system
+require "src/Submenu"
+
 -- Palette
 require "src/palettedefs"
 
--- Menu State things
+-- Menu State menu system
 require "src/Song"
 
 -- Play State things
