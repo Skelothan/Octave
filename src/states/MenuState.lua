@@ -19,14 +19,14 @@ function MenuState:init()
 		print(file)
 		print(os.rename(love.filesystem.getSource() .. "/maps/" .. file, love.filesystem.getAppdataDirectory() .. "custom_maps/" .. file))
 	end]]--
-	print(love.filesystem.mount(love.filesystem.getSourceBaseDirectory(), ""))
+	--print(love.filesystem.mount(love.filesystem.getSourceBaseDirectory(), ""))
 	local files = love.filesystem.getDirectoryItems("/OctaveMaps")
 	
-	print(love.filesystem.getSourceBaseDirectory() .. "/OctaveMaps")
+	--print(love.filesystem.getSourceBaseDirectory() .. "/OctaveMaps")
 	local usefiles = {}
 	local counter = 1
 	for i, file in ipairs(files) do
-		print(file)
+		--print(file)
 		--TODO: replace with table.insert
 		if file ~= ".DS_Store" then
 			usefiles[counter] = "OctaveMaps/" .. file
