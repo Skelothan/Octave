@@ -19,19 +19,48 @@ function GameOverState:enter(params)
 
 	self.currChar = 65
 	self.choosingName = true
-	self.choosingFirst = true
 	self.scoreName = ""
 	self.maxLetters = 6
 end
 
 function GameOverState:update(dt)
 	self.stopInputTimer = math.max(self.stopInputTimer - dt, 0)
-	if self.stopInputTimer <= 0 and love.keyboard.wasInput("bottomArrow") then
+	if self.choosingName and love.keyboard.wasInput("down") then
+		self.currChar = self.currChar + 1
+		if string.len(self.scoreName) == 0 and self.currChar == 58 then
+			self.currChar = 65
+		elseif string.len(self.scoreName) == 0 and self.currChar == 91 then
+			self.currChar = 48
+		elseif string.len(self.scoreName) ~= 0 and self.currChar == 58 then
+			self.currChar = 97
+		elseif string.len(self.scoreName) ~= 0 and self.currChar == 123 then
+			self.currChar = 48
+		end
+	elseif self.choosingName and love.keyboard.wasInput("up") then
+		self.currChar = self.currChar - 1
+		if string.len(self.scoreName) == 0 and self.currChar == 64 then
+			self.currChar = 57
+		elseif string.len(self.scoreName) == 0 and self.currChar == 47 then
+			self.currChar = 90
+		elseif string.len(self.scoreName) ~= 0 and self.currChar == 96 then
+			self.currChar = 57
+		elseif string.len(self.scoreName) ~= 0 and self.currChar == 47 then
+			self.currChar = 122
+		end
+	end
+	if love.keyboard.wasInput("bottomArrow") and self.choosingName then
+		self.scoreName = self.scoreName .. string.char(self.currChar)
+		self.currChar = 97
+		if string.len(self.scoreName) == self.maxLetters then
+			self.choosingName = false
+		end
+	elseif self.stopInputTimer <= 0 and love.keyboard.wasInput("bottomArrow") and not self.choosingName then
 		gAudioPlayer:changeAudio(love.audio.newSource("sfx/Welcome_to_Octave.wav", "stream"))
 		gAudioPlayer:setLooping(true)
 		gAudioPlayer:playAudio()
 		gStateMachine:change("menu", {})
 	end
+
 end
 
 function GameOverState:render()
@@ -53,6 +82,13 @@ function GameOverState:render()
 		50
 	)
 
+	if(self.choosingName) then
+		love.graphics.printf(self.scoreName .. string.char(self.currChar), 
+			gFonts["AvenirLight32"], 0, love.graphics.getHeight()/2 + 3, love.graphics.getWidth(), "center")
+	else
+		love.graphics.printf(self.scoreName, gFonts["AvenirLight32"], 0, love.graphics.getHeight()/2 + 3, love.graphics.getWidth(), "center")
+	end
+
 	love.graphics.printf("Your Score: " .. comma_value(self.score), 
 		gFonts["AvenirLight32"], 0, love.graphics.getHeight()/2 + love.graphics.getHeight() / 12, love.graphics.getWidth(), "center")
 
@@ -60,6 +96,10 @@ function GameOverState:render()
 		if self.fadeTextColor[4] ~= 1 then
 			self.fadeTextColor = 1 - 2 * self.stopInputTimer
 		end
-		love.graphics.printf("Press [down triangle] to return", gFonts["AvenirLight32"], 0, love.graphics.getHeight()*0.75, love.graphics.getWidth(), "center")
+		if self.choosingName then
+			love.graphics.printf("Press [down triangle] to select", gFonts["AvenirLight32"], 0, love.graphics.getHeight()*0.75, love.graphics.getWidth(), "center")
+		else
+			love.graphics.printf("Press [down triangle] to return", gFonts["AvenirLight32"], 0, love.graphics.getHeight()*0.75, love.graphics.getWidth(), "center")
+		end
 	end
 end
