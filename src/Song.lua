@@ -10,31 +10,39 @@ function Song:init(params)
 	self.artist = params.artist or "Artist Name"
 	self.image = params.image or "graphics/noteImage.png"
 	self.difficulty = params.difficulty or 4
-	self.menuColor = gPalette[params.palette].menuColor or {0.9, 0.3, 0.6, 1}
-	self.textColor = gPalette[params.palette].textColor or {1, 1, 1, 1}
-	self.menuColor = params.palette.menuColor or {0.9, 0.3, 0.6, 1}
-	self.textColor = params.palette.menuText or {1, 1, 1, 1}
-	self.highScores = JSONReader:init(params.highScores).data["highScores"] or {}
-	self.highScoreFile = params.highScores .. "/highScores.json"
+
+	self.background = params.background or "spinTriangle"
+	self.palette = gPalette[params.palette] or gPalette["bluepink"]
+
+	self.menuColor = self.palette.menuColor or {0.9, 0.3, 0.6, 1}
+	self.textColor = table.deepcopy(self.palette.menuText) or {1, 1, 1, 1}
+	
+	if not params.highScores or not love.filesystem.getInfo(params.highScores) then 
+		self.highScores = {}
+	else
+		self.highScores = JSONReader:init(params.highScores).data["highScores"] or {}
+		if type(self.highScores) ~= "table" then self.highScores = {} end
+	end
+
 	self.midi = params.midi
 	self.speedCoeff = params.speedCoeff
+	self.noteDelay = params.noteDelay
 	self.audio = params.audio
+	self.bpm = params.bpm
 	self.audioDelay = params.audioDelay
-	self.background = params.background
-	self.palette = params.palette
 	
 	return table.deepcopy(o)
 end
 
-function Song:render(index, currentSong, opacity, isCurrentSong)
-	self:renderSong(index, currentSong, opacity)
+function Song:render(index, currentSong, opacity, isCurrentSong, menuOffset)
+	self:renderSong(index, currentSong, opacity, menuOffset)
 	if isCurrentSong then
 		self:renderLeft(1)
 		self:renderRight(1)
 	end
 end
 
-function Song:renderSong(index, currentSong, opacity)
+function Song:renderSong(index, currentSong, opacity, menuOffset)
 	local winWidth = love.graphics.getWidth()
 	local winHeight = love.graphics.getHeight()
 	local songWidth = (winWidth/3) - (winWidth/32)
@@ -47,6 +55,9 @@ function Song:renderSong(index, currentSong, opacity)
 	local textColor = self.textColor
 	textColor[4] = opacity
 
+	love.graphics.push()
+	love.graphics.translate(0, menuOffset)
+	
 	love.graphics.setColor(menuColor)
 	love.graphics.rectangle(
 		"fill",
@@ -69,6 +80,8 @@ function Song:renderSong(index, currentSong, opacity)
 		songX + (songWidth/16),
 		songY + (songHeight/16) + 40
 	)
+	
+	love.graphics.pop()
 end
 
 function Song:renderLeft(opacity)
@@ -79,12 +92,18 @@ function Song:renderLeft(opacity)
 	local imageY = (winHeight/5) 
 	local textY = (winHeight*0.5) + (winWidth/64)
 
-	local star = love.graphics.newImage("graphics/star.png")
+	local star = {}
+
+	for i=1,5 do
+		star[4*i-3] = winWidth/48*math.sin(math.pi+i*2*math.pi/5) *3/4
+		star[4*i-2] = winWidth/48*math.cos(math.pi+i*2*math.pi/5) *3/4
+		star[4*i-1] = winWidth/96*math.sin(math.pi+math.pi/5+i*2*math.pi/5) *3/4
+		star[4*i] = winWidth/96*math.cos(math.pi+math.pi/5+i*2*math.pi/5) *3/4
+	end
+
 	local image = love.graphics.newImage(self.image)
 	local scaleX = winWidth/6/image:getWidth()
 	local scaleY = winWidth/6/image:getHeight()
-	local starScaleX = (winWidth/24)/star:getWidth()
-	local starScaleY = (winWidth/24)/star:getHeight()
 
 	self.menuColor[4] = opacity
 	self.textColor[4] = opacity
@@ -113,10 +132,19 @@ function Song:renderLeft(opacity)
 		textY + 40
 	)
 
-	love.graphics.setColor(1,1,1, opacity)
+	love.graphics.setColor(self.textColor)
+	love.graphics.setLineWidth(5)
 
 	for i = 0, self.difficulty-1, 1 do
-		love.graphics.draw(star, imageX - winWidth/32 + (3*i*winWidth/64), textY + 70, 0, starScaleX, starScaleY, 0, 0)
+		localStar = table.deepcopy(star)
+		for j=1,20 do
+			if j%2 == 1 then
+				localStar[j] = localStar[j] + imageX - winWidth/32 + (3*i*winWidth/64*5/6) + 40
+			else
+				localStar[j] = localStar[j] +textY + 70 + 40
+			end
+		end
+		love.graphics.polygon("line", localStar)
 	end
 end
 
@@ -146,6 +174,7 @@ function Song:renderRight(opacity)
 		rectX + winWidth/64*1.5,
 		rectY + winWidth/64*1.5
 	)
+	--print("self.highScoreFile: " .. self.highScoreFile)
 	for i, score in ipairs(self.highScores) do
 		love.graphics.print(score.name,
 			gFonts["AvenirLight24"],

@@ -42,9 +42,15 @@ function Note:init(params, playState)
 	self.noteType = params.noteType or 1
 	
 	self.outlineColor = params.outlineColor or {0, 0, 0, 1}
-	self.noteColor = params.noteColor or {0, 127/255, 1, 1}
+	if self.noteType == 1 then
+		self.noteColor = gCurrentPalette.noteColorBottom
+	elseif self.noteType == 2 then
+		self.noteColor = gCurrentPalette.noteColorTop
+	else 
+		self.noteColor = gCurrentPalette.noteColorBoth
+	end
 	
-	self.score = params.score or 10000
+	self.score = params.score or 1000
 	
 	--self.timeAlive = 0
 		

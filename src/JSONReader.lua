@@ -80,14 +80,15 @@ JSONReader = {}
 JSONReader.__index = JSONReader
 
 function JSONReader:init(filename)
-  local o = o or {}   -- create object if user does not provide one
+	local o = o or {}	 -- create object if user does not provide one
 	setmetatable(o, self)
 	self.__index = self
-
-  assert(io.input(filename))
-  self.data = json.decode(io.read("*all"))
-
-  return table.deepcopy(o)
+	if(love.filesystem.getInfo(filename)) then
+		--filesystem.read(filename)()
+		--print(love.filesystem.read(filename))
+		self.data = json.decode(love.filesystem.read(filename))
+		return table.deepcopy(o)
+	else
+		return {}
+	end
 end
-
-return JSONReader

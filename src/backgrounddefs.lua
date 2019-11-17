@@ -40,7 +40,7 @@ gBackgroundDefs = {
 						self.x = love.graphics.getWidth()/2
 						self.y = love.graphics.getHeight()/2
 						gBackgroundImage = nil
-						love.graphics.setBackgroundColor(currentPalette.background)
+						love.graphics.setBackgroundColor(gCurrentPalette.background)
 						self.timer = 0
 					end,
 			update = function(self, dt) 
@@ -48,7 +48,7 @@ gBackgroundDefs = {
 						self.x = self.x + math.cos(self.timer) * love.graphics.getWidth()/200
 					end,
 			render = function(self)
-						love.graphics.setColor(currentPalette.background2)
+						love.graphics.setColor(gCurrentPalette.background2)
 						love.graphics.circle("fill", self.x, self.y, love.graphics.getHeight()*0.8) 
 						love.graphics.resetColor()
 					end
@@ -57,13 +57,15 @@ gBackgroundDefs = {
 			init2 = function(self)
 						self.x = love.graphics.getWidth()/2
 						self.y = love.graphics.getHeight()/2
-						gBackgroundImage = love.graphics.newImage("graphics/menubackground.png")
+						gBackgroundImage = love.graphics.newImage("graphics/linearGradientBottom.png")
+						love.graphics.setBackgroundColor(gCurrentPalette.background)
 						self.triangles = {{0, self.y/2, -self.y/2 * math.sqrt(3)/2,-self.y/2 * 1/2,self.y/2 * math.sqrt(3)/2,-self.y/2 * 1/2},
 							{0, self.y/2, -self.y/2 * math.sqrt(3)/2,-self.y/2 * 1/2,self.y/2 * math.sqrt(3)/2,-self.y/2 * 1/2},
 							{0, self.y/2, -self.y/2 * math.sqrt(3)/2,-self.y/2 * 1/2,self.y/2 * math.sqrt(3)/2,-self.y/2 * 1/2},
 							{0, self.y/2, -self.y/2 * math.sqrt(3)/2,-self.y/2 * 1/2,self.y/2 * math.sqrt(3)/2,-self.y/2 * 1/2},
 							{0, self.y/2, -self.y/2 * math.sqrt(3)/2,-self.y/2 * 1/2,self.y/2 * math.sqrt(3)/2,-self.y/2 * 1/2}}
 						self.angle = 0
+						love.graphics.resetColor()
 					end,
 			update = function(self, dt)
 						self.angle = (self.angle + dt) % (2 * math.pi)
@@ -73,11 +75,12 @@ gBackgroundDefs = {
 					end,
 			render = function(self)
 						love.graphics.setLineWidth(10)
-						love.graphics.setBackgroundColor(currentPalette.background)
+						love.graphics.setColor(gCurrentPalette.gradient)
+						love.graphics.draw(gBackgroundImage,0,0,0,self.x*2/1920, self.y*2/1080)
 						love.graphics.resetColor()
-						love.graphics.setColor(currentPalette.bgObjects)
+						love.graphics.setColor(gCurrentPalette.bgObjects)
 						centeredTriangles = center_points(self.x, self.y, self.triangles)
-						love.graphics.setColor(currentPalette.bgObjects)
+						love.graphics.setColor(gCurrentPalette.bgObjects)
 						for i, v in ipairs(centeredTriangles) do
 							love.graphics.polygon("line", v)
 						end
@@ -89,7 +92,7 @@ gBackgroundDefs = {
 						self.x = love.graphics.getWidth()/2
 						self.y = love.graphics.getHeight()/2
 						gBackgroundImage = love.graphics.newImage("graphics/radialGradient.png")
-						love.graphics.setBackgroundColor(currentPalette.background)
+						love.graphics.setBackgroundColor(gCurrentPalette.background)
 						self.squares = {{-self.y/4,-self.y/4, self.y/4,-self.y/4, self.y/4,self.y/4,-self.y/4,self.y/4},
 										rotate_object({-self.y/4,-self.y/4, self.y/4,-self.y/4, self.y/4,self.y/4,-self.y/4,self.y/4}, math.pi/4),
 										{-self.y/2,-self.y/2, self.y/2,-self.y/2, self.y/2,self.y/2,-self.y/2,self.y/2},
@@ -111,10 +114,10 @@ gBackgroundDefs = {
 						allpoints = {}
 						love.graphics.setLineWidth(10)
 						centeredSquares = center_points(self.x, self.y, self.squares)
-						love.graphics.setColor(currentPalette.gradient)
+						love.graphics.setColor(gCurrentPalette.gradient)
 						love.graphics.draw(gBackgroundImage,0,0,0,self.x*2/1920, self.y*2/1080)
 						love.graphics.resetColor()
-						love.graphics.setColor(currentPalette.bgObjects)
+						love.graphics.setColor(gCurrentPalette.bgObjects)
 						for i, v in ipairs(centeredSquares) do
 							love.graphics.polygon("line", v)
 							for k, w in ipairs(v) do
@@ -126,74 +129,12 @@ gBackgroundDefs = {
 						love.graphics.resetColor()
 					end
 	},
-	["circleFlower"] = {
-		init2 = function(self) 
-						self.x = love.graphics.getWidth()/2
-						self.y = love.graphics.getHeight()/2
-						gBackgroundImage = love.graphics.newImage("graphics/radialGradient.png")
-						love.graphics.setBackgroundColor(currentPalette.background)
-						self.circles = {{-self.y/4,-self.y/4, self.y/4,-self.y/4, self.y/4,self.y/4,-self.y/4,self.y/4},
-										rotate_object({-self.y/4,-self.y/4, self.y/4,-self.y/4, self.y/4,self.y/4,-self.y/4,self.y/4}, math.pi/4),
-										rotate_object({-self.y/4,-self.y/4, self.y/4,-self.y/4, self.y/4,self.y/4,-self.y/4,self.y/4}, math.pi/4),
-										{-self.y/4,-self.y/4, self.y/4,-self.y/4, self.y/4,self.y/4,-self.y/4,self.y/4}
-									}
-						self.triangles = {rotate_object({0, self.y/4, -self.y/4 * math.sqrt(3)/2,-self.y/4 * 1/2,self.y/4 * math.sqrt(3)/2,-self.y/4 * 1/2}, 0),
-										rotate_object({0, self.y/4, -self.y/4 * math.sqrt(3)/2,-self.y/4 * 1/2,self.y/4 * math.sqrt(3)/2,-self.y/4 * 1/2}, math.pi/8),
-										rotate_object({0, self.y/4, -self.y/4 * math.sqrt(3)/2,-self.y/4 * 1/2,self.y/4 * math.sqrt(3)/2,-self.y/4 * 1/2}, 2*math.pi/8),
-										rotate_object({0, self.y/4, -self.y/4 * math.sqrt(3)/2,-self.y/4 * 1/2,self.y/4 * math.sqrt(3)/2,-self.y/4 * 1/2}, 3*math.pi/8),
-										rotate_object({0, self.y/4, -self.y/4 * math.sqrt(3)/2,-self.y/4 * 1/2,self.y/4 * math.sqrt(3)/2,-self.y/4 * 1/2}, 4*math.pi/8),
-										rotate_object({0, self.y/4, -self.y/4 * math.sqrt(3)/2,-self.y/4 * 1/2,self.y/4 * math.sqrt(3)/2,-self.y/4 * 1/2}, 5*math.pi/8),
-										rotate_object({0, self.y/4, -self.y/4 * math.sqrt(3)/2,-self.y/4 * 1/2,self.y/4 * math.sqrt(3)/2,-self.y/4 * 1/2}, 6*math.pi/8),
-										rotate_object({0, self.y/4, -self.y/4 * math.sqrt(3)/2,-self.y/4 * 1/2,self.y/4 * math.sqrt(3)/2,-self.y/4 * 1/2}, 7*math.pi/8),
-										rotate_object({0, self.y/4, -self.y/4 * math.sqrt(3)/2,-self.y/4 * 1/2,self.y/4 * math.sqrt(3)/2,-self.y/4 * 1/2}, 8*math.pi/8),
-										rotate_object({0, self.y/4, -self.y/4 * math.sqrt(3)/2,-self.y/4 * 1/2,self.y/4 * math.sqrt(3)/2,-self.y/4 * 1/2}, 9*math.pi/8),
-										rotate_object({0, self.y/4, -self.y/4 * math.sqrt(3)/2,-self.y/4 * 1/2,self.y/4 * math.sqrt(3)/2,-self.y/4 * 1/2}, 10*math.pi/8),
-										rotate_object({0, self.y/4, -self.y/4 * math.sqrt(3)/2,-self.y/4 * 1/2,self.y/4 * math.sqrt(3)/2,-self.y/4 * 1/2}, 11*math.pi/8),
-										rotate_object({0, self.y/4, -self.y/4 * math.sqrt(3)/2,-self.y/4 * 1/2,self.y/4 * math.sqrt(3)/2,-self.y/4 * 1/2}, 12*math.pi/8),
-										rotate_object({0, self.y/4, -self.y/4 * math.sqrt(3)/2,-self.y/4 * 1/2,self.y/4 * math.sqrt(3)/2,-self.y/4 * 1/2}, 13*math.pi/8),
-										rotate_object({0, self.y/4, -self.y/4 * math.sqrt(3)/2,-self.y/4 * 1/2,self.y/4 * math.sqrt(3)/2,-self.y/4 * 1/2}, 14*math.pi/8),
-										rotate_object({0, self.y/4, -self.y/4 * math.sqrt(3)/2,-self.y/4 * 1/2,self.y/4 * math.sqrt(3)/2,-self.y/4 * 1/2}, 15*math.pi/8),	
-										}
-						self.circleRad = self.y/16
-						love.graphics.resetColor()		
-					end,
-			update = function(self, dt) 
-						for j, u in ipairs(self.circles) do
-							if j%2 == 0 then
-								self.circles[j] = rotate_object(self.circles[j],math.pi/2048)
-							else
-								self.circles[j] = rotate_object(self.circles[j],-math.pi/2048)
-							end
-						end 
-						for i, v in ipairs(self.triangles) do
-							self.triangles[i] = rotate_object(self.triangles[i],math.pi/2048)
-						end
-					end,
-			render = function(self)
-						allpoints = {}
-						love.graphics.setLineWidth(10)
-						centeredCircles = center_points(self.x, self.y, self.circles)
-						centeredTriangles = center_points(self.x, self.y, self.triangles)
-						love.graphics.setColor(currentPalette.bgObjects)
-						for i, v in ipairs(centeredCircles) do
-							for k, w in ipairs(v) do
-								if (k%2) == 1 then
-									love.graphics.circle("line",v[k], v[k+1], self.circleRad)
-								end
-							end 
-						end
-						for i,v in ipairs(centeredTriangles) do
-							love.graphics.polygon("line", v)
-						end 
-						love.graphics.resetColor()
-					end
-	},
 	["shearSquares"] = {
 			init2 = function(self)
 						gBackgroundImage = nil
 						self.timer1 = 0
 						self.timer2 = math.pi/2
-						love.graphics.setBackgroundColor(currentPalette.background)
+						love.graphics.setBackgroundColor(gCurrentPalette.background)
 						self.bounds = math.max(love.graphics.getHeight(), love.graphics.getWidth())
 					end,
 			update = function(self, dt)
@@ -205,7 +146,7 @@ gBackgroundDefs = {
 						local margin = self.bounds * 1/4 * 1/8
 						local size = self.bounds*1/4*3/4
 						love.graphics.push()
-						love.graphics.setColor(currentPalette.bgObjects)
+						love.graphics.setColor(gCurrentPalette.bgObjects)
 						love.graphics.translate(margin,love.graphics.getHeight()/2 + margin)
 						love.graphics.shear(math.tan(self.timer1), 0)
 						for i=1,4 do
@@ -215,7 +156,7 @@ gBackgroundDefs = {
 						end
 						love.graphics.pop()
 						love.graphics.push()
-						love.graphics.setColor(currentPalette.background2)
+						love.graphics.setColor(gCurrentPalette.background2)
 						love.graphics.translate(margin,love.graphics.getHeight()/2 + margin)
 						love.graphics.shear(-math.tan(self.timer2), 0)
 						for i=1,4 do
@@ -226,5 +167,120 @@ gBackgroundDefs = {
 						love.graphics.pop()
 						love.graphics.resetColor()
 					end
+	},
+	["pulseCircles"] = {
+			init2 = function(self)
+						gBackgroundImage = love.graphics.newImage("graphics/linearGradientBottom.png")
+						self.timer1 = 0
+						self.timer2 = 0
+						self.cirPos = 0
+						self.cirPos2 = math.pi
+						self.cx = winWidth / 2
+						self.cy = winHeight / 2
+						self.circleSize = love.graphics.getHeight()*0.2
+						self.dist = math.min(winWidth, winHeight) / 4
+						love.graphics.setBackgroundColor(gCurrentPalette.background)
+					end,
+			update = function(self, dt)
+						self.timer1 = (self.timer1 + dt * 3/4) % (2 * math.pi)
+						self.cirPos = math.sin(self.timer1)
+						self.cirPos2 = math.cos(self.timer1)
+						self.timer2 = (self.timer2 + dt * 1/7) % (2 * math.pi)
+					end,
+			render = function(self)
+						love.graphics.setColor(gCurrentPalette.gradient)
+						love.graphics.draw(gBackgroundImage,0,0,0,self.x*2/1920, self.y*2/1080)
+						love.graphics.push()
+						-- rotate around center
+						love.graphics.translate(self.cx, self.cy)
+						love.graphics.rotate(self.timer2)
+						love.graphics.translate(-self.cx, -self.cy)
+						
+						love.graphics.setColor(gCurrentPalette.bgObjects)
+						love.graphics.circle("fill", self.cx + self.dist * self.cirPos, self.cy, self.circleSize)
+						love.graphics.circle("fill", self.cx - self.dist * self.cirPos, self.cy, self.circleSize)
+						love.graphics.circle("fill", self.cx, self.cy + self.dist * (self.cirPos2), self.circleSize)
+						love.graphics.circle("fill", self.cx, self.cy - self.dist * (self.cirPos2), self.circleSize)
+						love.graphics.pop()
+					end
+	},
+	["scrollSquares"] = {
+			init2 = function(self)
+						self.timer1 = 0
+						self.cx = winWidth
+						self.cy = winHeight / 2
+						self.circleSize = love.graphics.getHeight()*0.2
+						self.dist = math.min(winWidth, winHeight) / 4
+						gBackgroundImage = love.graphics.newImage("graphics/linearGradientBottom.png")
+						love.graphics.setBackgroundColor(gCurrentPalette.background)
+						self.margin = winHeight * 1/16
+						self.size = winHeight * 1/4 - self.margin
+					end,
+			update = function(self, dt)
+						self.timer1 = (self.timer1 - 100 * dt)
+					end,
+			render = function(self)
+						love.graphics.push()
+						-- rotate around center
+						--love.graphics.translate(self.cx, self.cy)
+						--love.graphics.rotate(self.timer2)
+						--love.graphics.translate(-self.cx, -self.cy)
+						love.graphics.translate(self.timer1, 0)
+						
+						love.graphics.setColor(gCurrentPalette.bgObjects)
+						for i=1,7,2 do
+							love.graphics.rectangle("fill", self.cx, winHeight * i/8 - self.margin, self.size, self.size)
+						end
+						love.graphics.pop()
+					end
+	},
+	["waveRectangles"] = {
+			init2 = function(self)
+						gBackgroundImage = nil
+						self.timer1 = 0
+						self.y = winHeight /2
+						gBackgroundImage = love.graphics.newImage("graphics/linearGradientBottom.png")
+						love.graphics.setBackgroundColor(gCurrentPalette.background)
+						self.margin = winWidth * 1/16
+						self.size = winHeight * 1/4 - self.margin
+					end,
+			update = function(self, dt)
+						self.timer1 = (self.timer1 + dt)
+					end,
+			render = function(self)
+						love.graphics.setColor(gCurrentPalette.gradient)
+						love.graphics.draw(gBackgroundImage,0,0,0,winWidth/1920, winHeight*2/1080)
+						love.graphics.resetColor()
+
+						love.graphics.setColor(gCurrentPalette.bgObjects2)
+						for i=1,7 do
+							love.graphics.rectangle("fill", winWidth * i/8 - self.margin +self.size/2, self.y-self.size/2 + 100*math.cos(self.timer1+math.pi/2*i), self.size/2, 2*self.y)
+						end
+					end
+	},
+	["dualWaveRectangles"] = {
+			init2 = function(self)
+						gBackgroundImage = nil
+						self.timer1 = 0
+						self.y = winHeight /2
+						gBackgroundImage = love.graphics.newImage("graphics/linearGradientBottom.png")
+						love.graphics.setBackgroundColor(gCurrentPalette.background)
+						self.margin = winWidth * 1/16
+						self.size = winHeight * 1/4 - self.margin
+					end,
+			update = function(self, dt)
+						self.timer1 = (self.timer1 + dt)
+					end,
+			render = function(self)
+						love.graphics.setColor(gCurrentPalette.gradient)
+						love.graphics.draw(gBackgroundImage,0,0,0,winWidth/1920, winHeight*2/1080)
+						love.graphics.resetColor()
+
+						love.graphics.setColor(gCurrentPalette.bgObjects2)
+						for i=1,15 do
+							love.graphics.rectangle("fill", winWidth * i/15 - 5*self.margin/6, self.y-self.size/2 + 100*math.cos(self.timer1+math.pi/4*i), self.size/2, 2*self.y)
+						end
+					end
 	}
+	
 }
