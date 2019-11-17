@@ -59,19 +59,12 @@ gBackgroundDefs = {
 						self.y = love.graphics.getHeight()/2
 						gBackgroundImage = love.graphics.newImage("graphics/linearGradientBottom.png")
 						love.graphics.setBackgroundColor(gCurrentPalette.background)
-						self.triangles = {{0, self.y/2, -self.y/2 * math.sqrt(3)/2,-self.y/2 * 1/2,self.y/2 * math.sqrt(3)/2,-self.y/2 * 1/2},
-							{0, self.y/2, -self.y/2 * math.sqrt(3)/2,-self.y/2 * 1/2,self.y/2 * math.sqrt(3)/2,-self.y/2 * 1/2},
-							{0, self.y/2, -self.y/2 * math.sqrt(3)/2,-self.y/2 * 1/2,self.y/2 * math.sqrt(3)/2,-self.y/2 * 1/2},
-							{0, self.y/2, -self.y/2 * math.sqrt(3)/2,-self.y/2 * 1/2,self.y/2 * math.sqrt(3)/2,-self.y/2 * 1/2},
-							{0, self.y/2, -self.y/2 * math.sqrt(3)/2,-self.y/2 * 1/2,self.y/2 * math.sqrt(3)/2,-self.y/2 * 1/2}}
+						self.triangle = {self.x, self.y/2+self.y, -self.y/2 * math.sqrt(3)/2+self.x,-self.y/2 * 1/2+self.y,self.y/2 * math.sqrt(3)/2+self.x,-self.y/2 * 1/2+self.y}
 						self.angle = 0
 						love.graphics.resetColor()
 					end,
 			update = function(self, dt)
-						self.angle = (self.angle + dt) % (2 * math.pi)
-						for j, u in ipairs(self.triangles) do
-							self.triangles[j] = rotate_object(self.triangles[j],math.cos(self.angle)/40*(j-1)/5 + 1/40*1/5 )
-						end 
+						self.angle = (self.angle + dt)
 					end,
 			render = function(self)
 						love.graphics.setLineWidth(10)
@@ -79,11 +72,24 @@ gBackgroundDefs = {
 						love.graphics.draw(gBackgroundImage,0,0,0,self.x*2/1920, self.y*2/1080)
 						love.graphics.resetColor()
 						love.graphics.setColor(gCurrentPalette.bgObjects)
-						centeredTriangles = center_points(self.x, self.y, self.triangles)
-						love.graphics.setColor(gCurrentPalette.bgObjects)
-						for i, v in ipairs(centeredTriangles) do
-							love.graphics.polygon("line", v)
-						end
+
+						love.graphics.push()
+						love.graphics.translate(self.x,self.y)
+						love.graphics.rotate(self.angle/15)
+						love.graphics.translate(-self.x,-self.y)
+
+						for i=1,6 do 
+							love.graphics.push()
+							love.graphics.translate(self.x,self.y)
+							love.graphics.rotate(math.cos(self.angle)/4*(i-1)/4)
+							love.graphics.translate(-self.x,-self.y)
+
+							love.graphics.polygon("line", self.triangle)
+							love.graphics.pop()
+						end 
+
+						love.graphics.pop()
+
 						love.graphics.resetColor()
 					end
 	},
