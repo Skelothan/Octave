@@ -3,8 +3,10 @@ PlayState.__index = PlayState
 
 function PlayState:newPad(pX, pY, pRadius, pNum)
 	color = gCurrentPalette.pad1
+	laneColor = gCurrentPalette.laneColor
 	if pNum % 2 == 1 then
 		color = gCurrentPalette.pad2
+		laneColor = gCurrentPalette.laneColor2
 	end
 	table.insert(self.pads, Pad:init({
 		x = pX, 
@@ -19,7 +21,7 @@ function PlayState:newPad(pX, pY, pRadius, pNum)
 		padY = pY, 
 		padR = pRadius,
 		angle = math.oimod((pNum), 8),
-		laneColor = gCurrentPalette.laneColor
+		laneColor = laneColor
 	})
 	table.insert(self.lanes, lane11)
 	local lane12 = Lane:init({
@@ -27,7 +29,7 @@ function PlayState:newPad(pX, pY, pRadius, pNum)
 		padY = pY, 
 		padR = pRadius,
 		angle = math.oimod((pNum+1), 8),
-		laneColor = gCurrentPalette.laneColor
+		laneColor = laneColor
 	})
 	table.insert(self.lanes, lane12)
 	local lane13 = Lane:init({
@@ -35,7 +37,7 @@ function PlayState:newPad(pX, pY, pRadius, pNum)
 		padY = pY, 
 		padR = pRadius,
 		angle = math.oimod((pNum+2), 8),
-		laneColor = gCurrentPalette.laneColor
+		laneColor = laneColor
 	})
 	table.insert(self.lanes, lane13)
 end
@@ -50,7 +52,7 @@ function PlayState:newNote(nRadius, pad, lane, nNoteType)
 			lane = lane,
 			speed = self.noteSpeed,
 			noteType = nNoteType,
-			score = 10000
+			score = 1000
 		})
 	)
 end
@@ -118,14 +120,15 @@ function PlayState:enter(params)
 	--self.note_time_multiplier = 120/176
 	
 	-- This coefficient converts the time units in the score to seconds. Luckily, it seems to be constant per file.
-	self.note_time_multiplier = 0.7102 --derived with excel, logic pro, and pain. Works for Drop In, Flip Out at least...
+	self.note_time_multiplier =  125 / self.song.bpm--derived with excel, logic pro, and pain. Works for Drop In, Flip Out at least...
 	-- For this track, seems to be equal to 125 / BPM
+	--Drop in - 0.7102
 	
 	--print("Delay before notes: " .. self.delay_before_notes)
 	
 	self.note_travel_time = ((gSpawnDistance - centerRadius) / self.noteSpeed)
 	
-	print("Note travel time: " .. self.note_travel_time)
+	--print("Note travel time: " .. self.note_travel_time)
 
 	--DELAY BEFORE NOTES ENTER - make it longer to make them come sooner
 	self.timer = self.delay_before_notes
@@ -137,7 +140,7 @@ function PlayState:enter(params)
 	--self.audioDelay = 2 * midiOffset + self.note_travel_time. Old, doesn't work well.
 	
 	-- Delay before audio syncs to MIDI for Drop In, Flip Out: 85 milliseconds, more or less exactly
-	self.audioDelay = 1 / (2 * self.speedCoeff) - self.song.audioDelay -- TODO: read from JSON
+	self.audioDelay = 1 / (2 * self.speedCoeff) - self.song.noteDelay -- TODO: read from JSON
 	gAudioPlayer:changeAudio(love.audio.newSource(self.song.audio, "stream"))
 	gAudioPlayer:setLooping(false)
 	self.audioDoneTimer = 3
@@ -200,33 +203,6 @@ function PlayState:update(dt)
 	elseif love.keyboard.isHeld("right") then
 		self.pads[8].selected = true
 	end
-	
-	--I don't think we need this part?
-	--[[]
-	--actually hitting buttons
-	if love.keyboard.wasInput("topArrow") and love.keyboard.wasInput("bottomArrow") then 
-		for k, pad in pairs(self.pads) do
-			if pad.selected then
-				pad:onPress("bothArrows")
-				break
-			end
-		end
-	elseif love.keyboard.wasInput("topArrow") then
-		for k, pad in pairs(self.pads) do
-			if pad.selected then
-				pad:onPress("topArrow")
-				break
-			end
-		end
-	elseif love.keyboard.wasInput("bottomArrow") then
-		for k, pad in pairs(self.pads) do
-			if pad.selected then
-				pad:onPress("bottomArrow")
-				break
-			end
-		end
-	end
-	]]--
 		
 	for k, pad in pairs(self.pads) do
 		pad:update(dt)
@@ -258,35 +234,41 @@ function PlayState:update(dt)
 				for j, note in pairs(self.notes) do --notes is populated from within note.lua when spawned
 					coll_collides, coll_dist = noteCollision(pad, note)
 					
+					--[[
 					print(note.noteType)
 					print("Pad number: " .. k)
 					print("Note Type: " .. pad.noteTypePressed);
 					print("Note Type abs: " .. self.pads[2].noteTypePressed);
-					if coll_collides == true and note.isHit == false and note.noteType == pad.noteTypePressed then
+					]]
+					if pad.active and coll_collides == true and note.isHit == false and note.noteType == pad.noteTypePressed then
 						note:onHit() --TODO: onHit takes in an accuracy parameter, which causes different sounds to be played
 						pad.active = false
 						--print(coll_dist)
 						if coll_dist < 0.1 then -- Perfect
 							self.healthBar:incrementScore(note.score)
 							self.healthBar:restoreHealth()
-							gSounds["noteHit"]:stop()
-							gSounds["noteHit"]:play()
+							gSounds["noteHitPerfect"]:stop()
+							gSounds["noteHitPerfect"]:play()
+							self.healthBar:incrementMultiplier()
 						elseif coll_dist < 0.3 then -- Great
 							self.healthBar:incrementScore(note.score * 0.9)
 							self.healthBar:restoreHealth()
-							gSounds["noteHit"]:stop()
-							gSounds["noteHit"]:play()
+							gSounds["noteHitGreat"]:stop()
+							gSounds["noteHitGreat"]:play()
+							self.healthBar:incrementMultiplier()
 						elseif coll_dist < 0.5 then -- Good
 							self.healthBar:incrementScore(note.score * 0.75)
-							gSounds["noteHit"]:stop()
-							gSounds["noteHit"]:play()
+							gSounds["noteHitGood"]:stop()
+							gSounds["noteHitGood"]:play()
+							self.healthBar:incrementMultiplier()
 						elseif coll_dist < 1.1 then -- OK
 							self.healthBar:incrementScore(note.score * 0.50)
-							gSounds["noteHit"]:stop()
-							gSounds["noteHit"]:play()
+							gSounds["noteHitOk"]:stop()
+							gSounds["noteHitOk"]:play()
 						else -- Miss
 							gSounds["noteMiss"]:stop()
 							gSounds["noteMiss"]:play()
+							self.healthBar:resetMultiplier()
 						end
 						
 					end
@@ -366,5 +348,5 @@ function PlayState:render()
 	self.healthBar:render()
 	-- Debug:
 	--love.graphics.printf("Time: " .. self.timer, 0, 0, winWidth, "left")
-	love.graphics.printf("Note Type: " .. self.pads[2].noteTypePressed, 0, 0, winWidth, "left")
+	--love.graphics.printf("Note Type: " .. self.pads[2].noteTypePressed, 0, 0, winWidth, "left")
 end

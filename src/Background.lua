@@ -1,18 +1,15 @@
 Background = {}
 Background.__index = Background
 
-function Background:init(backgroundName, palette)
+function Background:init(backgroundName)
 	-- print(funcs)
 	
 	local o = o or {}   -- create object if user does not provide one
 	setmetatable(o, self)
 	self.__index = self
 	
-	print(type(o))
 	self:setFunctions(backgroundName or "oscCircle")
-	self:setPalette(palette or gPalette["standard"])
 	self:init2()
-	print(type(o))
 	
 	return table.deepcopy(o)
 	--return o
@@ -24,9 +21,6 @@ function Background:setFunctions(backgroundName)
 	self.render = gBackgroundDefs[backgroundName].render or gBackgroundDefs["oscCircle"].render
 end
 
-function Background:setPalette(palette)
-	currentPalette = palette
-end 
 
 function Background:init2() end
 function Background:update(dt) end
