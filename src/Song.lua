@@ -16,20 +16,22 @@ function Song:init(params)
 
 	self.menuColor = self.palette.menuColor or {0.9, 0.3, 0.6, 1}
 	self.textColor = table.deepcopy(self.palette.menuText) or {1, 1, 1, 1}
+
+	self.directory = params.directory or nil
 	
-	if not params.highScores or not love.filesystem.getInfo(params.highScores) then 
+	if not love.filesystem.getInfo(params.directory .. "highScores.json") then 
 		self.highScores = {}
 	else
-		self.highScores = JSONReader:init(params.highScores).data["highScores"] or {}
+		self.highScores = JSONReader:init(self.directory .. "highScores.json").data["highScores"] or {}
 		if type(self.highScores) ~= "table" then self.highScores = {} end
 	end
 
-	self.midi = params.midi
-	self.speedCoeff = params.speedCoeff
-	self.noteDelay = params.noteDelay
-	self.audio = params.audio
-	self.bpm = params.bpm
-	self.audioDelay = params.audioDelay
+	self.midi = params.midi or nil
+	self.speedCoeff = params.speedCoeff or 1
+	self.noteDelay = params.noteDelay or 0
+	self.audio = params.audio or nil
+	self.bpm = params.bpm or 0
+	self.audioDelay = params.audioDelay or 0
 	
 	return table.deepcopy(o)
 end

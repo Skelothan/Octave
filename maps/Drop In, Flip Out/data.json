@@ -8,7 +8,6 @@
   "image" : "graphics/noteImage.png",
   "source" : "Flip Flop",
   "year" : 2019,
-  "highScores" : "maps/Drop In, Flip Out/highScores.json",
   "midi" : "maps/Drop In, Flip Out/drop_in_flip_out_map_tempo_noleadin.mid",
   "speedCoeff": 0.25,
   "noteDelay": 0.085,

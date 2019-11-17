@@ -8,7 +8,6 @@
   "image" : "graphics/songImage.jpg",
   "source" : "Danger Dancer",
   "year" : 2018,
-  "highScores" : "maps/Ballroom Blast/highScores.json",
   "midi" : "maps/Ballroom Blast/ballroom_blast_map.mid",
   "speedCoeff": 0.16,
   "noteDelay": 0.085,
