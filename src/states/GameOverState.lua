@@ -16,6 +16,12 @@ function GameOverState:enter(params)
 	self.isWon = params.isWon or false
 	self.stopInputTimer = 4
 	self.file = params.file
+
+	self.currChar = 65
+	self.choosingName = true
+	self.choosingFirst = true
+	self.scoreName = ""
+	self.maxLetters = 6
 end
 
 function GameOverState:update(dt)
@@ -32,12 +38,23 @@ function GameOverState:render()
 	love.graphics.setColor(gCurrentPalette.menuText)
 	
 	if self.isWon then
-		love.graphics.printf("You Win!", gFonts["AvenirLight64"], 0, love.graphics.getHeight() / 3, love.graphics.getWidth(), "center")
+		love.graphics.printf("You Win!", gFonts["AvenirLight64"], 0, love.graphics.getHeight() / 4, love.graphics.getWidth(), "center")
 	else
-		love.graphics.printf("Game Over", gFonts["AvenirLight64"], 0, love.graphics.getHeight() / 3, love.graphics.getWidth(), "center")
+		love.graphics.printf("Game Over", gFonts["AvenirLight64"], 0, love.graphics.getHeight() / 4, love.graphics.getWidth(), "center")
 	end
+
+	love.graphics.printf("Enter your name: ", gFonts["AvenirLight32"], 0, love.graphics.getHeight()/2 - 50, love.graphics.getWidth(), "center")
 	
-	love.graphics.printf("Your Score: " .. comma_value(self.score), gFonts["AvenirLight32"], 0, love.graphics.getHeight()/2, love.graphics.getWidth(), "center")
+	love.graphics.rectangle(
+		"line",
+		love.graphics.getWidth()/2 - love.graphics.getWidth() / 12,
+		love.graphics.getHeight() / 2, 
+		love.graphics.getWidth() / 6,
+		50
+	)
+
+	love.graphics.printf("Your Score: " .. comma_value(self.score), 
+		gFonts["AvenirLight32"], 0, love.graphics.getHeight()/2 + love.graphics.getHeight() / 12, love.graphics.getWidth(), "center")
 
 	if self.stopInputTimer <= 0.5 then
 		if self.fadeTextColor[4] ~= 1 then

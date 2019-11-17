@@ -9,9 +9,8 @@ function MenuState:init()
 	setmetatable(MenuState, BaseState) -- inheritance: arg a inherits arg b	
 	
 	self.songs = {}
-	
-	self.numSongs = 0	
-	
+	self.numSongs = 0
+
 	local files = love.filesystem.getDirectoryItems("/maps")
 	local usefiles = {}
 	local counter = 1
@@ -33,6 +32,7 @@ function MenuState:init()
 		--print(song .. "/data.json")
 		local params = JSONReader:init(song .. "/data.json").data
 		if params and params ~= {} then
+			params["directory"] = song .. "/"
 			local s = Song:init(params)
 			table.insert(self.songs, s)
 			self.numSongs = self.numSongs + 1
@@ -100,7 +100,9 @@ function MenuState:update(dt)
 		gSounds["startExt"]:stop()
 		gSounds["startExt"]:play()
 		gCurrentSong = self.currentSong
-		gStateMachine:change("play", {song = self.songs[self.currentSong]})
+		if (self.songs[self.currentSong].midi ~= nil and self.songs[self.currentSong].audio ~= nil and self.songs[self.currentSong].bpm ~= 0) then
+			gStateMachine:change("play", {song = self.songs[self.currentSong]})
+		end
 	end
 	if love.keyboard.wasInput("topArrow") then
 		gSounds["back"]:stop()
