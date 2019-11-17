@@ -5,27 +5,38 @@ function MenuState:init()
 	local o = o or {}  
 	setmetatable(o, self)
 	self.__index = self
-	
+	print("ok \n")
 	setmetatable(MenuState, BaseState) -- inheritance: arg a inherits arg b	
 	
 	self.songs = {}
 	
 	self.numSongs = 0	
+	--[[if love.filesystem.getInfo("custom_maps", "directory") == nil then
+		love.filesystem.createDirectory("custom_maps")
+	end
+	local originalFiles = love.filesystem.getDirectoryItems("/maps")
+	for i, file in ipairs(originalFiles) do
+		print(file)
+		print(os.rename(love.filesystem.getSource() .. "/maps/" .. file, love.filesystem.getAppdataDirectory() .. "custom_maps/" .. file))
+	end]]--
+	print(love.filesystem.mount(love.filesystem.getSourceBaseDirectory(), "/OctaveDir"))
+	local files = love.filesystem.getDirectoryItems("/OctaveDir/OctaveMaps")
 	
-	local files = love.filesystem.getDirectoryItems("/maps")
+	print(love.filesystem.getSourceBaseDirectory() .. "/OctaveDir/OctaveMaps")
 	local usefiles = {}
 	local counter = 1
 	for i, file in ipairs(files) do
-		--print(file)
+		print(file)
 		--TODO: replace with table.insert
 		if file ~= ".DS_Store" then
-			usefiles[counter] = "maps/" .. file
+			usefiles[counter] = "OctaveDir/OctaveMaps/" .. file
 			--print("Adding " .. usefiles[counter])
 			counter = counter + 1
 		else
 			--print("Skipping .DS_Store")
 		end
 	end
+
 	--JSONReader:init("maps/database.json").data["songs"]
 
 
@@ -38,6 +49,8 @@ function MenuState:init()
 			self.numSongs = self.numSongs + 1
 		end
 	end
+
+	love.filesystem.unmount(love.filesystem.getSourceBaseDirectory());
 
 	self.currentSong = gCurrentSong
 
