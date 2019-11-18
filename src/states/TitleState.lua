@@ -55,6 +55,8 @@ end
 function TitleState:updateNormal(dt)
 	if love.keyboard.wasInput("topArrow") or 
 	love.keyboard.wasInput("bottomArrow") then
+		gSounds["start"]:stop()
+		gSounds["start"]:play()
 		self.submenu:activate()
 	end
 	--[[
@@ -73,6 +75,8 @@ function TitleState:updateSubmenu(dt)
 	end
 	
 	if love.keyboard.wasInput("topArrow") then
+		gSounds["back"]:stop()
+		gSounds["back"]:play()
 		self.submenu:deactivate()
 	elseif love.keyboard.wasInput("bottomArrow") then
 		self.submenu:select()

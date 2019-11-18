@@ -105,7 +105,7 @@ function MenuState:update(dt)
 	if love.keyboard.wasInput("topArrow") then
 		gSounds["back"]:stop()
 		gSounds["back"]:play()
-		gStateMachine:change("title", {})
+		gStateMachine:change("title", {selectedOption = 1, submenuActive = true})
 	end
 end
 
