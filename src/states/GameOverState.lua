@@ -21,7 +21,7 @@ end
 function GameOverState:update(dt)
 	self.stopInputTimer = math.max(self.stopInputTimer - dt, 0)
 	if self.stopInputTimer <= 0 and love.keyboard.wasInput("bottomArrow") then
-		gAudioPlayer:changeAudio(love.audio.newSource("sfx/Welcome_to_Octave.wav", "stream"))
+		gAudioPlayer:changeAudio(gMenuMusic)
 		gAudioPlayer:setLooping(true)
 		gAudioPlayer:playAudio()
 		gStateMachine:change("menu", {})

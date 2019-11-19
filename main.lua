@@ -19,6 +19,7 @@ function love.load()
 	-- initialize global assets
 	loadFonts()
 	loadSounds()
+	loadMenuMusic()
 	gBackgroundImage = nil
 	
 	-- initialize palette
@@ -41,15 +42,20 @@ function love.load()
 	love.keyboard.inputs = {}
 	love.keyboard.keysDown = {}
 
-	gAudioPlayer = AudioPlayer:init(love.audio.newSource("sfx/Welcome_to_Octave.wav", "stream"))
+	gAudioPlayer = AudioPlayer:init(gMenuMusic)
 	gAudioPlayer:setLooping(true)
 	gAudioPlayer:playAudio()
+	
+	--pause flag, stops background updates
+	gIsPaused = false
 end
 
 
 function love.update(dt)
-	gBackground:update(dt)
-	gAudioPlayer:update(dt)
+	if not gIsPaused then
+		gBackground:update(dt)
+		gAudioPlayer:update(dt)
+	end
 	
 	gStateMachine:update(dt)
 	

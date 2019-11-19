@@ -102,6 +102,41 @@ function PlayState:enter(params)
 	self.song = params.song
 	if params.practice then self.practice = true else self.practice = false end
 	
+	self.submenu = Submenu:init({
+		
+		x = winWidth/4,
+		y = winHeight/2,
+		width = winWidth/2,
+		font = "AvenirLight32",
+		align = "center",
+		
+		selectedOption = 1,
+		
+		options = {
+			{"Resume", 
+			function() 
+				local playstate = gStateMachine.current
+				gSounds["back"]:stop()
+				gSounds["back"]:play()
+				if playstate.audioStarted and not playstate.audioEnded then
+					gAudioPlayer:playAudio()
+				end
+				playstate.submenu.active = false
+				gIsPaused = false
+			end},
+			{"Quit", 
+			function() 
+				local menustate = gStateMachine.current
+				gSounds["back"]:stop()
+				gSounds["back"]:play()
+				gIsPaused = false
+				gAudioPlayer:changeAudio(gMenuMusic)
+				gAudioPlayer:playAudio()
+				gStateMachine:change("menu", {})
+			end},
+		}
+	})
+	
 	-- Note speed must be constant for correct syncing
 	self.speedCoeff = self.song.speedCoeff 
 	self.noteSpeed = self.speedCoeff * math.max(love.graphics.getHeight(), love.graphics.getWidth())
@@ -137,6 +172,7 @@ function PlayState:enter(params)
 	self.noteIndex = 1
 	
 	self.audioStarted = false
+	self.audioEnded = false
 	gAudioPlayer:stopAudio()
 	
 	--self.audioDelay = 2 * midiOffset + self.note_travel_time. Old, doesn't work well.
@@ -164,6 +200,21 @@ function PlayState:spawnNote() --for testing, for now
 end
 
 function PlayState:update(dt)
+	if self.submenu.active then
+		self:updateSubmenu(dt)
+	else
+		self:updateNormal(dt)
+	end
+end
+
+
+function PlayState:updateNormal(dt)
+	--before anything else, check to see if the game is paused, pause if so
+	if love.keyboard.wasInput("togglePauseMenu") then
+		gAudioPlayer:pauseAudio()
+		self.submenu:activate()
+		gIsPaused = true
+	end
 	
 	self.audioDelay = math.max(self.audioDelay-dt, 0)
 	if self.audioDelay == 0 and not self.audioStarted then
@@ -172,6 +223,7 @@ function PlayState:update(dt)
 	end
 	
 	if not gAudioPlayer:isPlaying() and self.audioStarted then
+		self.audioEnded = true
 		if self.audioDoneTimer > 0 then
 			self.audioDoneTimer = self.audioDoneTimer - dt
 		else
@@ -337,6 +389,22 @@ function PlayState:update(dt)
 
 end
 
+function PlayState:updateSubmenu(dt)
+	if love.keyboard.wasInput("up") then
+		self.submenu:up()
+	elseif love.keyboard.wasInput("down") then
+		self.submenu:down()
+	end
+	
+	if love.keyboard.wasInput("topArrow") then
+		gSounds["back"]:stop()
+		gSounds["back"]:play()
+		self.submenu:deactivate()
+	elseif love.keyboard.wasInput("bottomArrow") then
+		self.submenu:select()
+	end
+end
+
 function PlayState:render() 
 	for k, lane in pairs(self.lanes) do
 		lane:render()
@@ -348,6 +416,15 @@ function PlayState:render()
 		note:render()
 	end
 	self.healthBar:render()
+	
+	if self.submenu.active then
+		love.graphics.setColor(0,0,0,0.5)
+		love.graphics.rectangle("fill", 0, 0, winWidth, winHeight)
+		love.graphics.setColor(gCurrentPalette.menuText)
+		love.graphics.printf("Paused", gFonts["AvenirLight64"], 0, winHeight*0.10, winWidth, "center")
+		self.submenu:render()
+	end
+	
 	-- Debug:
 	--love.graphics.printf("Time: " .. self.timer, 0, 0, winWidth, "left")
 	--love.graphics.printf("Note Type: " .. self.pads[2].noteTypePressed, 0, 0, winWidth, "left")
