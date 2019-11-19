@@ -19,7 +19,7 @@ function Submenu:init(params)
 	self.font = params.font or "AvenirLight16"
 	self.align = params.align or "left"
 	
-	self.textColor = table.deepcopy(gCurrentPalette.menuText)
+	self.textColor = params.textColor or table.deepcopy(gCurrentPalette.menuText)
 	
 	return table.deepcopy(o)
 end

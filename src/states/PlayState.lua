@@ -105,11 +105,12 @@ function PlayState:enter(params)
 	self.submenu = Submenu:init({
 		
 		x = winWidth/4,
-		y = winHeight/2,
+		y = winHeight*3/4,
 		width = winWidth/2,
 		font = "AvenirLight32",
 		align = "center",
 		
+		textColor = {1, 1, 1, 1},
 		selectedOption = 1,
 		
 		options = {
@@ -420,7 +421,7 @@ function PlayState:render()
 	if self.submenu.active then
 		love.graphics.setColor(0,0,0,0.5)
 		love.graphics.rectangle("fill", 0, 0, winWidth, winHeight)
-		love.graphics.setColor(gCurrentPalette.menuText)
+		love.graphics.setColor({1,1,1,1})
 		love.graphics.printf("Paused", gFonts["AvenirLight64"], 0, winHeight*0.10, winWidth, "center")
 		self.submenu:render()
 	end
