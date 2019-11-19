@@ -9,9 +9,8 @@ function MenuState:init()
 	setmetatable(MenuState, BaseState) -- inheritance: arg a inherits arg b	
 	
 	self.songs = {}
-	
-	self.numSongs = 0	
-	
+	self.numSongs = 0
+
 	local files = love.filesystem.getDirectoryItems("/maps")
 	local usefiles = {}
 	local counter = 1
@@ -33,6 +32,7 @@ function MenuState:init()
 		--print(song .. "/data.json")
 		local params = JSONReader:init(song .. "/data.json").data
 		if params and params ~= {} then
+			params["directory"] = song .. "/"
 			local s = Song:init(params)
 			table.insert(self.songs, s)
 			self.numSongs = self.numSongs + 1
@@ -145,11 +145,16 @@ function MenuState:updateNormal(dt)
 		gCurrentSong = self.currentSong
 		gStateMachine:change("play", {song = self.songs[self.currentSong]})
 		]]
-		gSounds["start"]:stop()
-		gSounds["start"]:play()
-		self.submenu:updateColor()
-		self.submenu:activate()
-		self.submenu.selectedOption = 1
+		if (self.songs[self.currentSong].midi ~= nil and self.songs[self.currentSong].audio ~= nil and self.songs[self.currentSong].bpm ~= 0) then
+			gSounds["start"]:stop()
+			gSounds["start"]:play()
+			self.submenu:updateColor()
+			self.submenu:activate()
+			self.submenu.selectedOption = 1
+		else
+			gSounds["miss"]:stop()
+			gSounds["miss"]:play()
+		end
 	end
 	if love.keyboard.wasInput("topArrow") then
 		gSounds["back"]:stop()
@@ -178,8 +183,7 @@ function MenuState:render()
 	for i, song in ipairs(self.songs) do 
 		local opacity = 0.85/(math.abs(i-self.currentSong)+1)
 
-		if i == self.currentSong then 
-			
+		if i == self.currentSong then		
 			song:render(i, self.currentSong, opacity, true, self.menuOffset)
 		end
 

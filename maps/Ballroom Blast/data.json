@@ -5,7 +5,7 @@
   "title" : "Ballroom Blast",
   "artist" : "Poshon",
   "album" : "Octave OST Vol. 1",
-  "image" : "graphics/songImage.jpg",
+  "image" : "graphics/noteImage.png",
   "source" : "Danger Dancer",
   "year" : 2018,
   "highScores" : "maps/Ballroom Blast/highScores.json",
