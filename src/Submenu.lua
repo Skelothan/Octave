@@ -32,6 +32,10 @@ function Submenu:deactivate()
 	self.active = false
 end
 
+function Submenu:updateColor()
+	self.textColor = table.deepcopy(gCurrentPalette.menuText)
+end
+
 function Submenu:up()
 	if self.selectedOption ~= 1 then
 		gSounds["scroll"]:stop()

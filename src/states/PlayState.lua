@@ -100,6 +100,8 @@ function PlayState:enter(params)
 	self.healthBar = HealthBar:init({healthColor = gCurrentPalette.healthColor})
 	self.notes = {}
 	self.song = params.song
+	if params.practice then self.practice = true else self.practice = false end
+	
 	-- Note speed must be constant for correct syncing
 	self.speedCoeff = self.song.speedCoeff 
 	self.noteSpeed = self.speedCoeff * math.max(love.graphics.getHeight(), love.graphics.getWidth())
@@ -316,7 +318,7 @@ function PlayState:update(dt)
 		-- Health bar/note collision
 		if circleCollision(note.x, note.y, note.radius, self.healthBar.x, self.healthBar.y, self.healthBar.radius - 2.5 * note.radius) then
 			note.isDestroyed = true
-			self.healthBar:takeDamage(note.score)
+			if not self.practice then self.healthBar:takeDamage(note.score) end
 		end
 		if note.isDestroyed then
 			table.remove(self.notes, k)

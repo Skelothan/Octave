@@ -57,7 +57,40 @@ function MenuState:init()
 	return table.deepcopy(o)
 end
 
-function MenuState:enter()
+function MenuState:enter(params)
+	self.submenu = Submenu:init({
+		
+		x = (5*winWidth/6) - (winWidth/12) - (3*winWidth/64),
+		y = winHeight * 25/32,
+		width = winWidth/3 - winWidth/16,
+		font = "AvenirLight32",
+		align = "left",
+		
+		selectedOption = 1,
+		
+		options = {
+			{"Play", 
+			function() 
+				local menustate = gStateMachine.current
+				gSounds["startExt"]:stop()
+				gSounds["startExt"]:play()
+				gStateMachine:change("play", {song = menustate.songs[menustate.currentSong]})
+			end},
+			{"Practice", 
+			function() 
+				local menustate = gStateMachine.current
+				gSounds["startExt"]:stop()
+				gSounds["startExt"]:play()
+				gStateMachine:change("play", {song = menustate.songs[menustate.currentSong], practice = true})
+			end},
+			{"Back", 
+			function() 
+				gSounds["back"]:stop()
+				gSounds["back"]:play()
+				gStateMachine.current.submenu.active = false 
+			end}
+		}
+	})
 end 
 
 
@@ -70,6 +103,16 @@ function MenuState:update(dt)
 	else
 		self.menuOffset = math.max(0, self.menuOffset - self.maxMenuOffset * 4 * dt)
 	end
+	
+	if self.submenu.active then
+		self:updateSubmenu(dt)
+	else
+		self:updateNormal(dt)
+	end
+end
+
+function MenuState:updateNormal(dt)
+	
 
 	if self.lastUp >= 0.15 and love.keyboard.isHeld("up") and self.currentSong > 1 then
 		gSounds["scroll"]:stop()
@@ -83,6 +126,7 @@ function MenuState:update(dt)
 		
 		self.menuOffset = self.maxMenuOffset
 		self.movedDown = false
+		
 	elseif self.lastDown >= 0.15 and love.keyboard.isHeld("down") and self.currentSong < self.numSongs then
 		gSounds["scroll"]:stop()
 		gSounds["scroll"]:play()
@@ -97,15 +141,36 @@ function MenuState:update(dt)
 		self.movedDown = true
 	end
 	if love.keyboard.wasInput("bottomArrow") then
-		gSounds["startExt"]:stop()
-		gSounds["startExt"]:play()
+	 --[[
 		gCurrentSong = self.currentSong
 		gStateMachine:change("play", {song = self.songs[self.currentSong]})
+		]]
+		gSounds["start"]:stop()
+		gSounds["start"]:play()
+		self.submenu:updateColor()
+		self.submenu:activate()
+		self.submenu.selectedOption = 1
 	end
 	if love.keyboard.wasInput("topArrow") then
 		gSounds["back"]:stop()
 		gSounds["back"]:play()
 		gStateMachine:change("title", {selectedOption = 1, submenuActive = true})
+	end
+end
+
+function MenuState:updateSubmenu(dt)
+	if love.keyboard.wasInput("up") then
+		self.submenu:up()
+	elseif love.keyboard.wasInput("down") then
+		self.submenu:down()
+	end
+	
+	if love.keyboard.wasInput("topArrow") then
+		gSounds["back"]:stop()
+		gSounds["back"]:play()
+		self.submenu:deactivate()
+	elseif love.keyboard.wasInput("bottomArrow") then
+		self.submenu:select()
 	end
 end
 
@@ -119,5 +184,9 @@ function MenuState:render()
 		end
 
 		song:render(i, self.currentSong, opacity, false, self.menuOffset)
+	end
+	
+	if self.submenu.active then
+		self.submenu:render()
 	end
 end
