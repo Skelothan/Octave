@@ -9,10 +9,8 @@
   "source" : "Danger Dancer",
   "year" : 2018,
   "highScores" : "maps/Ballroom Blast/highScores.json",
-  "midi" : "maps/Ballroom Blast/ballroom_blast_map_logic.mid",
   "speedCoeff": 0.1,
   "noteDelay": 0.00,
-  "bpm" : 128,
-  "audio" : "maps/Ballroom Blast/Ballroom_Blast.mp3"
+  "bpm" : 128
 }
 
