@@ -182,7 +182,7 @@ function PlayState:enter(params)
 	self.audioDelay = 1 / (2 * self.speedCoeff) - self.song.noteDelay 
 	gAudioPlayer:changeAudio(love.audio.newSource(self.song.audio, "stream"))
 	gAudioPlayer:setLooping(false)
-	self.audioDoneTimer = 3
+	self.audioDoneTimer = 1.5
 	
 end
 
@@ -210,32 +210,6 @@ end
 
 
 function PlayState:updateNormal(dt)
-	--before anything else, check to see if the game is paused, pause if so
-	if love.keyboard.wasInput("togglePauseMenu") then
-		gAudioPlayer:pauseAudio()
-		self.submenu:activate()
-		gIsPaused = true
-	end
-	
-	self.audioDelay = math.max(self.audioDelay-dt, 0)
-	if self.audioDelay == 0 and not self.audioStarted then
-		gAudioPlayer:playAudio()
-		self.audioStarted = true
-	end
-	
-	if not gAudioPlayer:isPlaying() and self.audioStarted then
-		self.audioEnded = true
-		if self.audioDoneTimer > 0 then
-			self.audioDoneTimer = self.audioDoneTimer - dt
-		else
-			gStateMachine:change("gameOver", {
-			score = self.healthBar.score, 
-			isWon = true,
-			file = self.song.highScoreFile
-		})
-		end
-	end
-	
 	for k, pad in pairs(self.pads) do
 		pad.selected = false
 	end
@@ -387,6 +361,35 @@ function PlayState:updateNormal(dt)
   ]]
 
 	self.healthBar:update(dt)
+	
+	--check to see if the game is paused, pause if so
+	if love.keyboard.wasInput("togglePauseMenu") then
+		gAudioPlayer:pauseAudio()
+		self.submenu:activate()
+		gIsPaused = true
+		return
+	end
+	
+	self.audioDelay = math.max(self.audioDelay-dt, 0)
+	if self.audioDelay == 0 and not self.audioStarted then
+		gAudioPlayer:playAudio()
+		self.audioStarted = true
+	end
+	
+	if not gAudioPlayer:isPlaying() and self.audioStarted then
+		if self.audioDoneTimer < 1.5 then
+			self.audioEnded = true
+		end
+		if self.audioDoneTimer > 0 then
+			self.audioDoneTimer = self.audioDoneTimer - dt
+		else
+			gStateMachine:change("gameOver", {
+			score = self.healthBar.score, 
+			isWon = true,
+			file = self.song.highScoreFile
+		})
+		end
+	end
 
 end
 
@@ -428,5 +431,6 @@ function PlayState:render()
 	
 	-- Debug:
 	--love.graphics.printf("Time: " .. self.timer, 0, 0, winWidth, "left")
+	--love.graphics.printf("AudioDoneTimer: " .. self.audioDoneTimer, 0, 0, winWidth, "left")
 	--love.graphics.printf("Note Type: " .. self.pads[2].noteTypePressed, 0, 0, winWidth, "left")
 end
