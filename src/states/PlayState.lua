@@ -100,6 +100,44 @@ function PlayState:enter(params)
 	self.healthBar = HealthBar:init({healthColor = gCurrentPalette.healthColor})
 	self.notes = {}
 	self.song = params.song
+	if params.practice then self.practice = true else self.practice = false end
+	
+	self.submenu = Submenu:init({
+		
+		x = winWidth/4,
+		y = winHeight*3/4,
+		width = winWidth/2,
+		font = "AvenirLight32",
+		align = "center",
+		
+		textColor = {1, 1, 1, 1},
+		selectedOption = 1,
+		
+		options = {
+			{"Resume", 
+			function() 
+				local playstate = gStateMachine.current
+				gSounds["back"]:stop()
+				gSounds["back"]:play()
+				if playstate.audioStarted and not playstate.audioEnded then
+					gAudioPlayer:playAudio()
+				end
+				playstate.submenu.active = false
+				gIsPaused = false
+			end},
+			{"Quit", 
+			function() 
+				local menustate = gStateMachine.current
+				gSounds["back"]:stop()
+				gSounds["back"]:play()
+				gIsPaused = false
+				gAudioPlayer:changeAudio(gMenuMusic)
+				gAudioPlayer:playAudio()
+				gStateMachine:change("menu", {})
+			end},
+		}
+	})
+	
 	-- Note speed must be constant for correct syncing
 	self.speedCoeff = self.song.speedCoeff 
 	self.noteSpeed = self.speedCoeff * math.max(love.graphics.getHeight(), love.graphics.getWidth())
@@ -135,15 +173,16 @@ function PlayState:enter(params)
 	self.noteIndex = 1
 	
 	self.audioStarted = false
+	self.audioEnded = false
 	gAudioPlayer:stopAudio()
 	
 	--self.audioDelay = 2 * midiOffset + self.note_travel_time. Old, doesn't work well.
 	
 	-- Delay before audio syncs to MIDI for Drop In, Flip Out: 85 milliseconds, more or less exactly
-	self.audioDelay = 1 / (2 * self.speedCoeff) - self.song.noteDelay -- TODO: read from JSON
+	self.audioDelay = 1 / (2 * self.speedCoeff) - self.song.noteDelay 
 	gAudioPlayer:changeAudio(love.audio.newSource(self.song.audio, "stream"))
 	gAudioPlayer:setLooping(false)
-	self.audioDoneTimer = 3
+	self.audioDoneTimer = 1.5
 	
 end
 
@@ -162,25 +201,15 @@ function PlayState:spawnNote() --for testing, for now
 end
 
 function PlayState:update(dt)
-	
-	self.audioDelay = math.max(self.audioDelay-dt, 0)
-	if self.audioDelay == 0 and not self.audioStarted then
-		gAudioPlayer:playAudio()
-		self.audioStarted = true
+	if self.submenu.active then
+		self:updateSubmenu(dt)
+	else
+		self:updateNormal(dt)
 	end
-	
-	if not gAudioPlayer:isPlaying() and self.audioStarted then
-		if self.audioDoneTimer > 0 then
-			self.audioDoneTimer = self.audioDoneTimer - dt
-		else
-			gStateMachine:change("gameOver", {
-			score = self.healthBar.score, 
-			isWon = true,
-			file = self.song.highScoreFile
-		})
-		end
-	end
-	
+end
+
+
+function PlayState:updateNormal(dt)
 	for k, pad in pairs(self.pads) do
 		pad.selected = false
 	end
@@ -316,7 +345,7 @@ function PlayState:update(dt)
 		-- Health bar/note collision
 		if circleCollision(note.x, note.y, note.radius, self.healthBar.x, self.healthBar.y, self.healthBar.radius - 2.5 * note.radius) then
 			note.isDestroyed = true
-			self.healthBar:takeDamage(note.score)
+			if not self.practice then self.healthBar:takeDamage(note.score) end
 		end
 		if note.isDestroyed then
 			table.remove(self.notes, k)
@@ -332,7 +361,52 @@ function PlayState:update(dt)
   ]]
 
 	self.healthBar:update(dt)
+	
+	--check to see if the game is paused, pause if so
+	if love.keyboard.wasInput("togglePauseMenu") then
+		gAudioPlayer:pauseAudio()
+		self.submenu:activate()
+		gIsPaused = true
+		return
+	end
+	
+	self.audioDelay = math.max(self.audioDelay-dt, 0)
+	if self.audioDelay == 0 and not self.audioStarted then
+		gAudioPlayer:playAudio()
+		self.audioStarted = true
+	end
+	
+	if not gAudioPlayer:isPlaying() and self.audioStarted then
+		if self.audioDoneTimer < 1.5 then
+			self.audioEnded = true
+		end
+		if self.audioDoneTimer > 0 then
+			self.audioDoneTimer = self.audioDoneTimer - dt
+		else
+			gStateMachine:change("gameOver", {
+			score = self.healthBar.score, 
+			isWon = true,
+			file = self.song.highScoreFile
+		})
+		end
+	end
 
+end
+
+function PlayState:updateSubmenu(dt)
+	if love.keyboard.wasInput("up") then
+		self.submenu:up()
+	elseif love.keyboard.wasInput("down") then
+		self.submenu:down()
+	end
+	
+	if love.keyboard.wasInput("topArrow") then
+		gSounds["back"]:stop()
+		gSounds["back"]:play()
+		self.submenu:deactivate()
+	elseif love.keyboard.wasInput("bottomArrow") then
+		self.submenu:select()
+	end
 end
 
 function PlayState:render() 
@@ -346,7 +420,17 @@ function PlayState:render()
 		note:render()
 	end
 	self.healthBar:render()
+	
+	if self.submenu.active then
+		love.graphics.setColor(0,0,0,0.5)
+		love.graphics.rectangle("fill", 0, 0, winWidth, winHeight)
+		love.graphics.setColor({1,1,1,1})
+		love.graphics.printf("Paused", gFonts["AvenirLight64"], 0, winHeight*0.10, winWidth, "center")
+		self.submenu:render()
+	end
+	
 	-- Debug:
 	--love.graphics.printf("Time: " .. self.timer, 0, 0, winWidth, "left")
+	--love.graphics.printf("AudioDoneTimer: " .. self.audioDoneTimer, 0, 0, winWidth, "left")
 	--love.graphics.printf("Note Type: " .. self.pads[2].noteTypePressed, 0, 0, winWidth, "left")
 end

@@ -10,28 +10,30 @@ function love.load()
 	-- Contains constants
 	require "src/constants"
 
-	-- Seed RNG, just in caswe we use it
+	-- Seed RNG, just in case we use it
 	math.randomseed(os.time())
 	
 	-- Set window title
 	love.window.setTitle("Octave")
+	
+	-- initialize global assets
+	loadFonts()
+	loadSounds()
+	loadMenuMusic()
+	gBackgroundImage = nil
+	
+	-- initialize palette
+	gCurrentPalette = gPalette["bluepink"]
 	
 	-- initialize state machine
 	gStateMachine = StateMachine:init({
 		["title"] = function() return TitleState:init() end,
 		["menu"] = function() return MenuState:init() end,
 		["play"] = function() return PlayState:init() end, 
-		["gameOver"] = function() return GameOverState:init() end
+		["gameOver"] = function() return GameOverState:init() end,
+		["credits"] = function() return CreditsState:init() end
 	})
 	gStateMachine:change("title", {})
-
-	
-	-- initialize global assets
-	loadFonts()
-	loadSounds()
-	gBackgroundImage = nil
-
-	gCurrentPalette = gPalette["bluepink"]
 
 
 	gBackground = Background:init("dualWaveRectangles")
@@ -40,15 +42,20 @@ function love.load()
 	love.keyboard.inputs = {}
 	love.keyboard.keysDown = {}
 
-	gAudioPlayer = AudioPlayer:init(love.audio.newSource("sfx/Welcome_to_Octave.wav", "stream"))
+	gAudioPlayer = AudioPlayer:init(gMenuMusic)
 	gAudioPlayer:setLooping(true)
 	gAudioPlayer:playAudio()
+	
+	--pause flag, stops background updates
+	gIsPaused = false
 end
 
 
 function love.update(dt)
-	gBackground:update(dt)
-	gAudioPlayer:update(dt)
+	if not gIsPaused then
+		gBackground:update(dt)
+		gAudioPlayer:update(dt)
+	end
 	
 	gStateMachine:update(dt)
 	

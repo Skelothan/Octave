@@ -23,4 +23,9 @@ function loadSounds()
 		["startExt"] = love.audio.newSource("sfx/start_ext.mp3", "static")
 	}
 end 
+
+function loadMenuMusic()
+	gMenuMusic = love.audio.newSource("sfx/Welcome_to_Octave.wav", "stream")
+end
+
 -- TODO: functions for images, frames, sfx, etc
