@@ -259,6 +259,75 @@ gBackgroundDefs = {
 							love.graphics.rectangle("fill", winWidth * i/15 - 5*self.margin/6, self.y-self.size/2 + 100*math.cos(self.timer1+math.pi/4*i), self.size/2, 2*self.y)
 						end
 					end
+	},
+	["orbitSphere"] = {
+			init2 = function(self)
+						gBackgroundImage = nil
+						self.timer1 = 0
+						self.x = winWidth / 2
+						self.y = winHeight /2
+						gBackgroundImage = love.graphics.newImage("graphics/radialGradient.png")
+						love.graphics.setBackgroundColor(gCurrentPalette.background)
+						self.radius = self.y/3
+						self.orbitcenters = {0,0,0,0,0,0,0,0}
+					end,
+			update = function(self, dt)
+						self.timer1 = (self.timer1 + dt)
+						for j=0,1 do
+							k=1
+							if j==1 then k=-1 end
+							self.orbitcenters[1+(j*8)] = (2*self.radius*(math.cos(self.timer1))+1/2*self.radius*(math.sin(self.timer1)))*k
+							self.orbitcenters[2+(j*8)] =(1/4*self.radius*(math.sin(self.timer1))-2*self.radius*(math.cos(self.timer1)))*k
+							self.orbitcenters[3+(j*8)] = (2*math.sqrt(2)* self.radius*(math.cos(self.timer1)))*k
+							self.orbitcenters[4+(j*8)] = (1/4*math.sqrt(2)*self.radius*(math.sin(self.timer1)))*k
+							self.orbitcenters[5+(j*8)] = (2*self.radius*(math.cos(self.timer1))-1/2*self.radius*(math.sin(self.timer1)))*k
+							self.orbitcenters[6+(j*8)] = (1/4*self.radius*(math.sin(self.timer1))+2*self.radius*(math.cos(self.timer1)))*k
+							self.orbitcenters[7+(j*8)] = (1/4*math.sqrt(2)*self.radius*math.sin(-self.timer1))*k
+							self.orbitcenters[8+(j*8)] = (2*math.sqrt(2)*self.radius*math.cos(-self.timer1))*k
+						end
+					end,
+ 					
+			render = function(self)
+						love.graphics.setColor(gCurrentPalette.gradient)
+						love.graphics.draw(gBackgroundImage,0,0,0,self.x*2/1920, self.y*2/1080)
+
+						love.graphics.setLineWidth(10)
+						love.graphics.setColor(gCurrentPalette.bgObjects)
+
+						love.graphics.circle("line",self.x,self.y, self.radius)
+
+						love.graphics.ellipse("line",self.x,self.y,self.radius,1/4*self.radius)
+
+						for i=1,8 do
+							love.graphics.circle("line",self.orbitcenters[2*i-1]+self.x,self.orbitcenters[2*i]+self.y,self.radius/8)
+						end 
+					end
+
+	},
+	["orbitCircles"] = {
+		init2 = function(self)
+						gBackgroundImage = nil
+						self.timer1 = 0
+						self.x = winWidth / 2
+						self.y = winHeight /2
+						gBackgroundImage = love.graphics.newImage("graphics/radialGradient.png")
+						love.graphics.setBackgroundColor(gCurrentPalette.background)
+						self.radius = self.y/2
+					end,
+			update = function(self, dt)
+						self.timer1 = (self.timer1 + dt/5)
+					end,
+			render = function(self)
+						love.graphics.setColor(gCurrentPalette.gradient)
+						love.graphics.draw(gBackgroundImage,0,0,0,self.x*2/1920, self.y*2/1080)
+
+						love.graphics.setLineWidth(10)
+						love.graphics.setColor(gCurrentPalette.bgObjects)
+						love.graphics.circle("line",self.x,self.y,self.radius*2/3)
+						for i=1,8 do
+							love.graphics.circle("line",math.cos(self.timer1+math.pi/4*i)*self.radius*1.5+self.x, math.sin(self.timer1+math.pi/4*i)*self.radius*1.5+self.y,self.radius/4)
+						end 
+					end
 	}
 	
 }
