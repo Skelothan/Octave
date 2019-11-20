@@ -1,39 +1,3 @@
-	-- these aren't quite working as I want them to -> once working we can improve upon rotating objects
-function rotate(x,y,angle)
-	newX = x*math.cos(angle) - y*math.sin(angle)
-	newY = x*math.sin(angle) + y*math.cos(angle)
-	return {newX, newY}
-end 
-
-function rotate_object(objCoords, angle)
-	rotatedCoords = {}
-	for i, coord in ipairs(objCoords) do
-		if (i % 2) == 1 then
-			rotatedCoord = rotate(objCoords[i], objCoords[i+1], angle)
-			table.insert(rotatedCoords, rotatedCoord[1])
-			table.insert(rotatedCoords, rotatedCoord[2])
-		end 
-	end 
-	return rotatedCoords
-end 
-
-function center_points(x, y, points)
-	allpoints = {}
-	for j, u in ipairs(points) do
-		points = {}
-		for i, v in ipairs(u) do
-			if (i%2) == 1 then
-				table.insert(points, v+x)
-			else
-				table.insert(points, v+y)
-			end
-		end					
-		table.insert(allpoints,points)				
-	end
-	return allpoints
-end 
-
-
 gBackgroundDefs = {
 	["oscCircle"] = {
 			init2 = function(self) 
@@ -99,39 +63,47 @@ gBackgroundDefs = {
 						self.y = love.graphics.getHeight()/2
 						gBackgroundImage = love.graphics.newImage("graphics/radialGradient.png")
 						love.graphics.setBackgroundColor(gCurrentPalette.background)
-						self.squares = {{-self.y/4,-self.y/4, self.y/4,-self.y/4, self.y/4,self.y/4,-self.y/4,self.y/4},
-										rotate_object({-self.y/4,-self.y/4, self.y/4,-self.y/4, self.y/4,self.y/4,-self.y/4,self.y/4}, math.pi/4),
-										{-self.y/2,-self.y/2, self.y/2,-self.y/2, self.y/2,self.y/2,-self.y/2,self.y/2},
-										rotate_object({-self.y/2,-self.y/2, self.y/2,-self.y/2, self.y/2,self.y/2,-self.y/2,self.y/2}, math.pi/4)}
+						self.squares = {{-self.y/4+self.x,-self.y/4+self.y, self.y/4+self.x,-self.y/4+self.y, self.y/4+self.x,self.y/4+self.y,-self.y/4+self.x,self.y/4+self.y},
+										{-self.y/4*math.sqrt(2)+self.x,self.y, self.x,-self.y/4*math.sqrt(2)+self.y, self.y/4*math.sqrt(2)+self.x,self.y,self.x,self.y/4*math.sqrt(2)+self.y},
+										{-self.y/2+self.x,-self.y/2+self.y, self.y/2+self.x,-self.y/2+self.y, self.y/2+self.x,self.y/2+self.y,-self.y/2+self.x,self.y/2+self.y},
+										{-self.y/2*math.sqrt(2)+self.x,self.y, self.x,-self.y/2*math.sqrt(2)+self.y, self.y/2*math.sqrt(2)+self.x,self.y,self.x,self.y/2*math.sqrt(2)+self.y}}
 						self.circleRad = self.y/16
-						self.angle = math.pi/2048
+						self.angle = 9
 						love.graphics.resetColor()
 					end,
 			update = function(self, dt) 
-						for j, u in ipairs(self.squares) do
-							if (j < 3) then
-								self.squares[j] = rotate_object(self.squares[j],self.angle)
-							else
-								self.squares[j] = rotate_object(self.squares[j],-self.angle)
-							end 
-						end 
+						self.angle = self.angle + dt
 					end,
 			render = function(self)
-						allpoints = {}
 						love.graphics.setLineWidth(10)
-						centeredSquares = center_points(self.x, self.y, self.squares)
+
 						love.graphics.setColor(gCurrentPalette.gradient)
 						love.graphics.draw(gBackgroundImage,0,0,0,self.x*2/1920, self.y*2/1080)
 						love.graphics.resetColor()
 						love.graphics.setColor(gCurrentPalette.bgObjects)
-						for i, v in ipairs(centeredSquares) do
-							love.graphics.polygon("line", v)
-							for k, w in ipairs(v) do
-								if (k%2) == 1 and (i < 3) then
-									love.graphics.circle("line",v[k], v[k+1], self.circleRad)
+
+						for i = 1,2 do 
+							j = 1
+							if i%2 == 0 then j = -1 end
+							love.graphics.push()
+							love.graphics.translate(self.x,self.y)
+							love.graphics.rotate(self.angle/15 * j)
+							love.graphics.translate(-self.x,-self.y)
+
+							love.graphics.polygon("line",self.squares[2*i-1])
+							love.graphics.polygon("line",self.squares[2*i])
+
+							for l=1,2 do
+								for k, w in ipairs(self.squares[l]) do
+									if (k%2) == 1 and (i == 1) then
+										love.graphics.circle("line",self.squares[l][k], self.squares[l][k+1], self.circleRad)
+									end
 								end
 							end 
-						end
+
+							love.graphics.pop()
+						end 
+						
 						love.graphics.resetColor()
 					end
 	},
