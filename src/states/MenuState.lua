@@ -152,8 +152,8 @@ function MenuState:updateNormal(dt)
 			self.submenu:activate()
 			self.submenu.selectedOption = 1
 		else
-			gSounds["miss"]:stop()
-			gSounds["miss"]:play()
+			gSounds["noteMiss"]:stop()
+			gSounds["noteMiss"]:play()
 		end
 	end
 	if love.keyboard.wasInput("topArrow") then
