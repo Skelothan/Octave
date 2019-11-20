@@ -132,6 +132,7 @@ function PlayState:enter(params)
 				gSounds["back"]:play()
 				gIsPaused = false
 				gAudioPlayer:changeAudio(gMenuMusic)
+				gAudioPlayer:setLooping(true)
 				gAudioPlayer:playAudio()
 				gStateMachine:change("menu", {})
 			end},
