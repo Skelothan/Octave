@@ -132,6 +132,7 @@ function PlayState:enter(params)
 				gSounds["back"]:play()
 				gIsPaused = false
 				gAudioPlayer:changeAudio(gMenuMusic)
+				gAudioPlayer:setLooping(true)
 				gAudioPlayer:playAudio()
 				gStateMachine:change("menu", {})
 			end},
@@ -400,9 +401,13 @@ function PlayState:updateSubmenu(dt)
 		self.submenu:down()
 	end
 	
-	if love.keyboard.wasInput("topArrow") then
+	if love.keyboard.wasInput("topArrow") or love.keyboard.wasInput("togglePauseMenu") then
 		gSounds["back"]:stop()
 		gSounds["back"]:play()
+		if self.audioStarted and not self.audioEnded then
+			gAudioPlayer:playAudio()
+		end
+		gIsPaused = false
 		self.submenu:deactivate()
 	elseif love.keyboard.wasInput("bottomArrow") then
 		self.submenu:select()
