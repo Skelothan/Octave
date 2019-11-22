@@ -13,15 +13,19 @@ function GameOverState:enter(params)
 	gAudioPlayer:stopAudio()
 	self.score = params.score or 0;
 	self.fadeTextColor = gCurrentPalette.menuText
-	--self.isWon = params.isWon or false
 	self.isWon = true
+	--self.isWon = params.isWon or false
 	self.stopInputTimer = 4
-	self.file = params.file
+	self.song = params.song
 
 	self.currChar = 65
 	self.choosingName = self.isWon
 	self.scoreName = ""
 	self.maxLetters = 6
+end
+
+function sortScores(s1, s2)
+	return s1.score > s2.score
 end
 
 function GameOverState:update(dt)
@@ -70,6 +74,13 @@ function GameOverState:update(dt)
 		
 		if self.choosingName then
 			self.scoreName = self.scoreName .. string.char(self.currChar)
+		end
+		if self.isWon then
+			local highScore = {name = self.scoreName, score = self.score}
+			table.insert(self.song.highScores, highScore)
+			table.sort(self.song.highScores, sortScores)
+			local jsonScores = json.encode( { highScores = self.song.highScores } )
+			love.filesystem.write(self.song.directory .. "highScores.json", jsonScores, all)
 		end
 		gAudioPlayer:changeAudio(love.audio.newSource("sfx/Welcome_to_Octave.wav", "stream"))
 		gAudioPlayer:setLooping(true)

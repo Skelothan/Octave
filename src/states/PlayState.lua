@@ -97,7 +97,8 @@ end
 function PlayState:enter(params)
 	self.pads = {}
 	self.lanes = {}
-	self.healthBar = HealthBar:init({healthColor = gCurrentPalette.healthColor})
+	-- Remove song if not testing
+	self.healthBar = HealthBar:init({healthColor = gCurrentPalette.healthColor, song = params.song})
 	self.notes = {}
 	self.song = params.song
 	if params.practice then self.practice = true else self.practice = false end
@@ -384,9 +385,9 @@ function PlayState:updateNormal(dt)
 			self.audioDoneTimer = self.audioDoneTimer - dt
 		else
 			gStateMachine:change("gameOver", {
+			song = self.song,
 			score = self.healthBar.score, 
-			isWon = true,
-			file = self.song.highScoreFile
+			isWon = true
 		})
 		end
 	end
