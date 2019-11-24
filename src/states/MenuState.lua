@@ -59,13 +59,11 @@ function MenuState:init()
 
 			gCurrentPalette = self.songs[self.currentSong].palette
 			gBackground = Background:init(self.songs[self.currentSong].background)
-			print("test")
+			-- print("test")
 			self.menuColor = self.songs[self.currentSong].menuColor or {1,1,1,1}
 			self.textColor = self.songs[self.currentSong].textColor or {0, 0, 0, 1}
-		else
-			love.graphics.printf("No maps found!", gFonts["AvenirLight64"], 0, love.graphics.getHeight() / 3, love.graphics.getWidth(), "center")
-			
-			print("test2")
+		else			
+			-- print("test2")
 		end
 		self.lastUp = 0
 		self.lastDown = 0
