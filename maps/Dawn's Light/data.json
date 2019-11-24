@@ -8,10 +8,8 @@
   "image" : "graphics/noteImage.png",
   "source" : "Octave",
   "year" : 2019,
-  "midi" : "maps/Dawn's Light/dawns_light_map_noleadin.mid",
   "speedCoeff": 0.20,
   "noteDelay": 0.066,
-  "bpm" : 166,
-  "audio": "maps/Dawn's Light/dawns_light_trimmed.mp3"
+  "bpm" : 166
 }
 

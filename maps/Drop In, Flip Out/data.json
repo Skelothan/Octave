@@ -8,10 +8,13 @@
   "image" : "graphics/noteImage.png",
   "source" : "Flip Flop",
   "year" : 2019,
-  "midi" : "maps/Drop In, Flip Out/drop_in_flip_out_map_tempo_noleadin.mid",
   "speedCoeff": 0.25,
   "noteDelay": 0.085,
+<<<<<<< HEAD
   "bpm" : 176,
   "audio": "maps/Drop In, Flip Out/Drop_In_Flip_Out.mp3"
+=======
+  "bpm" : 176
+>>>>>>> 6085487de4e2cd26ec0587dc672a80e368171218
 }
 
