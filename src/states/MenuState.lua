@@ -145,7 +145,7 @@ function MenuState:updateNormal(dt)
 		gCurrentSong = self.currentSong
 		gStateMachine:change("play", {song = self.songs[self.currentSong]})
 		]]
-		if (self.songs[self.currentSong].midi ~= nil and self.songs[self.currentSong].audio ~= nil and self.songs[self.currentSong].bpm ~= 0) then
+		if self.songs[self.currentSong].playable then
 			gSounds["start"]:stop()
 			gSounds["start"]:play()
 			self.submenu:updateColor()
