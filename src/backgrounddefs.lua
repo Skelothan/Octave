@@ -33,6 +33,13 @@ function center_points(x, y, points)
 	return allpoints
 end 
 
+function loadBackgroundNames()
+	gBackgroundNames = {}
+	
+	for k, v in pairs(gBackgroundDefs) do
+		gBackgroundNames[k] = true
+	end
+end
 
 gBackgroundDefs = {
 	["oscCircle"] = {

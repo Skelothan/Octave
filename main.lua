@@ -23,6 +23,7 @@ function love.load()
 	loadFonts()
 	loadSounds()
 	loadMenuMusic()
+	loadBackgroundNames()
 	gBackgroundImage = nil
 	
 	-- initialize palette
