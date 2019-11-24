@@ -11,6 +11,8 @@ end
 
 function GameOverState:enter(params)
 	gAudioPlayer:stopAudio()
+
+	love.filesystem.mount(love.filesystem.getSourceBaseDirectory(), "")
 	self.score = params.score or 0;
 	self.fadeTextColor = gCurrentPalette.menuText
 	self.isWon = true
@@ -80,12 +82,13 @@ function GameOverState:update(dt)
 			table.insert(self.song.highScores, highScore)
 			table.sort(self.song.highScores, sortScores)
 			local jsonScores = json.encode( { highScores = self.song.highScores } )
-			love.filesystem.write(self.song.directory .. "highScores.json", jsonScores, all)
+			self.success, self.message = love.filesystem.write(self.song.directory .. "highScores.json", jsonScores, all)
+			self.highScoreDirectory = self.song.directory .. "highScores.json"
 		end
 		gAudioPlayer:changeAudio(love.audio.newSource("sfx/Welcome_to_Octave.wav", "stream"))
 		gAudioPlayer:setLooping(true)
 		gAudioPlayer:playAudio()
-		gStateMachine:change("menu", {})
+		gStateMachine:change("menu", {m = self.message, d = self.highScoreDirectory})
 	end
 
 end
