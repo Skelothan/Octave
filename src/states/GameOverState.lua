@@ -82,13 +82,17 @@ function GameOverState:update(dt)
 			table.insert(self.song.highScores, highScore)
 			table.sort(self.song.highScores, sortScores)
 			local jsonScores = json.encode( { highScores = self.song.highScores } )
-			self.success, self.message = love.filesystem.write(self.song.directory .. "highScores.json", jsonScores, all)
-			self.highScoreDirectory = self.song.directory .. "highScores.json"
+			
+			if love.filesystem.getInfo(self.song.saveFile) == nil then
+				--love.filesystem.createDirectory("highScores/")
+				love.filesystem.createDirectory(self.song.saveFile)
+			end
+			love.filesystem.write(self.song.saveFile .. "highScores.json", jsonScores, all)
 		end
 		gAudioPlayer:changeAudio(love.audio.newSource("sfx/Welcome_to_Octave.wav", "stream"))
 		gAudioPlayer:setLooping(true)
 		gAudioPlayer:playAudio()
-		gStateMachine:change("menu", {m = self.message, d = self.highScoreDirectory})
+		gStateMachine:change("menu", {})
 	end
 
 end

@@ -45,9 +45,6 @@ function MenuState:init()
 				local s = Song:init(params)
 				table.insert(self.songs, s)
 				self.numSongs = self.numSongs + 1
-				if self.d == nil then
-					self.d = song .. "/highScores.json"
-				end
 			end
 		end
 		print(self.numSongs)
@@ -83,9 +80,6 @@ function MenuState:init()
 end
 
 function MenuState:enter(params)
-	if params ~= nil then
-		self.m = params.m
-	end
 	self.submenu = Submenu:init({
 		
 		x = (5*winWidth/6) - (winWidth/12) - (3*winWidth/64),
@@ -227,8 +221,4 @@ function MenuState:render()
 	
 	love.graphics.resetColor()
 	--love.graphics.printf("lastDown: " .. self.lastDown, 0, 0, winWidth, "left")
-	if self.m ~= nil then
-		love.graphics.printf(self.m, 0, 0, winWidth, "left")
-		love.graphics.printf(self.d, 0, 50, winWidth, "left")
-	end
 end

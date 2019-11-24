@@ -28,6 +28,8 @@ function Song:init(params)
 	self.textColor = table.deepcopy(self.palette.menuText) or {1, 1, 1, 1}
 
 	self.directory = params.directory or nil
+
+	self.saveFile = "highScores/" .. string.sub(self.directory, 12)
 	
 	if love.filesystem.getInfo(params.directory .. "albumart.jpg") then
 		self.image = params.directory .. "albumart.jpg"
@@ -39,7 +41,12 @@ function Song:init(params)
 		self.image = "graphics/noteImage.png"
 	end
 
-	if not love.filesystem.getInfo(params.directory .. "highScores.json") then 
+	if love.filesystem.getInfo(self.saveFile .. "highScores.json") then
+		self.highScores = JSONReader:init(self.saveFile .. "highScores.json").data["highScores"] or {}
+		if type(self.highScores) ~= "table" then 
+			self.highScores = {} 
+		end
+	elseif not love.filesystem.getInfo(params.directory .. "highScores.json") then 
 		self.highScores = {}
 	else
 		self.highScores = JSONReader:init(self.directory .. "highScores.json").data["highScores"] or {}
