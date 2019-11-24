@@ -7,6 +7,9 @@ function love.load()
 	-- Fullscreen, retina display
 	love.window.setMode(0, 0, {fullscreen = true, highdpi = true, msaa = 2})
 	
+	-- Hide cursor
+	love.mouse.setVisible(false)
+	
 	-- Contains constants
 	require "src/constants"
 
@@ -36,7 +39,7 @@ function love.load()
 	gStateMachine:change("title", {})
 
 
-	gBackground = Background:init("dualWaveRectangles")
+	gBackground = Background:init("orbitCircles")
 	gCurrentSong = 1
 	love.keyboard.keysPressed = {}
 	love.keyboard.inputs = {}
