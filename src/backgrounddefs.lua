@@ -1,3 +1,11 @@
+function loadBackgroundNames()
+	gBackgroundNames = {}
+	
+	for k, v in pairs(gBackgroundDefs) do
+		gBackgroundNames[k] = true
+	end
+end
+
 gBackgroundDefs = {
 	["oscCircle"] = {
 			init2 = function(self) 
