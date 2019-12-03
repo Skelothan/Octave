@@ -24,6 +24,12 @@ function GameOverState:enter(params)
 	self.choosingName = self.isWon
 	self.scoreName = ""
 	self.maxLetters = 6
+	
+	-- Play victory music if the game was won
+	if self.isWon then
+		gSounds["victory"]:stop()
+		gSounds["victory"]:play()
+	end
 end
 
 function sortScores(s1, s2)
@@ -92,6 +98,7 @@ function GameOverState:update(dt)
 		gAudioPlayer:changeAudio(love.audio.newSource("sfx/Welcome_to_Octave.wav", "stream"))
 		gAudioPlayer:setLooping(true)
 		gAudioPlayer:playAudio()
+		gSounds["victory"]:stop()
 		gStateMachine:change("menu", {})
 	end
 

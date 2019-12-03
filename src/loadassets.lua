@@ -20,7 +20,8 @@ function loadSounds()
 		["scroll"] =  love.audio.newSource("sfx/scroll.wav", "static"),
 		["select"]= love.audio.newSource("sfx/select.wav", "static"),
 		["start"] = love.audio.newSource("sfx/start.wav", "static"),
-		["startExt"] = love.audio.newSource("sfx/start_ext.mp3", "static")
+		["startExt"] = love.audio.newSource("sfx/start_ext.mp3", "static"),
+		["victory"] = love.audio.newSource("sfx/you_win.wav", "static")
 	}
 end 
 
