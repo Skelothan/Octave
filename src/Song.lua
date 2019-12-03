@@ -46,13 +46,8 @@ function Song:init(params)
 		if type(self.highScores) ~= "table" then 
 			self.highScores = {} 
 		end
-	elseif not love.filesystem.getInfo(params.directory .. "highScores.json") then 
-		self.highScores = {}
 	else
-		self.highScores = JSONReader:init(self.directory .. "highScores.json").data["highScores"] or {}
-		if type(self.highScores) ~= "table" then 
-			self.highScores = {} 
-		end
+		self.highScores = {}
 	end
 
 	if not love.filesystem.getInfo(params.directory .. "beatmap.mid") then
@@ -231,6 +226,7 @@ function Song:renderRight(opacity)
 	)
 	--print("self.highScoreFile: " .. self.highScoreFile)
 	for i, score in ipairs(self.highScores) do
+		if i > 10 then break end
 		love.graphics.print(score.name,
 			gFonts["AvenirLight24"],
 			rectX + winWidth/64*1.5,

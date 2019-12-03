@@ -97,8 +97,7 @@ end
 function PlayState:enter(params)
 	self.pads = {}
 	self.lanes = {}
-	-- Remove song if not testing
-	self.healthBar = HealthBar:init({healthColor = gCurrentPalette.healthColor, song = params.song})
+	self.healthBar = HealthBar:init({healthColor = gCurrentPalette.healthColor})
 	self.notes = {}
 	self.song = params.song
 	if params.practice then self.practice = true else self.practice = false end
@@ -387,7 +386,8 @@ function PlayState:updateNormal(dt)
 			gStateMachine:change("gameOver", {
 			song = self.song,
 			score = self.healthBar.score, 
-			isWon = true
+			isWon = true,
+			practice = self.practice
 		})
 		end
 	end

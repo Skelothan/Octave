@@ -15,13 +15,13 @@ function GameOverState:enter(params)
 	love.filesystem.mount(love.filesystem.getSourceBaseDirectory(), "")
 	self.score = params.score or 0;
 	self.fadeTextColor = gCurrentPalette.menuText
-	self.isWon = true
-	--self.isWon = params.isWon or false
+	self.isWon = params.isWon or false
 	self.stopInputTimer = 4
 	self.song = params.song
 
 	self.currChar = 65
-	self.choosingName = self.isWon
+	self.choosingName = self.isWon and not params.practice
+	self.practice = params.practice
 	self.scoreName = ""
 	self.maxLetters = 6
 	
@@ -79,11 +79,7 @@ function GameOverState:update(dt)
 	end
 	if self.stopInputTimer <= 0 and (love.keyboard.wasInput("togglePauseMenu") or 
 		(not self.choosingName and love.keyboard.wasInput("bottomArrow"))) then
-		
-		if self.choosingName then
-			self.scoreName = self.scoreName .. string.char(self.currChar)
-		end
-		if self.isWon then
+		if self.isWon and not self.practice then
 			local highScore = {name = self.scoreName, score = self.score}
 			table.insert(self.song.highScores, highScore)
 			table.sort(self.song.highScores, sortScores)
@@ -113,7 +109,7 @@ function GameOverState:render()
 		love.graphics.printf("Game Over", gFonts["AvenirLight64"], 0, love.graphics.getHeight() / 4, love.graphics.getWidth(), "center")
 	end
 
-	if self.isWon then
+	if self.isWon and not self.practice then
 		love.graphics.printf("Enter your name: ", gFonts["AvenirLight32"], 0, love.graphics.getHeight()/2 - 50, love.graphics.getWidth(), "center")
 		love.graphics.rectangle(
 			"line",
@@ -127,7 +123,7 @@ function GameOverState:render()
 	if(self.choosingName) then
 		love.graphics.printf(self.scoreName .. string.char(self.currChar), 
 			gFonts["AvenirLight32"], 0, love.graphics.getHeight()/2 + 3, love.graphics.getWidth(), "center")
-	elseif self.isWon then
+	elseif self.isWon and not self.practice then
 		love.graphics.printf(self.scoreName, gFonts["AvenirLight32"], 0, love.graphics.getHeight()/2 + 3, love.graphics.getWidth(), "center")
 	end
 
