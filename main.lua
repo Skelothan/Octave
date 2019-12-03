@@ -40,7 +40,7 @@ function love.load()
 	gStateMachine:change("title", {})
 
 
-	gBackground = Background:init("dualWaveRectangles")
+	gBackground = Background:init("orbitCircles")
 	gCurrentSong = 1
 	love.keyboard.keysPressed = {}
 	love.keyboard.inputs = {}
