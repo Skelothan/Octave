@@ -22,10 +22,9 @@ function loadSounds()
 		["start"] = love.audio.newSource("sfx/start.wav", "static"),
 		["startExt"] = love.audio.newSource("sfx/start_ext.mp3", "static")
 	}
+	gMenuMusic = love.audio.newSource("sfx/Welcome_to_Octave.wav", "stream")
 end 
 
-function loadMenuMusic()
-	gMenuMusic = love.audio.newSource("sfx/Welcome_to_Octave.wav", "stream")
+function loadGraphics()
+	gOctaveLogo = love.graphics.newImage("graphics/Octave_Logo.png")
 end
-
--- TODO: functions for images, frames, sfx, etc

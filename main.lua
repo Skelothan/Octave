@@ -22,7 +22,7 @@ function love.load()
 	-- initialize global assets
 	loadFonts()
 	loadSounds()
-	loadMenuMusic()
+	loadGraphics()
 	loadBackgroundNames()
 	gBackgroundImage = nil
 	

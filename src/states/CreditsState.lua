@@ -27,11 +27,11 @@ function CreditsState:render()
 	love.graphics.printf("Team Lead", gFonts["AvenirLight32"], 0, love.graphics.getHeight()*0.30, love.graphics.getWidth(), "center")
 	love.graphics.printf("Jonathan Fischer", gFonts["AvenirLight24"], 0, love.graphics.getHeight()*0.35, love.graphics.getWidth(), "center")
 	
-	names = {"Will Ozeas", "Julia Shuieh", "Christoph Gaffud", "Aidan Peck", "Darien Weems", "Harine Choi"}
+	names = {"Will Ozeas", "Julia Shuieh", "Christoph Gaffud", "Aidan Peck", "Sanjay Salem", "Darien Weems", "Harine Choi"}
 	
 	local height = gFonts["AvenirLight24"]:getHeight()
 	
-	for i=1,6 do
+	for i=1,#names do
 	love.graphics.printf(names[i], gFonts["AvenirLight24"], 0, love.graphics.getHeight()*0.40+i*1.1*height, love.graphics.getWidth(), "center")
 	end
 end
