@@ -32,3 +32,8 @@ end
 function table.print(tbl)
 	print(table.tostring(tbl))
 end
+
+-- Draw a center-top aligned Octave logo
+function drawLogo(x, y)
+	love.graphics.draw(gOctaveLogo, x - gOctaveLogo:getWidth()/8, y, 0, 0.25)
+end
