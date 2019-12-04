@@ -1,7 +1,7 @@
 {
   "difficulty" : 5,
-  "background" : "spinTriangle",
-  "palette" : "standard",
+  "background" : "healthGlow",
+  "palette" : "pitchBlack",
   "title" : "Welcome to the Arena",
   "artist" : "Poshon",
   "album" : "Octave OST Vol. 1",

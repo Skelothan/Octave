@@ -328,6 +328,22 @@ gBackgroundDefs = {
 							love.graphics.circle("line",math.cos(self.timer1+math.pi/4*i)*self.radius*1.5+self.x, math.sin(self.timer1+math.pi/4*i)*self.radius*1.5+self.y,self.radius/4)
 						end 
 					end
+	},
+	["healthGlow"] = {
+		init2 = function(self)
+						gBackgroundImage = nil
+						self.x = winWidth / 2
+						self.y = winHeight /2
+						love.graphics.setBackgroundColor(gCurrentPalette.background)
+						self.radius = math.min(love.graphics.getHeight(), love.graphics.getWidth()) / 12
+					end,
+		update = function(self, dt)
+					end,
+		render = function(self)
+						love.graphics.setLineWidth(20)
+						love.graphics.setColor(gCurrentPalette.bgObjects)
+						love.graphics.circle("line",self.x,self.y,self.radius)
+					end
 	}
 	
 }
