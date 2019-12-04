@@ -23,7 +23,12 @@ function GameOverState:enter(params)
 	self.choosingName = self.isWon and not params.practice
 	self.practice = params.practice
 	self.scoreName = ""
+	self.showStats = not self.choosingName
 	self.maxLetters = 6
+	self.debug = true
+
+	self.lastUp = 0
+	self.lastDown = 0
 end
 
 function sortScores(s1, s2)
@@ -31,8 +36,11 @@ function sortScores(s1, s2)
 end
 
 function GameOverState:update(dt)
+	self.lastUp = math.min(self.lastUp + dt, 0.15)
+	self.lastDown = math.min(self.lastDown + dt, 0.15)
+
 	self.stopInputTimer = math.max(self.stopInputTimer - dt, 0)
-	if self.choosingName and love.keyboard.wasInput("down") then
+	if self.choosingName and self.lastDown >= 0.15 and love.keyboard.isHeld("down") then
 		self.currChar = self.currChar + 1
 		if string.len(self.scoreName) == 0 and self.currChar == 58 then
 			self.currChar = 65
@@ -43,7 +51,8 @@ function GameOverState:update(dt)
 		elseif string.len(self.scoreName) ~= 0 and self.currChar == 123 then
 			self.currChar = 48
 		end
-	elseif self.choosingName and love.keyboard.wasInput("up") then
+		self.lastDown = 0
+	elseif self.choosingName and self.lastUp >= 0.15 and love.keyboard.isHeld("up") then
 		self.currChar = self.currChar - 1
 		if string.len(self.scoreName) == 0 and self.currChar == 64 then
 			self.currChar = 57
@@ -54,6 +63,7 @@ function GameOverState:update(dt)
 		elseif string.len(self.scoreName) ~= 0 and self.currChar == 47 then
 			self.currChar = 122
 		end
+		self.lastUp = 0
 	elseif self.choosingName and love.keyboard.wasInput("bottomArrow") then
 		self.scoreName = self.scoreName .. string.char(self.currChar)
 		self.currChar = 97
@@ -73,7 +83,7 @@ function GameOverState:update(dt)
 	end
 	if self.stopInputTimer <= 0 and (love.keyboard.wasInput("togglePauseMenu") or 
 		(not self.choosingName and love.keyboard.wasInput("bottomArrow"))) then
-		if self.isWon and not self.practice then
+		if not self.showStats then
 			local highScore = {name = self.scoreName, score = self.score}
 			table.insert(self.song.highScores, highScore)
 			table.sort(self.song.highScores, sortScores)
@@ -84,11 +94,12 @@ function GameOverState:update(dt)
 				love.filesystem.createDirectory(self.song.saveFile)
 			end
 			love.filesystem.write(self.song.saveFile .. "highScores.json", jsonScores, all)
+		else
+			gAudioPlayer:changeAudio(love.audio.newSource("sfx/Welcome_to_Octave.wav", "stream"))
+			gAudioPlayer:setLooping(true)
+			gAudioPlayer:playAudio()
+			gStateMachine:change("menu", {})
 		end
-		gAudioPlayer:changeAudio(love.audio.newSource("sfx/Welcome_to_Octave.wav", "stream"))
-		gAudioPlayer:setLooping(true)
-		gAudioPlayer:playAudio()
-		gStateMachine:change("menu", {})
 	end
 
 end
@@ -102,7 +113,7 @@ function GameOverState:render()
 		love.graphics.printf("Game Over", gFonts["AvenirLight64"], 0, love.graphics.getHeight() / 4, love.graphics.getWidth(), "center")
 	end
 
-	if self.isWon and not self.practice then
+	if not self.showStats or self.debug then
 		love.graphics.printf("Enter your name: ", gFonts["AvenirLight32"], 0, love.graphics.getHeight()/2 - 50, love.graphics.getWidth(), "center")
 		love.graphics.rectangle(
 			"line",
@@ -116,11 +127,11 @@ function GameOverState:render()
 	if(self.choosingName) then
 		love.graphics.printf(self.scoreName .. string.char(self.currChar), 
 			gFonts["AvenirLight32"], 0, love.graphics.getHeight()/2 + 3, love.graphics.getWidth(), "center")
-	elseif self.isWon and not self.practice then
+	elseif not self.showStats then
 		love.graphics.printf(self.scoreName, gFonts["AvenirLight32"], 0, love.graphics.getHeight()/2 + 3, love.graphics.getWidth(), "center")
 	end
 
-	if self.isWon then 
+	if not self.showStats or self.debug then 
 		love.graphics.printf("Your Score: " .. comma_value(self.score), 
 			gFonts["AvenirLight32"], 0, love.graphics.getHeight()/2 + love.graphics.getHeight() / 12, love.graphics.getWidth(), "center")
 	else 

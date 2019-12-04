@@ -1,39 +1,3 @@
-	-- these aren't quite working as I want them to -> once working we can improve upon rotating objects
-function rotate(x,y,angle)
-	newX = x*math.cos(angle) - y*math.sin(angle)
-	newY = x*math.sin(angle) + y*math.cos(angle)
-	return {newX, newY}
-end 
-
-function rotate_object(objCoords, angle)
-	rotatedCoords = {}
-	for i, coord in ipairs(objCoords) do
-		if (i % 2) == 1 then
-			rotatedCoord = rotate(objCoords[i], objCoords[i+1], angle)
-			table.insert(rotatedCoords, rotatedCoord[1])
-			table.insert(rotatedCoords, rotatedCoord[2])
-		end 
-	end 
-	return rotatedCoords
-end 
-
-function center_points(x, y, points)
-	allpoints = {}
-	for j, u in ipairs(points) do
-		points = {}
-		for i, v in ipairs(u) do
-			if (i%2) == 1 then
-				table.insert(points, v+x)
-			else
-				table.insert(points, v+y)
-			end
-		end					
-		table.insert(allpoints,points)				
-	end
-	return allpoints
-end 
-
-
 gBackgroundDefs = {
 	["oscCircle"] = {
 			init2 = function(self) 
@@ -59,19 +23,12 @@ gBackgroundDefs = {
 						self.y = love.graphics.getHeight()/2
 						gBackgroundImage = love.graphics.newImage("graphics/linearGradientBottom.png")
 						love.graphics.setBackgroundColor(gCurrentPalette.background)
-						self.triangles = {{0, self.y/2, -self.y/2 * math.sqrt(3)/2,-self.y/2 * 1/2,self.y/2 * math.sqrt(3)/2,-self.y/2 * 1/2},
-							{0, self.y/2, -self.y/2 * math.sqrt(3)/2,-self.y/2 * 1/2,self.y/2 * math.sqrt(3)/2,-self.y/2 * 1/2},
-							{0, self.y/2, -self.y/2 * math.sqrt(3)/2,-self.y/2 * 1/2,self.y/2 * math.sqrt(3)/2,-self.y/2 * 1/2},
-							{0, self.y/2, -self.y/2 * math.sqrt(3)/2,-self.y/2 * 1/2,self.y/2 * math.sqrt(3)/2,-self.y/2 * 1/2},
-							{0, self.y/2, -self.y/2 * math.sqrt(3)/2,-self.y/2 * 1/2,self.y/2 * math.sqrt(3)/2,-self.y/2 * 1/2}}
+						self.triangle = {self.x, self.y/2+self.y, -self.y/2 * math.sqrt(3)/2+self.x,-self.y/2 * 1/2+self.y,self.y/2 * math.sqrt(3)/2+self.x,-self.y/2 * 1/2+self.y}
 						self.angle = 0
 						love.graphics.resetColor()
 					end,
 			update = function(self, dt)
-						self.angle = (self.angle + dt) % (2 * math.pi)
-						for j, u in ipairs(self.triangles) do
-							self.triangles[j] = rotate_object(self.triangles[j],math.cos(self.angle)/40*(j-1)/5 + 1/40*1/5 )
-						end 
+						self.angle = (self.angle + dt)
 					end,
 			render = function(self)
 						love.graphics.setLineWidth(10)
@@ -79,11 +36,24 @@ gBackgroundDefs = {
 						love.graphics.draw(gBackgroundImage,0,0,0,self.x*2/1920, self.y*2/1080)
 						love.graphics.resetColor()
 						love.graphics.setColor(gCurrentPalette.bgObjects)
-						centeredTriangles = center_points(self.x, self.y, self.triangles)
-						love.graphics.setColor(gCurrentPalette.bgObjects)
-						for i, v in ipairs(centeredTriangles) do
-							love.graphics.polygon("line", v)
-						end
+
+						love.graphics.push()
+						love.graphics.translate(self.x,self.y)
+						love.graphics.rotate(self.angle/15)
+						love.graphics.translate(-self.x,-self.y)
+
+						for i=1,6 do 
+							love.graphics.push()
+							love.graphics.translate(self.x,self.y)
+							love.graphics.rotate(math.cos(self.angle)/4*(i-1)/4)
+							love.graphics.translate(-self.x,-self.y)
+
+							love.graphics.polygon("line", self.triangle)
+							love.graphics.pop()
+						end 
+
+						love.graphics.pop()
+
 						love.graphics.resetColor()
 					end
 	},
@@ -93,39 +63,47 @@ gBackgroundDefs = {
 						self.y = love.graphics.getHeight()/2
 						gBackgroundImage = love.graphics.newImage("graphics/radialGradient.png")
 						love.graphics.setBackgroundColor(gCurrentPalette.background)
-						self.squares = {{-self.y/4,-self.y/4, self.y/4,-self.y/4, self.y/4,self.y/4,-self.y/4,self.y/4},
-										rotate_object({-self.y/4,-self.y/4, self.y/4,-self.y/4, self.y/4,self.y/4,-self.y/4,self.y/4}, math.pi/4),
-										{-self.y/2,-self.y/2, self.y/2,-self.y/2, self.y/2,self.y/2,-self.y/2,self.y/2},
-										rotate_object({-self.y/2,-self.y/2, self.y/2,-self.y/2, self.y/2,self.y/2,-self.y/2,self.y/2}, math.pi/4)}
+						self.squares = {{-self.y/4+self.x,-self.y/4+self.y, self.y/4+self.x,-self.y/4+self.y, self.y/4+self.x,self.y/4+self.y,-self.y/4+self.x,self.y/4+self.y},
+										{-self.y/4*math.sqrt(2)+self.x,self.y, self.x,-self.y/4*math.sqrt(2)+self.y, self.y/4*math.sqrt(2)+self.x,self.y,self.x,self.y/4*math.sqrt(2)+self.y},
+										{-self.y/2+self.x,-self.y/2+self.y, self.y/2+self.x,-self.y/2+self.y, self.y/2+self.x,self.y/2+self.y,-self.y/2+self.x,self.y/2+self.y},
+										{-self.y/2*math.sqrt(2)+self.x,self.y, self.x,-self.y/2*math.sqrt(2)+self.y, self.y/2*math.sqrt(2)+self.x,self.y,self.x,self.y/2*math.sqrt(2)+self.y}}
 						self.circleRad = self.y/16
-						self.angle = math.pi/2048
+						self.angle = 9
 						love.graphics.resetColor()
 					end,
 			update = function(self, dt) 
-						for j, u in ipairs(self.squares) do
-							if (j < 3) then
-								self.squares[j] = rotate_object(self.squares[j],self.angle)
-							else
-								self.squares[j] = rotate_object(self.squares[j],-self.angle)
-							end 
-						end 
+						self.angle = self.angle + dt
 					end,
 			render = function(self)
-						allpoints = {}
 						love.graphics.setLineWidth(10)
-						centeredSquares = center_points(self.x, self.y, self.squares)
+
 						love.graphics.setColor(gCurrentPalette.gradient)
 						love.graphics.draw(gBackgroundImage,0,0,0,self.x*2/1920, self.y*2/1080)
 						love.graphics.resetColor()
 						love.graphics.setColor(gCurrentPalette.bgObjects)
-						for i, v in ipairs(centeredSquares) do
-							love.graphics.polygon("line", v)
-							for k, w in ipairs(v) do
-								if (k%2) == 1 and (i < 3) then
-									love.graphics.circle("line",v[k], v[k+1], self.circleRad)
+
+						for i = 1,2 do 
+							j = 1
+							if i%2 == 0 then j = -1 end
+							love.graphics.push()
+							love.graphics.translate(self.x,self.y)
+							love.graphics.rotate(self.angle/15 * j)
+							love.graphics.translate(-self.x,-self.y)
+
+							love.graphics.polygon("line",self.squares[2*i-1])
+							love.graphics.polygon("line",self.squares[2*i])
+
+							for l=1,2 do
+								for k, w in ipairs(self.squares[l]) do
+									if (k%2) == 1 and (i == 1) then
+										love.graphics.circle("line",self.squares[l][k], self.squares[l][k+1], self.circleRad)
+									end
 								end
 							end 
-						end
+
+							love.graphics.pop()
+						end 
+						
 						love.graphics.resetColor()
 					end
 	},
@@ -262,6 +240,7 @@ gBackgroundDefs = {
 			init2 = function(self)
 						gBackgroundImage = nil
 						self.timer1 = 0
+						self.x = winWidth / 2
 						self.y = winHeight /2
 						gBackgroundImage = love.graphics.newImage("graphics/linearGradientBottom.png")
 						love.graphics.setBackgroundColor(gCurrentPalette.background)
@@ -273,13 +252,81 @@ gBackgroundDefs = {
 					end,
 			render = function(self)
 						love.graphics.setColor(gCurrentPalette.gradient)
-						love.graphics.draw(gBackgroundImage,0,0,0,winWidth/1920, winHeight*2/1080)
-						love.graphics.resetColor()
+						love.graphics.draw(gBackgroundImage,0,0,0,self.x*2/1920, self.y*2/1080)
 
 						love.graphics.setColor(gCurrentPalette.bgObjects2)
 						for i=1,15 do
 							love.graphics.rectangle("fill", winWidth * i/15 - 5*self.margin/6, self.y-self.size/2 + 100*math.cos(self.timer1+math.pi/4*i), self.size/2, 2*self.y)
 						end
+					end
+	},
+	["orbitSphere"] = {
+			init2 = function(self)
+						gBackgroundImage = nil
+						self.timer1 = 0
+						self.x = winWidth / 2
+						self.y = winHeight /2
+						gBackgroundImage = love.graphics.newImage("graphics/radialGradient.png")
+						love.graphics.setBackgroundColor(gCurrentPalette.background)
+						self.radius = self.y/3
+						self.orbitcenters = {0,0,0,0,0,0,0,0}
+					end,
+			update = function(self, dt)
+						self.timer1 = (self.timer1 + dt)
+						for j=0,1 do
+							k=1
+							if j==1 then k=-1 end
+							self.orbitcenters[1+(j*8)] = (2*self.radius*(math.cos(self.timer1))+1/2*self.radius*(math.sin(self.timer1)))*k
+							self.orbitcenters[2+(j*8)] =(1/4*self.radius*(math.sin(self.timer1))-2*self.radius*(math.cos(self.timer1)))*k
+							self.orbitcenters[3+(j*8)] = (2*math.sqrt(2)* self.radius*(math.cos(self.timer1)))*k
+							self.orbitcenters[4+(j*8)] = (1/4*math.sqrt(2)*self.radius*(math.sin(self.timer1)))*k
+							self.orbitcenters[5+(j*8)] = (2*self.radius*(math.cos(self.timer1))-1/2*self.radius*(math.sin(self.timer1)))*k
+							self.orbitcenters[6+(j*8)] = (1/4*self.radius*(math.sin(self.timer1))+2*self.radius*(math.cos(self.timer1)))*k
+							self.orbitcenters[7+(j*8)] = (1/4*math.sqrt(2)*self.radius*math.sin(-self.timer1))*k
+							self.orbitcenters[8+(j*8)] = (2*math.sqrt(2)*self.radius*math.cos(-self.timer1))*k
+						end
+					end,
+ 					
+			render = function(self)
+						love.graphics.setColor(gCurrentPalette.gradient)
+						love.graphics.draw(gBackgroundImage,0,0,0,self.x*2/1920, self.y*2/1080)
+
+						love.graphics.setLineWidth(10)
+						love.graphics.setColor(gCurrentPalette.bgObjects)
+
+						love.graphics.circle("line",self.x,self.y, self.radius)
+
+						love.graphics.ellipse("line",self.x,self.y,self.radius,1/4*self.radius)
+
+						for i=1,8 do
+							love.graphics.circle("line",self.orbitcenters[2*i-1]+self.x,self.orbitcenters[2*i]+self.y,self.radius/8)
+						end 
+					end
+
+	},
+	["orbitCircles"] = {
+		init2 = function(self)
+						gBackgroundImage = nil
+						self.timer1 = 0
+						self.x = winWidth / 2
+						self.y = winHeight /2
+						gBackgroundImage = love.graphics.newImage("graphics/radialGradient.png")
+						love.graphics.setBackgroundColor(gCurrentPalette.background)
+						self.radius = self.y/2
+					end,
+			update = function(self, dt)
+						self.timer1 = (self.timer1 + dt/5)
+					end,
+			render = function(self)
+						love.graphics.setColor(gCurrentPalette.gradient)
+						love.graphics.draw(gBackgroundImage,0,0,0,self.x*2/1920, self.y*2/1080)
+
+						love.graphics.setLineWidth(10)
+						love.graphics.setColor(gCurrentPalette.bgObjects)
+						love.graphics.circle("line",self.x,self.y,self.radius*2/3)
+						for i=1,8 do
+							love.graphics.circle("line",math.cos(self.timer1+math.pi/4*i)*self.radius*1.5+self.x, math.sin(self.timer1+math.pi/4*i)*self.radius*1.5+self.y,self.radius/4)
+						end 
 					end
 	}
 	

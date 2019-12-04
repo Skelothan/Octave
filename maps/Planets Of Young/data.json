@@ -1,0 +1,17 @@
+{
+  "difficulty" : 2,
+  "background" : "orbitCircles",
+  "palette" : "earthling",
+  "title" : "Planets of Young",
+  "artist" : "Dominic Calkosz",
+  "album" : "Octave OST Vol. 1",
+  "image" : "graphics/noteImage.png",
+  "source" : "Octave",
+  "year" : 2019,
+  "midi" : "maps/Planets of Young/planets_of_young_map.mid",
+  "speedCoeff": 0.15,
+  "noteDelay": 0.034,
+  "bpm" : 125,
+  "audio": "maps/Planets of Young/Planets of Young mastered.mp3"
+}
+
