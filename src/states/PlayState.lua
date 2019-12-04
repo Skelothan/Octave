@@ -154,7 +154,7 @@ function PlayState:enter(params)
 	]]
 
 	-- Was originally necessary because there was lead-in time in the MIDI. We no longer use lead-in time.
-	self.delay_before_notes = 0
+	self.delay_before_notes = -1.5
 	--self.note_time_multiplier = 100/176
 	--self.note_time_multiplier = 120/176
 	
