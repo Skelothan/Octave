@@ -168,6 +168,7 @@ function MenuState:updateNormal(dt)
 		if (self.songs[self.currentSong].midi ~= nil and self.songs[self.currentSong].audio ~= nil and self.songs[self.currentSong].bpm ~= 0) then
 			gSounds["start"]:stop()
 			gSounds["start"]:play()
+			gCurrentSong = self.currentSong
 			self.submenu:updateColor()
 			self.submenu:activate()
 			self.submenu.selectedOption = 1

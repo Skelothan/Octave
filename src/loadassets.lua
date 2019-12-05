@@ -24,10 +24,10 @@ function loadSounds()
 		["startExt"] = love.audio.newSource("sfx/start_ext.mp3", "static"),
 		["victory"] = love.audio.newSource("sfx/you_win.wav", "static")
 	}
+	gMenuMusic = love.audio.newSource("sfx/Welcome_to_Octave.wav", "stream")
 end 
 
-function loadMenuMusic()
-	gMenuMusic = love.audio.newSource("sfx/Welcome_to_Octave.wav", "stream")
+function loadGraphics()
+	gOctaveLogo = love.graphics.newImage("graphics/Octave_Logo.png")
+	gGCSLogo = love.graphics.newImage("graphics/GCS_Logo.png")
 end
-
--- TODO: functions for images, frames, sfx, etc

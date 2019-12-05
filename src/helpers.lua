@@ -32,3 +32,14 @@ end
 function table.print(tbl)
 	print(table.tostring(tbl))
 end
+
+-- Draw a center-top aligned Octave logo
+function drawLogo(x, y)
+	love.graphics.draw(gOctaveLogo, x - gOctaveLogo:getWidth()/8, y, 0, 0.25)
+end
+
+-- Draw a center-top aligned GCS logo. Sets color to white.
+function drawGCSLogo(x, y)
+	love.graphics.setColor(1,1,1,1)
+	love.graphics.draw(gGCSLogo, x - gGCSLogo:getWidth()/10, y, 0, 0.2)
+end
