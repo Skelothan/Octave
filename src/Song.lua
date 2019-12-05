@@ -151,7 +151,7 @@ function Song:renderLeft(opacity)
 		winWidth/3 - winWidth/16,
 		2*winHeight/3
 	)
-	love.graphics.setColor(self.textColor)
+	love.graphics.resetColor()
 	love.graphics.draw(image, imageX, imageY, 0, scaleX, scaleY, 0, 0)
 
 	love.graphics.setColor(self.textColor)
