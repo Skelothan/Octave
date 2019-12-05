@@ -27,4 +27,5 @@ end
 
 function loadGraphics()
 	gOctaveLogo = love.graphics.newImage("graphics/Octave_Logo.png")
+	gGCSLogo = love.graphics.newImage("graphics/GCS_Logo.png")
 end

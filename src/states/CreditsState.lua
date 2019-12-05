@@ -35,4 +35,6 @@ function CreditsState:render()
 	for i=1,#names do
 	love.graphics.printf(names[i], gFonts["AvenirLight24"], 0, love.graphics.getHeight()*0.45+i*1.1*height, love.graphics.getWidth(), "center")
 	end
+	
+	drawGCSLogo(winWidth/2, winHeight*0.75)
 end
