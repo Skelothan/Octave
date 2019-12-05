@@ -40,6 +40,7 @@ require "src/states/PlayStateObjects/Pad"
 require "src/states/PlayStateObjects/Lane"
 require "src/states/PlayStateObjects/Note"
 require "src/states/PlayStateObjects/HealthBar"
+require "src/states/PlayStateObjects/TextEffect"
 
 -- State machine stuff
 require "src/states/BaseState"
