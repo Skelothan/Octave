@@ -6,6 +6,9 @@ function love.load()
 	
 	-- Fullscreen, retina display
 	love.window.setMode(0, 0, {fullscreen = true, highdpi = true, msaa = 2})
+
+	-- Set save folder name
+	love.filesystem.setIdentity("Octave")
 	
 	-- Hide cursor
 	love.mouse.setVisible(false)
@@ -23,6 +26,7 @@ function love.load()
 	loadFonts()
 	loadSounds()
 	loadMenuMusic()
+	loadBackgroundNames()
 	gBackgroundImage = nil
 	
 	-- initialize palette
@@ -39,7 +43,7 @@ function love.load()
 	gStateMachine:change("title", {})
 
 
-	gBackground = Background:init("orbitCircles")
+	gBackground = Background:init("dualWaveRectangles")
 	gCurrentSong = 1
 	love.keyboard.keysPressed = {}
 	love.keyboard.inputs = {}

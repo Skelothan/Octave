@@ -18,6 +18,7 @@ function HealthBar:init(params)
 	
 	self.maxIFrames = 1.5
 	self.iFrames = 0
+
 	
 	self.radius = math.min(love.graphics.getHeight(), love.graphics.getWidth()) / 12
 	
@@ -34,7 +35,7 @@ function HealthBar:update(dt)
 	if self.health <= 0 then 
 		gStateMachine:change("gameOver", {
 			score = self.score, 
-			isWon = false,
+			isWon = false
 		})
 	end
 end

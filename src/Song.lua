@@ -10,8 +10,16 @@ function Song:init(params)
 	self.artist = params.artist or "Unknown Artist"
 	self.source = params.source or "Unknown Source"
 	self.year = params.year or 1970
-	self.image = params.image or "graphics/noteImage.png"
-	self.difficulty = params.difficulty or 4
+
+	if not params.difficulty then
+		self.difficulty = 3
+	elseif params.difficulty > 5 then
+		self.difficulty = 5
+	elseif params.difficulty < 1 then
+		self.difficulty = 1
+	else 
+		self.difficulty = params.difficulty
+	end
 
 	self.background = params.background or "spinTriangle"
 	self.palette = gPalette[params.palette] or gPalette["bluepink"]
@@ -20,21 +28,45 @@ function Song:init(params)
 	self.textColor = table.deepcopy(self.palette.menuText) or {1, 1, 1, 1}
 
 	self.directory = params.directory or nil
+
+	self.saveFile = "highScores/" .. string.sub(self.directory, 12)
 	
-	if not love.filesystem.getInfo(params.directory .. "highScores.json") then 
-		self.highScores = {}
+	if love.filesystem.getInfo(params.directory .. "albumart.jpg") then
+		self.image = params.directory .. "albumart.jpg"
+	elseif love.filesystem.getInfo(params.directory .. "albumart.jpeg") then
+		self.image = params.directory .. "albumart.jpeg"
+	elseif love.filesystem.getInfo(params.directory .. "albumart.png") then 
+		self.image = params.directory .. "albumart.png"
 	else
-		self.highScores = JSONReader:init(self.directory .. "highScores.json").data["highScores"] or {}
-		if type(self.highScores) ~= "table" then self.highScores = {} end
+		self.image = "graphics/noteImage.png"
 	end
 
-	self.midi = params.midi or nil
-	self.speedCoeff = params.speedCoeff or 1
-	self.noteDelay = params.noteDelay or 0
-	self.audio = params.audio or nil
+	if love.filesystem.getInfo(self.saveFile .. "highScores.json") then
+		self.highScores = JSONReader:init(self.saveFile .. "highScores.json").data["highScores"] or {}
+		if type(self.highScores) ~= "table" then 
+			self.highScores = {} 
+		end
+	else
+		self.highScores = {}
+	end
+
+	if not love.filesystem.getInfo(params.directory .. "beatmap.mid") then
+		self.midi = nil
+	else 
+		self.midi = params.directory .. "beatmap.mid" or nil
+	end
+
+	if not love.filesystem.getInfo(params.directory .. "track.mp3") then 
+		self.audio = nil
+	else 
+		self.audio = params.directory .. "track.mp3" or nil
+	end
+
+	self.speedCoeff = params.speedCoeff or 0
+	self.noteDelay = params.noteDelay or nil
 	self.bpm = params.bpm or 0
 	self.audioDelay = params.audioDelay or 0
-	
+	self.playable = self.midi ~= nil and self.audio ~= nil and self.bpm > 0 and self.noteDelay ~= nil and self.speedCoeff > 0
 	return table.deepcopy(o)
 end
 
@@ -119,7 +151,7 @@ function Song:renderLeft(opacity)
 		winWidth/3 - winWidth/16,
 		2*winHeight/3
 	)
-	love.graphics.setColor(self.textColor)
+	love.graphics.resetColor()
 	love.graphics.draw(image, imageX, imageY, 0, scaleX, scaleY, 0, 0)
 
 	love.graphics.setColor(self.textColor)
@@ -194,6 +226,7 @@ function Song:renderRight(opacity)
 	)
 	--print("self.highScoreFile: " .. self.highScoreFile)
 	for i, score in ipairs(self.highScores) do
+		if i > 10 then break end
 		love.graphics.print(score.name,
 			gFonts["AvenirLight24"],
 			rectX + winWidth/64*1.5,

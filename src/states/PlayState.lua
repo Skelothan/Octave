@@ -58,7 +58,7 @@ function PlayState:newNote(nRadius, pad, lane, nNoteType)
 end
 
 function PlayState:makePads()
-	--local centerRadius = math.min(love.graphics.getHeight(), love.graphics.getWidth())/8
+	-- TODO: scale this to screen size
 	local pRadius = 20
 	--Add pads:
 
@@ -99,6 +99,7 @@ function PlayState:enter(params)
 	self.lanes = {}
 	self.healthBar = HealthBar:init({healthColor = gCurrentPalette.healthColor})
 	self.notes = {}
+	self.effects = {}
 	self.song = params.song
 	if params.practice then self.practice = true else self.practice = false end
 	
@@ -153,15 +154,13 @@ function PlayState:enter(params)
 	end
 	]]
 
-	-- Was originally necessary because there was lead-in time in the MIDI. We no longer use lead-in time.
-	self.delay_before_notes = 0
-	--self.note_time_multiplier = 100/176
-	--self.note_time_multiplier = 120/176
+	-- Amount of downtime before the notes start coming.
+	self.delay_before_notes = 1.5
 	
 	-- This coefficient converts the time units in the score to seconds. Luckily, it seems to be constant per file.
-	self.note_time_multiplier =  125 / self.song.bpm--derived with excel, logic pro, and pain. Works for Drop In, Flip Out at least...
-	-- For this track, seems to be equal to 125 / BPM
-	--Drop in - 0.7102
+	self.note_time_multiplier =  125 / self.song.bpm
+	-- However, this formula only works for MIDI files exported from Logic Pro.
+	-- TODO: find a way to be platform-agnostic
 	
 	--print("Delay before notes: " .. self.delay_before_notes)
 	
@@ -169,18 +168,14 @@ function PlayState:enter(params)
 	
 	--print("Note travel time: " .. self.note_travel_time)
 
-	--DELAY BEFORE NOTES ENTER - make it longer to make them come sooner
-	self.timer = self.delay_before_notes
+	self.timer = -self.delay_before_notes
 	self.noteIndex = 1
 	
 	self.audioStarted = false
 	self.audioEnded = false
 	gAudioPlayer:stopAudio()
-	
-	--self.audioDelay = 2 * midiOffset + self.note_travel_time. Old, doesn't work well.
-	
-	-- Delay before audio syncs to MIDI for Drop In, Flip Out: 85 milliseconds, more or less exactly
-	self.audioDelay = 1 / (2 * self.speedCoeff) - self.song.noteDelay 
+		
+	self.audioDelay = 1 / (2 * self.speedCoeff) - self.song.noteDelay + self.delay_before_notes
 	gAudioPlayer:changeAudio(love.audio.newSource(self.song.audio, "stream"))
 	gAudioPlayer:setLooping(false)
 	self.audioDoneTimer = 1.5
@@ -260,65 +255,66 @@ function PlayState:updateNormal(dt)
 	end
 
 	for k, pad in pairs(self.pads) do
-			if pad.active then
-				for j, note in pairs(self.notes) do --notes is populated from within note.lua when spawned
-					coll_collides, coll_dist = noteCollision(pad, note)
-					
-					--[[
-					print(note.noteType)
-					print("Pad number: " .. k)
-					print("Note Type: " .. pad.noteTypePressed);
-					print("Note Type abs: " .. self.pads[2].noteTypePressed);
-					]]
-					if pad.active and coll_collides == true and note.isHit == false and note.noteType == pad.noteTypePressed then
-						note:onHit() --TODO: onHit takes in an accuracy parameter, which causes different sounds to be played
-						pad.active = false
-						--print(coll_dist)
-						if coll_dist < 0.1 then -- Perfect
-							self.healthBar:incrementScore(note.score)
-							self.healthBar:restoreHealth()
-							gSounds["noteHitPerfect"]:stop()
-							gSounds["noteHitPerfect"]:play()
-							self.healthBar:incrementMultiplier()
-						elseif coll_dist < 0.3 then -- Great
-							self.healthBar:incrementScore(note.score * 0.9)
-							self.healthBar:restoreHealth()
-							gSounds["noteHitGreat"]:stop()
-							gSounds["noteHitGreat"]:play()
-							self.healthBar:incrementMultiplier()
-						elseif coll_dist < 0.5 then -- Good
-							self.healthBar:incrementScore(note.score * 0.75)
-							gSounds["noteHitGood"]:stop()
-							gSounds["noteHitGood"]:play()
-							self.healthBar:incrementMultiplier()
-						elseif coll_dist < 1.1 then -- OK
-							self.healthBar:incrementScore(note.score * 0.50)
-							gSounds["noteHitOk"]:stop()
-							gSounds["noteHitOk"]:play()
-						else -- Miss
-							gSounds["noteMiss"]:stop()
-							gSounds["noteMiss"]:play()
-							self.healthBar:resetMultiplier()
-						end
-						
+		if pad.active then
+			for j, note in pairs(self.notes) do --notes is populated from within note.lua when spawned
+				coll_collides, coll_dist = noteCollision(pad, note)
+				
+				--[[
+				print(note.noteType)
+				print("Pad number: " .. k)
+				print("Note Type: " .. pad.noteTypePressed);
+				print("Note Type abs: " .. self.pads[2].noteTypePressed);
+				]]
+				if pad.active and coll_collides == true and note.isHit == false and note.noteType == pad.noteTypePressed then
+					note:onHit() --TODO: onHit takes in an accuracy parameter, which causes different sounds to be played
+					pad.active = false
+					local effectText = ""
+					--print(coll_dist)
+					if coll_dist < 0.1 then -- Perfect
+						self.healthBar:incrementScore(note.score)
+						self.healthBar:restoreHealth()
+						gSounds["noteHitPerfect"]:stop()
+						gSounds["noteHitPerfect"]:play()
+						self.healthBar:incrementMultiplier()
+						effectText = "Perfect!"
+					elseif coll_dist < 0.3 then -- Great
+						self.healthBar:incrementScore(note.score * 0.9)
+						self.healthBar:restoreHealth()
+						gSounds["noteHitGreat"]:stop()
+						gSounds["noteHitGreat"]:play()
+						self.healthBar:incrementMultiplier()
+						effectText = "Great!"
+					elseif coll_dist < 0.5 then -- Good
+						self.healthBar:incrementScore(note.score * 0.75)
+						gSounds["noteHitGood"]:stop()
+						gSounds["noteHitGood"]:play()
+						self.healthBar:incrementMultiplier()
+						effectText = "Good"
+					elseif coll_dist < 1.1 then -- OK
+						self.healthBar:incrementScore(note.score * 0.50)
+						gSounds["noteHitOk"]:stop()
+						gSounds["noteHitOk"]:play()
+						effectText = "OK"
+					else -- Miss
+						gSounds["noteMiss"]:stop()
+						gSounds["noteMiss"]:play()
+						self.healthBar:resetMultiplier()
+						effectText = "Miss..."
 					end
+					table.insert(self.effects, TextEffect:init({x = note.x, y = note.y, text = effectText}))
 				end
 			end
-		
+		end
 	end
 	
 	-- Note Spawning
 	self.timer = self.timer + dt
 	if self.noteIndex <= #gMapNotes and self.timer >= gMapNotes[self.noteIndex].start_time * self.note_time_multiplier then
 		--print(gMapNotes[self.noteIndex].pad)
+		-- TODO: set radius relative to screen size
 		self:newNote(20, gMapNotes[self.noteIndex].pad, gMapNotes[self.noteIndex].lane, gMapNotes[self.noteIndex].type)
 		self.noteIndex = self.noteIndex + 1
 		--print("Spawned a note! Time is " .. self.timer)
-	end
-	
-	-- Debug: spawning notes
-	if love.keyboard.wasInput("unbound") then
-		print(self.timer)
 	end
 	
 	for k, note in pairs(self.notes) do
@@ -352,16 +348,15 @@ function PlayState:updateNormal(dt)
 			table.remove(self.notes, k)
 		end
 	end
-
 	
-
-  --[[
-	if love.keyboard.wasInput("unbound") then
-		self:spawnNote()
-	end
-  ]]
-
 	self.healthBar:update(dt)
+	
+	for k, effect in pairs(self.effects) do
+		effect:update(dt)
+		if effect.isDestroyed then
+			table.remove(self.effects, k)
+		end
+	end
 	
 	--check to see if the game is paused, pause if so
 	if love.keyboard.wasInput("togglePauseMenu") then
@@ -385,9 +380,10 @@ function PlayState:updateNormal(dt)
 			self.audioDoneTimer = self.audioDoneTimer - dt
 		else
 			gStateMachine:change("gameOver", {
+			song = self.song,
 			score = self.healthBar.score, 
 			isWon = true,
-			file = self.song.highScoreFile
+			practice = self.practice
 		})
 		end
 	end
@@ -425,6 +421,9 @@ function PlayState:render()
 		note:render()
 	end
 	self.healthBar:render()
+	for k, effect in pairs(self.effects) do
+		effect:render()
+	end
 	
 	if self.submenu.active then
 		love.graphics.setColor(0,0,0,0.5)

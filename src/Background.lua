@@ -16,9 +16,12 @@ function Background:init(backgroundName)
 end
 
 function Background:setFunctions(backgroundName)
-	self.init2 = gBackgroundDefs[backgroundName].init2 or gBackgroundDefs["oscCircle"].init2
-	self.update = gBackgroundDefs[backgroundName].update or gBackgroundDefs["oscCircle"].update
-	self.render = gBackgroundDefs[backgroundName].render or gBackgroundDefs["oscCircle"].render
+	
+	if not gBackgroundNames[backgroundName] then backgroundName = "spinTriangle" end
+	
+	self.init2 = gBackgroundDefs[backgroundName].init2 or function() end
+	self.update = gBackgroundDefs[backgroundName].update or function() end
+	self.render = gBackgroundDefs[backgroundName].render or function() end
 end
 
 

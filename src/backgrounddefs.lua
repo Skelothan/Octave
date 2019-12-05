@@ -1,3 +1,11 @@
+function loadBackgroundNames()
+	gBackgroundNames = {}
+	
+	for k, v in pairs(gBackgroundDefs) do
+		gBackgroundNames[k] = true
+	end
+end
+
 gBackgroundDefs = {
 	["oscCircle"] = {
 			init2 = function(self) 
@@ -273,18 +281,12 @@ gBackgroundDefs = {
 					end,
 			update = function(self, dt)
 						self.timer1 = (self.timer1 + dt)
-						for j=0,1 do
-							k=1
-							if j==1 then k=-1 end
-							self.orbitcenters[1+(j*8)] = (2*self.radius*(math.cos(self.timer1))+1/2*self.radius*(math.sin(self.timer1)))*k
-							self.orbitcenters[2+(j*8)] =(1/4*self.radius*(math.sin(self.timer1))-2*self.radius*(math.cos(self.timer1)))*k
-							self.orbitcenters[3+(j*8)] = (2*math.sqrt(2)* self.radius*(math.cos(self.timer1)))*k
-							self.orbitcenters[4+(j*8)] = (1/4*math.sqrt(2)*self.radius*(math.sin(self.timer1)))*k
-							self.orbitcenters[5+(j*8)] = (2*self.radius*(math.cos(self.timer1))-1/2*self.radius*(math.sin(self.timer1)))*k
-							self.orbitcenters[6+(j*8)] = (1/4*self.radius*(math.sin(self.timer1))+2*self.radius*(math.cos(self.timer1)))*k
-							self.orbitcenters[7+(j*8)] = (1/4*math.sqrt(2)*self.radius*math.sin(-self.timer1))*k
-							self.orbitcenters[8+(j*8)] = (2*math.sqrt(2)*self.radius*math.cos(-self.timer1))*k
-						end
+						self.orbitcenters[1] = (2*self.radius*(math.cos(self.timer1))+1/2*self.radius*(math.sin(self.timer1)))
+						self.orbitcenters[2] =(1/4*self.radius*(math.sin(self.timer1))-2*self.radius*(math.cos(self.timer1)))
+						self.orbitcenters[3] = (2*math.sqrt(2)* self.radius*(math.cos(self.timer1)))
+						self.orbitcenters[4] = (1/4*math.sqrt(2)*self.radius*(math.sin(self.timer1)))
+						self.orbitcenters[5] = (2*self.radius*(math.cos(self.timer1))-1/2*self.radius*(math.sin(self.timer1)))
+						self.orbitcenters[6] = (1/4*self.radius*(math.sin(self.timer1))+2*self.radius*(math.cos(self.timer1)))
 					end,
  					
 			render = function(self)
@@ -298,7 +300,7 @@ gBackgroundDefs = {
 
 						love.graphics.ellipse("line",self.x,self.y,self.radius,1/4*self.radius)
 
-						for i=1,8 do
+						for i=1,3 do
 							love.graphics.circle("line",self.orbitcenters[2*i-1]+self.x,self.orbitcenters[2*i]+self.y,self.radius/8)
 						end 
 					end
@@ -324,9 +326,28 @@ gBackgroundDefs = {
 						love.graphics.setLineWidth(10)
 						love.graphics.setColor(gCurrentPalette.bgObjects)
 						love.graphics.circle("line",self.x,self.y,self.radius*2/3)
+	
 						for i=1,8 do
-							love.graphics.circle("line",math.cos(self.timer1+math.pi/4*i)*self.radius*1.5+self.x, math.sin(self.timer1+math.pi/4*i)*self.radius*1.5+self.y,self.radius/4)
+							love.graphics.circle("fill",math.cos(self.timer1+math.pi/4*i)*self.radius*1.25+self.x, math.sin(self.timer1+math.pi/4*i)*self.radius*1.25+self.y,self.radius/6)
 						end 
+					end
+	},
+	["healthGlow"] = {
+		init2 = function(self)
+						gBackgroundImage = nil
+						self.timer1 = 0
+						self.x = winWidth / 2
+						self.y = winHeight /2
+						love.graphics.setBackgroundColor(gCurrentPalette.background)
+						self.radius = math.min(love.graphics.getHeight(), love.graphics.getWidth()) / 12
+					end,
+		update = function(self, dt)
+						self.timer1 = self.timer1 + dt
+					end,
+		render = function(self)
+						love.graphics.setLineWidth(15)
+						love.graphics.setColor(gCurrentPalette.bgObjects)
+						love.graphics.circle("line",self.x,self.y,self.radius+math.cos(self.timer1)*self.radius/8*2/3)
 					end
 	}
 	
