@@ -20,7 +20,7 @@ function GameOverState:enter(params)
 	self.song = params.song
 
 	self.currChar = 65
-	self.choosingName = self.isWon and not params.practice
+	self.choosingName = (self.isWon and not params.practice) or self.debug
 	self.practice = params.practice
 	self.scoreName = ""
 	self.showStats = not self.choosingName
@@ -85,17 +85,18 @@ function GameOverState:update(dt)
 	if self.stopInputTimer <= 0 and (love.keyboard.wasInput("togglePauseMenu") or 
 		(not self.choosingName and love.keyboard.wasInput("bottomArrow"))) then
 		if self.showStats then 
-			local highScore = {name = self.scoreName, score = self.score}
-			table.insert(self.song.highScores, highScore)
-			table.sort(self.song.highScores, sortScores)
-			local jsonScores = json.encode( { highScores = self.song.highScores } )
+			if self.isWon then 
+				local highScore = {name = self.scoreName, score = self.score}
+				table.insert(self.song.highScores, highScore)
+				table.sort(self.song.highScores, sortScores)
+				local jsonScores = json.encode( { highScores = self.song.highScores } )
 			
-			if love.filesystem.getInfo(self.song.saveFile) == nil then
-				--love.filesystem.createDirectory("highScores/")
-				love.filesystem.createDirectory(self.song.saveFile)
-			end
-			love.filesystem.write(self.song.saveFile .. "highScores.json", jsonScores, all)
-
+				if love.filesystem.getInfo(self.song.saveFile) == nil then
+					--love.filesystem.createDirectory("highScores/")
+					love.filesystem.createDirectory(self.song.saveFile)
+				end
+				love.filesystem.write(self.song.saveFile .. "highScores.json", jsonScores, all)
+			end		
 			gAudioPlayer:changeAudio(love.audio.newSource("sfx/Welcome_to_Octave.wav", "stream"))
 			gAudioPlayer:setLooping(true)
 			gAudioPlayer:playAudio()
@@ -128,21 +129,54 @@ function GameOverState:render()
 		)
 	end
 
-	if self.choosingName then
+	if self.choosingName or self.debug then
 		--love.graphics.printf("Controls: ", gFonts["AvenirLight32"], 0, love.graphics.getHeight()*0.75 - 65, love.graphics.getWidth(), "center")
-		love.graphics.printf("[up/down] to scroll through letters", gFonts["AvenirLight32"], 0, love.graphics.getHeight()*0.75 - 65, love.graphics.getWidth(), "center")
-		love.graphics.printf("[top triangle] to backspace", gFonts["AvenirLight32"], 0, love.graphics.getHeight()*0.75 - 25, love.graphics.getWidth(), "center")
-		love.graphics.printf("[down triangle] to set letter", gFonts["AvenirLight32"], 0, love.graphics.getHeight()*0.75 + 15, love.graphics.getWidth(), "center")
-		love.graphics.printf("[pause] to set name", gFonts["AvenirLight32"], 0, love.graphics.getHeight()*0.75 + 55, love.graphics.getWidth(), "center")
+		love.graphics.printf("[joystick] to scroll through letters", gFonts["AvenirLight32"], love.graphics.getWidth()/8*3, love.graphics.getHeight()*0.75 - 75, love.graphics.getWidth(), "left")
+		local top = Note:init({
+			x = love.graphics.getWidth()/8*3 + 60,
+			y = love.graphics.getHeight()*0.75 - 25 + 20,
+			radius = 20,
+			pad = 1,
+			lane = 1,
+			speed = 0,
+			noteType = 2,
+			score = 1
+		})
+		local bottom = Note:init({
+			x = love.graphics.getWidth()/8*3 + 60,
+			y = love.graphics.getHeight()*0.75 + 15 + 20,
+			radius = 20,
+			pad = 1,
+			lane = 1,
+			speed = 0,
+			noteType = 1,
+			score = 1
+		})
+		top:render()
+		bottom:render()
+		love.graphics.setColor(gCurrentPalette.menuText)
+		love.graphics.printf(" to backspace", gFonts["AvenirLight32"], 0, love.graphics.getHeight()*0.75 - 30, love.graphics.getWidth(), "center")
+		love.graphics.printf(" to set letter", gFonts["AvenirLight32"], 0, love.graphics.getHeight()*0.75 + 15, love.graphics.getWidth()-20, "center")
+		love.graphics.printf("[pause] to set name", gFonts["AvenirLight32"], 0, love.graphics.getHeight()*0.75 + 60, love.graphics.getWidth(), "center")
 		love.graphics.printf(self.scoreName .. string.char(self.currChar), 
 			gFonts["AvenirLight32"], 0, love.graphics.getHeight()/2 + 3, love.graphics.getWidth(), "center")
 	elseif not self.showStats then
 		love.graphics.printf(self.scoreName, gFonts["AvenirLight32"], 0, love.graphics.getHeight()/2 + 3, love.graphics.getWidth(), "center")
-		love.graphics.printf("Press [down triangle] to continue", gFonts["AvenirLight32"], 0, love.graphics.getHeight()*0.75, love.graphics.getWidth(), "center")
+		local bottom = Note:init({
+			x = love.graphics.getWidth()/8*3 + 110,
+			y = love.graphics.getHeight()*0.75 + 20,
+			radius = 20,
+			pad = 1,
+			lane = 1,
+			speed = 1,
+			noteType = 1,
+			score = 1
+		})
+		love.graphics.printf(" to continue", gFonts["AvenirLight32"], 20, love.graphics.getHeight()*0.75, love.graphics.getWidth(), "center")
 
 	end
 
-	if not self.showStats or self.debug then 
+	if not self.showStats then 
 		love.graphics.printf("Your Score: " .. comma_value(self.score), 
 			gFonts["AvenirLight32"], 0, love.graphics.getHeight()/2 + love.graphics.getHeight() / 12, love.graphics.getWidth(), "center")
 	else 
@@ -154,8 +188,20 @@ function GameOverState:render()
 		if self.fadeTextColor[4] ~= 1 then
 			self.fadeTextColor = 1 - 2 * self.stopInputTimer
 		end
-		if self.showStats and not self.debug then
-			love.graphics.printf("Press [down triangle] to return", gFonts["AvenirLight32"], 0, love.graphics.getHeight()*0.75, love.graphics.getWidth(), "center")
+		if self.showStats then
+			local bottom = Note:init({
+				x = love.graphics.getWidth()/8*3 + 110,
+				y = love.graphics.getHeight()*0.75 + 20,
+				radius = 20,
+				pad = 1,
+				lane = 1,
+				speed = 1,
+				noteType = 1,
+				score = 1
+			})
+			bottom:render()
+			love.graphics.setColor(gCurrentPalette.menuText)	
+			love.graphics.printf(" to return", gFonts["AvenirLight32"], 20, love.graphics.getHeight()*0.75, love.graphics.getWidth(), "center")
 		end
 	end
 end
