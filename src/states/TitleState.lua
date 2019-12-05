@@ -31,8 +31,8 @@ function TitleState:enter(params)
 			end},
 			{"Credits", 
 			function() 
-				--gSounds["start"]:stop()
-				--gSounds["start"]:play()
+				gSounds["start"]:stop()
+				gSounds["start"]:play()
 				gStateMachine:change("credits")
 			end},
 			{"Quit", function() love.event.quit(0) end}

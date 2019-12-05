@@ -15,6 +15,8 @@ end
 function CreditsState:update(dt)
 	if love.keyboard.wasInput("topArrow") or 
 	love.keyboard.wasInput("bottomArrow") then
+		gSounds["back"]:stop()
+		gSounds["back"]:play()
 		gStateMachine:change("title", {selectedOption = 2, submenuActive = true})
 	end
 end
