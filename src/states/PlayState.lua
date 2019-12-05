@@ -58,7 +58,6 @@ function PlayState:newNote(nRadius, pad, lane, nNoteType)
 end
 
 function PlayState:makePads()
-	--local centerRadius = math.min(love.graphics.getHeight(), love.graphics.getWidth())/8
 	local pRadius = 20
 	--Add pads:
 
@@ -153,15 +152,13 @@ function PlayState:enter(params)
 	end
 	]]
 
-	-- Was originally necessary because there was lead-in time in the MIDI. We no longer use lead-in time.
-	self.delay_before_notes = -1.5
-	--self.note_time_multiplier = 100/176
-	--self.note_time_multiplier = 120/176
+	-- Amount of downtime before the notes start coming.
+	self.delay_before_notes = 1.5
 	
 	-- This coefficient converts the time units in the score to seconds. Luckily, it seems to be constant per file.
-	self.note_time_multiplier =  125 / self.song.bpm--derived with excel, logic pro, and pain. Works for Drop In, Flip Out at least...
-	-- For this track, seems to be equal to 125 / BPM
-	--Drop in - 0.7102
+	self.note_time_multiplier =  125 / self.song.bpm
+	-- However, this formula only works for MIDI files exported from Logic Pro.
+	-- TODO: find a way to be platform-agnostic
 	
 	--print("Delay before notes: " .. self.delay_before_notes)
 	
@@ -169,18 +166,14 @@ function PlayState:enter(params)
 	
 	--print("Note travel time: " .. self.note_travel_time)
 
-	--DELAY BEFORE NOTES ENTER - make it longer to make them come sooner
-	self.timer = self.delay_before_notes
+	self.timer = -self.delay_before_notes
 	self.noteIndex = 1
 	
 	self.audioStarted = false
 	self.audioEnded = false
 	gAudioPlayer:stopAudio()
-	
-	--self.audioDelay = 2 * midiOffset + self.note_travel_time. Old, doesn't work well.
-	
-	-- Delay before audio syncs to MIDI for Drop In, Flip Out: 85 milliseconds, more or less exactly
-	self.audioDelay = 1 / (2 * self.speedCoeff) - self.song.noteDelay - self.delay_before_notes
+		
+	self.audioDelay = 1 / (2 * self.speedCoeff) - self.song.noteDelay + self.delay_before_notes
 	gAudioPlayer:changeAudio(love.audio.newSource(self.song.audio, "stream"))
 	gAudioPlayer:setLooping(false)
 	self.audioDoneTimer = 1.5
@@ -352,15 +345,7 @@ function PlayState:updateNormal(dt)
 			table.remove(self.notes, k)
 		end
 	end
-
 	
-
-  --[[
-	if love.keyboard.wasInput("unbound") then
-		self:spawnNote()
-	end
-  ]]
-
 	self.healthBar:update(dt)
 	
 	--check to see if the game is paused, pause if so
