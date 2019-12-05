@@ -21,17 +21,20 @@ end
 
 function CreditsState:render()
 	love.graphics.setColor(gCurrentPalette.menuText)
-	love.graphics.printf("Octave", gFonts["AvenirLight64"], 0, love.graphics.getHeight()*0.10, love.graphics.getWidth(), "center")
-	love.graphics.printf("v 1.0", gFonts["AvenirLight32"], 0, love.graphics.getHeight()*0.20, love.graphics.getWidth(), "center")
+	--love.graphics.printf("Octave", gFonts["AvenirLight64"], 0, love.graphics.getHeight()*0.10, love.graphics.getWidth(), "center")
+	drawLogo(winWidth/2, winHeight*0.05)
+	love.graphics.printf("v 1.0.0", gFonts["AvenirLight32"], 0, love.graphics.getHeight()*0.25, love.graphics.getWidth(), "center")
 	
-	love.graphics.printf("Team Lead", gFonts["AvenirLight32"], 0, love.graphics.getHeight()*0.30, love.graphics.getWidth(), "center")
-	love.graphics.printf("Jonathan Fischer", gFonts["AvenirLight24"], 0, love.graphics.getHeight()*0.35, love.graphics.getWidth(), "center")
+	love.graphics.printf("Team Lead", gFonts["AvenirLight32"], 0, love.graphics.getHeight()*0.35, love.graphics.getWidth(), "center")
+	love.graphics.printf("Jonathan Fischer", gFonts["AvenirLight24"], 0, love.graphics.getHeight()*0.40, love.graphics.getWidth(), "center")
 	
-	names = {"Will Ozeas", "Julia Shuieh", "Christoph Gaffud", "Aidan Peck", "Darien Weems", "Harine Choi"}
+	names = {"Will Ozeas", "Julia Shuieh", "Christoph Gaffud", "Aidan Peck", "Sanjay Salem", "Darien Weems", "Harine Choi"}
 	
 	local height = gFonts["AvenirLight24"]:getHeight()
 	
-	for i=1,6 do
-	love.graphics.printf(names[i], gFonts["AvenirLight24"], 0, love.graphics.getHeight()*0.40+i*1.1*height, love.graphics.getWidth(), "center")
+	for i=1,#names do
+	love.graphics.printf(names[i], gFonts["AvenirLight24"], 0, love.graphics.getHeight()*0.45+i*1.1*height, love.graphics.getWidth(), "center")
 	end
+	
+	drawGCSLogo(winWidth/2, winHeight*0.75)
 end

@@ -85,7 +85,8 @@ end
 
 function TitleState:render()
 	love.graphics.setColor(gCurrentPalette.menuText)
-	love.graphics.printf("Octave", gFonts["AvenirLight64"], 0, love.graphics.getHeight()*0.25, love.graphics.getWidth(), "center")
+	drawLogo(winWidth/2, winHeight*0.15)
+	--love.graphics.printf("Octave", gFonts["AvenirLight64"], 0, love.graphics.getHeight()*0.25, love.graphics.getWidth(), "center")
 	if self.submenu.active then
 		self:renderSubmenu(dt)
 	else
