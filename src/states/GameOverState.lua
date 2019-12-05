@@ -46,7 +46,11 @@ function GameOverState:update(dt)
 	self.lastDown = math.min(self.lastDown + dt, 0.15)
 
 	self.stopInputTimer = math.max(self.stopInputTimer - dt, 0)
+	-- Downwards scrolling letter selection
 	if self.choosingName and self.lastDown >= 0.15 and love.keyboard.isHeld("down") then
+		gSounds["scroll"]:stop()
+		gSounds["scroll"]:play()
+		
 		self.currChar = self.currChar + 1
 		if string.len(self.scoreName) == 0 and self.currChar == 58 then
 			self.currChar = 65
@@ -58,7 +62,11 @@ function GameOverState:update(dt)
 			self.currChar = 48
 		end
 		self.lastDown = 0
+	-- Upwards scrolling letter selection
 	elseif self.choosingName and self.lastUp >= 0.15 and love.keyboard.isHeld("up") then
+		gSounds["scroll"]:stop()
+		gSounds["scroll"]:play()
+		
 		self.currChar = self.currChar - 1
 		if string.len(self.scoreName) == 0 and self.currChar == 64 then
 			self.currChar = 57
@@ -70,14 +78,21 @@ function GameOverState:update(dt)
 			self.currChar = 122
 		end
 		self.lastUp = 0
+	-- Confirm letter
 	elseif self.choosingName and love.keyboard.wasInput("bottomArrow") then
+		gSounds["noteHitOk"]:stop()
+		gSounds["noteHitOk"]:play()
+		
 		self.scoreName = self.scoreName .. string.char(self.currChar)
 		self.currChar = 97
 		if string.len(self.scoreName) == self.maxLetters then
 			self.choosingName = false
 		end
+	-- Delete letter
 	elseif love.keyboard.wasInput("topArrow") then
 		if string.len(self.scoreName) > 0 then
+			gSounds["noteMiss"]:stop()
+			gSounds["noteMiss"]:play()
 			self.choosingName = true
 			self.showStats = false
 			self.scoreName = string.sub(self.scoreName, 1, string.len(self.scoreName)-1)
@@ -86,8 +101,12 @@ function GameOverState:update(dt)
 			else
 				self.currChar = 97
 			end
+		else
+			gSounds["back"]:stop()
+			gSounds["back"]:play()
 		end
 	end
+	-- Confirm name, leave GameOverState
 	if self.stopInputTimer <= 0 and (love.keyboard.wasInput("togglePauseMenu") or 
 		(not self.choosingName and love.keyboard.wasInput("bottomArrow"))) then
 		if self.showStats then 
@@ -109,6 +128,8 @@ function GameOverState:update(dt)
 			gSounds["victory"]:stop()
 			gStateMachine:change("menu", {})
 		else 
+			gSounds["start"]:stop()
+			gSounds["start"]:play()
 			self.choosingName = false
 			self.showStats = true
 		end
