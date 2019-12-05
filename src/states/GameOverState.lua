@@ -102,20 +102,16 @@ function GameOverState:update(dt)
 					love.filesystem.createDirectory(self.song.saveFile)
 				end
 				love.filesystem.write(self.song.saveFile .. "highScores.json", jsonScores, all)
-			end		
-			gAudioPlayer:changeAudio(love.audio.newSource("sfx/Welcome_to_Octave.wav", "stream"))
+			end
+			gAudioPlayer:changeAudio(gMenuMusic)
 			gAudioPlayer:setLooping(true)
 			gAudioPlayer:playAudio()
+			gSounds["victory"]:stop()
 			gStateMachine:change("menu", {})
 		else 
 			self.choosingName = false
 			self.showStats = true
 		end
-		gAudioPlayer:changeAudio(love.audio.newSource("sfx/Welcome_to_Octave.wav", "stream"))
-		gAudioPlayer:setLooping(true)
-		gAudioPlayer:playAudio()
-		gSounds["victory"]:stop()
-		gStateMachine:change("menu", {})
 	end
 
 end
@@ -143,6 +139,7 @@ function GameOverState:render()
 	if self.choosingName or self.debug then
 		--love.graphics.printf("Controls: ", gFonts["AvenirLight32"], 0, love.graphics.getHeight()*0.75 - 65, love.graphics.getWidth(), "center")
 		love.graphics.printf("[joystick] to scroll through letters", gFonts["AvenirLight32"], love.graphics.getWidth()/8*3, love.graphics.getHeight()*0.75 - 75, love.graphics.getWidth(), "left")
+		--TODO: fix this MVC violation
 		local top = Note:init({
 			x = love.graphics.getWidth()/8*3 + 60,
 			y = love.graphics.getHeight()*0.75 - 25 + 20,
@@ -211,7 +208,7 @@ function GameOverState:render()
 				score = 1
 			})
 			bottom:render()
-			love.graphics.setColor(gCurrentPalette.menuText)	
+			love.graphics.setColor(gCurrentPalette.menuText)
 			love.graphics.printf(" to return", gFonts["AvenirLight32"], 20, love.graphics.getHeight()*0.75, love.graphics.getWidth(), "center")
 		end
 	end
