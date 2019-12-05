@@ -10,6 +10,9 @@ function love.load()
 	-- Set save folder name
 	love.filesystem.setIdentity("Octave")
 	
+	-- Hide cursor
+	love.mouse.setVisible(false)
+	
 	-- Contains constants
 	require "src/constants"
 
