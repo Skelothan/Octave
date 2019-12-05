@@ -25,7 +25,7 @@ function GameOverState:enter(params)
 	self.scoreName = ""
 	self.showStats = not self.choosingName
 	self.maxLetters = 6
-	self.debug = true
+	self.debug = false
 
 	self.lastUp = 0
 	self.lastDown = 0
@@ -73,6 +73,7 @@ function GameOverState:update(dt)
 	elseif love.keyboard.wasInput("topArrow") then
 		if string.len(self.scoreName) > 0 then
 			self.choosingName = true
+			self.showStats = false
 			self.scoreName = string.sub(self.scoreName, 1, string.len(self.scoreName)-1)
 			if string.len(self.scoreName) == 0 then
 				self.currChar = 65
@@ -83,7 +84,7 @@ function GameOverState:update(dt)
 	end
 	if self.stopInputTimer <= 0 and (love.keyboard.wasInput("togglePauseMenu") or 
 		(not self.choosingName and love.keyboard.wasInput("bottomArrow"))) then
-		if not self.showStats then
+		if self.showStats then 
 			local highScore = {name = self.scoreName, score = self.score}
 			table.insert(self.song.highScores, highScore)
 			table.sort(self.song.highScores, sortScores)
@@ -94,11 +95,14 @@ function GameOverState:update(dt)
 				love.filesystem.createDirectory(self.song.saveFile)
 			end
 			love.filesystem.write(self.song.saveFile .. "highScores.json", jsonScores, all)
-		else
+
 			gAudioPlayer:changeAudio(love.audio.newSource("sfx/Welcome_to_Octave.wav", "stream"))
 			gAudioPlayer:setLooping(true)
 			gAudioPlayer:playAudio()
 			gStateMachine:change("menu", {})
+		else 
+			self.choosingName = false
+			self.showStats = true
 		end
 	end
 
@@ -113,7 +117,7 @@ function GameOverState:render()
 		love.graphics.printf("Game Over", gFonts["AvenirLight64"], 0, love.graphics.getHeight() / 4, love.graphics.getWidth(), "center")
 	end
 
-	if not self.showStats or self.debug then
+	if self.choosingName then
 		love.graphics.printf("Enter your name: ", gFonts["AvenirLight32"], 0, love.graphics.getHeight()/2 - 50, love.graphics.getWidth(), "center")
 		love.graphics.rectangle(
 			"line",
@@ -124,11 +128,18 @@ function GameOverState:render()
 		)
 	end
 
-	if(self.choosingName) then
+	if self.choosingName then
+		--love.graphics.printf("Controls: ", gFonts["AvenirLight32"], 0, love.graphics.getHeight()*0.75 - 65, love.graphics.getWidth(), "center")
+		love.graphics.printf("[up/down] to scroll through letters", gFonts["AvenirLight32"], 0, love.graphics.getHeight()*0.75 - 65, love.graphics.getWidth(), "center")
+		love.graphics.printf("[top triangle] to backspace", gFonts["AvenirLight32"], 0, love.graphics.getHeight()*0.75 - 25, love.graphics.getWidth(), "center")
+		love.graphics.printf("[down triangle] to set letter", gFonts["AvenirLight32"], 0, love.graphics.getHeight()*0.75 + 15, love.graphics.getWidth(), "center")
+		love.graphics.printf("[pause] to set name", gFonts["AvenirLight32"], 0, love.graphics.getHeight()*0.75 + 55, love.graphics.getWidth(), "center")
 		love.graphics.printf(self.scoreName .. string.char(self.currChar), 
 			gFonts["AvenirLight32"], 0, love.graphics.getHeight()/2 + 3, love.graphics.getWidth(), "center")
 	elseif not self.showStats then
 		love.graphics.printf(self.scoreName, gFonts["AvenirLight32"], 0, love.graphics.getHeight()/2 + 3, love.graphics.getWidth(), "center")
+		love.graphics.printf("Press [down triangle] to continue", gFonts["AvenirLight32"], 0, love.graphics.getHeight()*0.75, love.graphics.getWidth(), "center")
+
 	end
 
 	if not self.showStats or self.debug then 
@@ -143,6 +154,8 @@ function GameOverState:render()
 		if self.fadeTextColor[4] ~= 1 then
 			self.fadeTextColor = 1 - 2 * self.stopInputTimer
 		end
-		love.graphics.printf("Press [down triangle] to return", gFonts["AvenirLight32"], 0, love.graphics.getHeight()*0.75, love.graphics.getWidth(), "center")
+		if self.showStats and not self.debug then
+			love.graphics.printf("Press [down triangle] to return", gFonts["AvenirLight32"], 0, love.graphics.getHeight()*0.75, love.graphics.getWidth(), "center")
+		end
 	end
 end
