@@ -6,7 +6,13 @@ function love.load()
 	
 	-- Fullscreen, retina display
 	love.window.setMode(0, 0, {fullscreen = true, highdpi = true, msaa = 2})
-
+	
+	-- Set window title
+	love.window.setTitle("Octave")
+	
+	-- Set window icon
+	love.window.setIcon(love.image.newImageData("graphics/octave_icon_1.0.0.png"))
+	
 	-- Set save folder name
 	love.filesystem.setIdentity("Octave")
 	
