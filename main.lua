@@ -3,19 +3,7 @@ require "src/dependencies"
 function love.load()
 	-- Set image scaling settings
 	love.graphics.setDefaultFilter("nearest", "nearest")
-	
-	-- Fullscreen, retina display
-	love.window.setMode(0, 0, {fullscreen = true, highdpi = true, msaa = 2})
-	
-	-- Set window title
-	love.window.setTitle("Octave")
-	
-	-- Set window icon
-	love.window.setIcon(love.image.newImageData("graphics/octave_icon_1.0.0.png"))
-	
-	-- Set save folder name
-	love.filesystem.setIdentity("Octave")
-	
+				
 	-- Hide cursor
 	love.mouse.setVisible(false)
 	
@@ -24,9 +12,6 @@ function love.load()
 
 	-- Seed RNG, just in case we use it
 	math.randomseed(os.time())
-	
-	-- Set window title
-	love.window.setTitle("Octave")
 	
 	-- initialize global assets
 	loadFonts()
