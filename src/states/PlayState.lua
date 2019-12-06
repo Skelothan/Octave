@@ -426,7 +426,7 @@ function PlayState:render()
 	for k, note in pairs(self.notes) do
 		note:render()
 	end
-	self.healthBar:render()
+	self.healthBar:render(self.practice)
 	for k, effect in pairs(self.effects) do
 		effect:render()
 	end
