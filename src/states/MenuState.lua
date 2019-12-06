@@ -205,6 +205,7 @@ function MenuState:render()
 		love.graphics.setColor({1,1,1,1})
 		love.graphics.printf("No maps found!", gFonts["AvenirLight64"], 0, love.graphics.getHeight() / 3, love.graphics.getWidth(), "center")
 		love.graphics.printf(love.filesystem.getSourceBaseDirectory(), gFonts["AvenirLight32"], 0, love.graphics.getHeight() * 0.5, love.graphics.getWidth(), "center")
+		love.graphics.printf("Fused: " .. tostring(love.filesystem.isFused()), gFonts["AvenirLight32"], 0, love.graphics.getHeight() * 0.55, love.graphics.getWidth(), "center")
 	else
 		for i, song in ipairs(self.songs) do 
 			local opacity = 0.85/(math.abs(i-self.currentSong)+1)
