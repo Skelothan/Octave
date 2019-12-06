@@ -29,6 +29,8 @@ function GameOverState:enter(params)
 
 	self.lastUp = 0
 	self.lastDown = 0
+	
+	self.stats = params.stats
 
 	-- Play victory music if the game was won
 	if self.isWon then
@@ -146,20 +148,29 @@ function GameOverState:render()
 		love.graphics.printf("Game Over", gFonts["AvenirLight64"], 0, love.graphics.getHeight() / 4, love.graphics.getWidth(), "center")
 	end
 
-	if self.choosingName then
-		love.graphics.printf("Enter your name: ", gFonts["AvenirLight32"], 0, love.graphics.getHeight()/2 - 50, love.graphics.getWidth(), "center")
-		love.graphics.rectangle(
-			"line",
-			love.graphics.getWidth()/2 - love.graphics.getWidth() / 12,
-			love.graphics.getHeight() / 2, 
-			love.graphics.getWidth() / 6,
-			50
-		)
+	if self.showStats then
+		self:renderStats()
+	else
+		self:renderHighScoreInput()
 	end
+end
 
-	if self.choosingName or self.debug then
+function GameOverState:renderHighScoreInput()
+
+	-- Name entry box
+	love.graphics.printf("Enter your name: ", gFonts["AvenirLight32"], 0, love.graphics.getHeight()/2 - 50, love.graphics.getWidth(), "center")
+	love.graphics.rectangle(
+		"line",
+		love.graphics.getWidth()/2 - love.graphics.getWidth() / 12,
+		love.graphics.getHeight() / 2, 
+		love.graphics.getWidth() / 6,
+		50
+	)
+	
+	-- Controls
+	if self.choosingName then
 		--love.graphics.printf("Controls: ", gFonts["AvenirLight32"], 0, love.graphics.getHeight()*0.75 - 65, love.graphics.getWidth(), "center")
-		love.graphics.printf("[joystick] to scroll through letters", gFonts["AvenirLight32"], love.graphics.getWidth()/8*3, love.graphics.getHeight()*0.75 - 75, love.graphics.getWidth(), "left")
+		love.graphics.printf("Joystick to scroll through letters", gFonts["AvenirLight32"], love.graphics.getWidth()/8*3, love.graphics.getHeight()*0.75 - 75, love.graphics.getWidth(), "left")
 		--TODO: fix this MVC violation
 		local top = Note:init({
 			x = love.graphics.getWidth()/8*3 + 60,
@@ -186,10 +197,10 @@ function GameOverState:render()
 		love.graphics.setColor(gCurrentPalette.menuText)
 		love.graphics.printf(" to backspace", gFonts["AvenirLight32"], 0, love.graphics.getHeight()*0.75 - 30, love.graphics.getWidth(), "center")
 		love.graphics.printf(" to set letter", gFonts["AvenirLight32"], 0, love.graphics.getHeight()*0.75 + 15, love.graphics.getWidth()-20, "center")
-		love.graphics.printf("[pause] to set name", gFonts["AvenirLight32"], 0, love.graphics.getHeight()*0.75 + 60, love.graphics.getWidth(), "center")
+		love.graphics.printf("Pause to set name", gFonts["AvenirLight32"], 0, love.graphics.getHeight()*0.75 + 60, love.graphics.getWidth(), "center")
 		love.graphics.printf(self.scoreName .. string.char(self.currChar), 
 			gFonts["AvenirLight32"], 0, love.graphics.getHeight()/2 + 3, love.graphics.getWidth(), "center")
-	elseif not self.showStats then
+	else
 		love.graphics.printf(self.scoreName, gFonts["AvenirLight32"], 0, love.graphics.getHeight()/2 + 3, love.graphics.getWidth(), "center")
 		local bottom = Note:init({
 			x = love.graphics.getWidth()/8*3 + 110,
@@ -201,36 +212,40 @@ function GameOverState:render()
 			noteType = 1,
 			score = 1
 		})
+		bottom:render()
 		love.graphics.printf(" to continue", gFonts["AvenirLight32"], 20, love.graphics.getHeight()*0.75, love.graphics.getWidth(), "center")
-
 	end
+	
+	love.graphics.printf("Your Score: " .. comma_value(self.score), 
+		gFonts["AvenirLight32"], 0, love.graphics.getHeight()/2 + love.graphics.getHeight() / 12, love.graphics.getWidth(), "center")
+	
+end
 
-	if not self.showStats then 
-		love.graphics.printf("Your Score: " .. comma_value(self.score), 
-			gFonts["AvenirLight32"], 0, love.graphics.getHeight()/2 + love.graphics.getHeight() / 12, love.graphics.getWidth(), "center")
-	else 
-		love.graphics.printf("Your Score: " .. comma_value(self.score), 
-			gFonts["AvenirLight32"], 0, love.graphics.getHeight()/2, love.graphics.getWidth(), "center")
+function GameOverState:renderStats()
+	love.graphics.printf("Your Score: " .. comma_value(self.score), 
+	gFonts["AvenirLight32"], 0, love.graphics.getHeight()*0.4, love.graphics.getWidth(), "center")
+	
+	local counter = 1
+	local height = gFonts["AvenirLight24"]:getHeight()
+	
+	love.graphics.printf("Stats", gFonts["AvenirLight24"], 0, love.graphics.getHeight()*0.50, love.graphics.getWidth(), "center")
+	for k, accuracy in ipairs({"Perfect", "Great", "Good", "OK", "Miss", "Hurt"}) do
+		love.graphics.printf(accuracy .. ":", gFonts["AvenirLight24"], 0, love.graphics.getHeight()*0.50+counter*1.1*height, love.graphics.getWidth()/2, "right")
+		love.graphics.printf("    " .. tostring(self.stats[accuracy]), gFonts["AvenirLight24"], love.graphics.getWidth()/2, love.graphics.getHeight()*0.50+counter*1.1*height, love.graphics.getWidth()/2, "left")
+		counter = counter + 1
 	end
-
-	if self.stopInputTimer <= 0.5 then
-		if self.fadeTextColor[4] ~= 1 then
-			self.fadeTextColor = 1 - 2 * self.stopInputTimer
-		end
-		if self.showStats then
-			local bottom = Note:init({
-				x = love.graphics.getWidth()/8*3 + 110,
-				y = love.graphics.getHeight()*0.75 + 20,
-				radius = 20,
-				pad = 1,
-				lane = 1,
-				speed = 1,
-				noteType = 1,
-				score = 1
-			})
-			bottom:render()
-			love.graphics.setColor(gCurrentPalette.menuText)
-			love.graphics.printf(" to return", gFonts["AvenirLight32"], 20, love.graphics.getHeight()*0.75, love.graphics.getWidth(), "center")
-		end
-	end
+	
+	local bottom = Note:init({
+		x = love.graphics.getWidth()/8*3 + 110,
+		y = love.graphics.getHeight()*0.85 + 20,
+		radius = 20,
+		pad = 1,
+		lane = 1,
+		speed = 1,
+		noteType = 1,
+		score = 1
+	})
+	bottom:render()
+	love.graphics.setColor(gCurrentPalette.menuText)
+	love.graphics.printf(" to return", gFonts["AvenirLight32"], 20, love.graphics.getHeight()*0.85, love.graphics.getWidth(), "center")
 end

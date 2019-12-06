@@ -18,7 +18,15 @@ function HealthBar:init(params)
 	
 	self.maxIFrames = 1.5
 	self.iFrames = 0
-
+	
+	self.stats = {
+		["Perfect"] = 0,
+		["Great"] = 0,
+		["Good"] = 0,
+		["OK"] = 0,
+		["Miss"] = 0,
+		["Hurt"] = 0
+	}
 	
 	self.radius = math.min(love.graphics.getHeight(), love.graphics.getWidth()) / 12
 	
@@ -35,7 +43,8 @@ function HealthBar:update(dt)
 	if self.health <= 0 then 
 		gStateMachine:change("gameOver", {
 			score = self.score, 
-			isWon = false
+			isWon = false,
+			stats = self.stats
 		})
 	end
 end
@@ -49,6 +58,7 @@ function HealthBar:takeDamage(dScore)
 		self:incrementScore(-dScore)
 		self:resetMultiplier()
 		self.iFrames = self.maxIFrames
+		self.stats["Hurt"] = self.stats["Hurt"] + 1
 	end
 end
 
@@ -69,13 +79,20 @@ function HealthBar:resetMultiplier()
 	self.scoreMultiplier = 0.1
 end
 
-function HealthBar:render()
+function HealthBar:incrementStat(accuracy)
+	self.stats[accuracy] = self.stats[accuracy] + 1
+end
+
+function HealthBar:render(isPractice)
 	-- Draw outline
 	love.graphics.setColor(self.outlineColor)
 	love.graphics.circle("fill", self.x, self.y, self.radius, 60)
+	if not isPractice then
 	-- Draw health
-	love.graphics.setColor(self.healthColor)
-	love.graphics.arc("fill", self.x, self.y, self.radius * 0.9, math.pi * 3/2, math.pi * 3/2 - 2 * math.pi * (self.health/self.maxHealth), self.maxHealth * 4)
+		love.graphics.setColor(self.healthColor)
+		love.graphics.arc("fill", self.x, self.y, self.radius * 0.9, math.pi * 3/2, math.pi * 3/2 - 2 * math.pi * (self.health/self.maxHealth), self.maxHealth * 4)
+	end
+	
 	-- Draw health segments and center
 	love.graphics.setColor(self.outlineColor)
 	love.graphics.circle("fill", self.x, self.y, self.radius * 0.8, 60)

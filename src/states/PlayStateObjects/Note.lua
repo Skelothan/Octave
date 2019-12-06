@@ -92,8 +92,8 @@ function Note:changeDirection()
 	self:setSpeeds()
 	self.directionChanged = true
 	
-	--gSounds["noteHit"]:stop()
-	--gSounds["noteHit"]:play()
+	--gSounds["noteHitOk"]:stop()
+	--gSounds["noteHitOk"]:play()
 end
 
 function Note:render()

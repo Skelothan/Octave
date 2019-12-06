@@ -276,6 +276,7 @@ function PlayState:updateNormal(dt)
 						gSounds["noteHitPerfect"]:stop()
 						gSounds["noteHitPerfect"]:play()
 						self.healthBar:incrementMultiplier()
+						self.healthBar:incrementStat("Perfect")
 						effectText = "Perfect!"
 					elseif coll_dist < 0.3 then -- Great
 						self.healthBar:incrementScore(note.score * 0.9)
@@ -283,22 +284,26 @@ function PlayState:updateNormal(dt)
 						gSounds["noteHitGreat"]:stop()
 						gSounds["noteHitGreat"]:play()
 						self.healthBar:incrementMultiplier()
+						self.healthBar:incrementStat("Great")
 						effectText = "Great!"
 					elseif coll_dist < 0.5 then -- Good
 						self.healthBar:incrementScore(note.score * 0.75)
 						gSounds["noteHitGood"]:stop()
 						gSounds["noteHitGood"]:play()
 						self.healthBar:incrementMultiplier()
+						self.healthBar:incrementStat("Good")
 						effectText = "Good"
 					elseif coll_dist < 1.1 then -- OK
 						self.healthBar:incrementScore(note.score * 0.50)
 						gSounds["noteHitOk"]:stop()
 						gSounds["noteHitOk"]:play()
+						self.healthBar:incrementStat("OK")
 						effectText = "OK"
 					else -- Miss
 						gSounds["noteMiss"]:stop()
 						gSounds["noteMiss"]:play()
 						self.healthBar:resetMultiplier()
+						self.healthBar:incrementStat("Miss")
 						effectText = "Miss..."
 					end
 					table.insert(self.effects, TextEffect:init({x = note.x, y = note.y, text = effectText}))
@@ -383,7 +388,8 @@ function PlayState:updateNormal(dt)
 			song = self.song,
 			score = self.healthBar.score, 
 			isWon = true,
-			practice = self.practice
+			practice = self.practice,
+			stats = self.healthBar.stats
 		})
 		end
 	end
@@ -420,7 +426,7 @@ function PlayState:render()
 	for k, note in pairs(self.notes) do
 		note:render()
 	end
-	self.healthBar:render()
+	self.healthBar:render(self.practice)
 	for k, effect in pairs(self.effects) do
 		effect:render()
 	end
