@@ -37,6 +37,27 @@ function GameOverState:enter(params)
 		gSounds["victory"]:stop()
 		gSounds["victory"]:play()
 	end
+
+	self.top = Note:init({
+		x = love.graphics.getWidth()/8*3 + 60,
+		y = love.graphics.getHeight()*0.75 - 25 + 20,
+		radius = 20,
+		pad = 1,
+		lane = 1,
+		speed = 0,
+		noteType = 2,
+		score = 1
+	})
+	self.bottom = Note:init({
+		x = love.graphics.getWidth()/8*3 + 60,
+		y = love.graphics.getHeight()*0.75 + 15 + 20,
+		radius = 20,
+		pad = 1,
+		lane = 1,
+		speed = 1,
+		noteType = 1,
+		score = 1
+	})
 end
 
 function sortScores(s1, s2)
@@ -171,29 +192,8 @@ function GameOverState:renderHighScoreInput()
 	if self.choosingName then
 		--love.graphics.printf("Controls: ", gFonts["AvenirLight32"], 0, love.graphics.getHeight()*0.75 - 65, love.graphics.getWidth(), "center")
 		love.graphics.printf("Joystick to scroll through letters", gFonts["AvenirLight32"], love.graphics.getWidth()/8*3, love.graphics.getHeight()*0.75 - 75, love.graphics.getWidth(), "left")
-		--TODO: fix this MVC violation
-		local top = Note:init({
-			x = love.graphics.getWidth()/8*3 + 60,
-			y = love.graphics.getHeight()*0.75 - 25 + 20,
-			radius = 20,
-			pad = 1,
-			lane = 1,
-			speed = 0,
-			noteType = 2,
-			score = 1
-		})
-		local bottom = Note:init({
-			x = love.graphics.getWidth()/8*3 + 60,
-			y = love.graphics.getHeight()*0.75 + 15 + 20,
-			radius = 20,
-			pad = 1,
-			lane = 1,
-			speed = 0,
-			noteType = 1,
-			score = 1
-		})
-		top:render()
-		bottom:render()
+		self.top:render()
+		self.bottom:render()
 		love.graphics.setColor(gCurrentPalette.menuText)
 		love.graphics.printf(" to backspace", gFonts["AvenirLight32"], 0, love.graphics.getHeight()*0.75 - 30, love.graphics.getWidth(), "center")
 		love.graphics.printf(" to set letter", gFonts["AvenirLight32"], 0, love.graphics.getHeight()*0.75 + 15, love.graphics.getWidth()-20, "center")
@@ -202,17 +202,9 @@ function GameOverState:renderHighScoreInput()
 			gFonts["AvenirLight32"], 0, love.graphics.getHeight()/2 + 3, love.graphics.getWidth(), "center")
 	else
 		love.graphics.printf(self.scoreName, gFonts["AvenirLight32"], 0, love.graphics.getHeight()/2 + 3, love.graphics.getWidth(), "center")
-		local bottom = Note:init({
-			x = love.graphics.getWidth()/8*3 + 110,
-			y = love.graphics.getHeight()*0.75 + 20,
-			radius = 20,
-			pad = 1,
-			lane = 1,
-			speed = 1,
-			noteType = 1,
-			score = 1
-		})
-		bottom:render()
+		self.bottom.x = love.graphics.getWidth()/8*3 + 110
+		self.bottom.y = love.graphics.getHeight()*0.75 + 20
+		self.bottom:render()
 		love.graphics.printf(" to continue", gFonts["AvenirLight32"], 20, love.graphics.getHeight()*0.75, love.graphics.getWidth(), "center")
 	end
 	
@@ -235,17 +227,9 @@ function GameOverState:renderStats()
 		counter = counter + 1
 	end
 	
-	local bottom = Note:init({
-		x = love.graphics.getWidth()/8*3 + 110,
-		y = love.graphics.getHeight()*0.85 + 20,
-		radius = 20,
-		pad = 1,
-		lane = 1,
-		speed = 1,
-		noteType = 1,
-		score = 1
-	})
-	bottom:render()
+	self.bottom.x = love.graphics.getWidth()/8*3 + 110
+	self.bottom.y = love.graphics.getHeight()*0.85 + 20
+	self.bottom:render()
 	love.graphics.setColor(gCurrentPalette.menuText)
 	love.graphics.printf(" to return", gFonts["AvenirLight32"], 20, love.graphics.getHeight()*0.85, love.graphics.getWidth(), "center")
 end
