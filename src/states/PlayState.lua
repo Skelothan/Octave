@@ -322,7 +322,8 @@ function PlayState:updateNormal(dt)
 		--print("Spawned a note! Time is " .. self.timer)
 	end
 	
-	for k, note in pairs(self.notes) do
+	for i=#self.notes,1,-1 do
+		local note = self.notes[i]
 		note:update(dt)
 		-- Change directions of notes once they reach center of pad
 		if not note.directionChanged then
@@ -350,16 +351,17 @@ function PlayState:updateNormal(dt)
 			if not self.practice then self.healthBar:takeDamage(note.score) end
 		end
 		if note.isDestroyed then
-			table.remove(self.notes, k)
+			table.remove(self.notes, i)
 		end
 	end
 	
 	self.healthBar:update(dt)
 	
-	for k, effect in pairs(self.effects) do
+	for i=#self.effects,1,-1 do
+		local effect = self.effects[i]
 		effect:update(dt)
 		if effect.isDestroyed then
-			table.remove(self.effects, k)
+			table.remove(self.effects, i)
 		end
 	end
 	
