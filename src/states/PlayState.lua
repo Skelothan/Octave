@@ -148,6 +148,7 @@ function PlayState:enter(params)
 	
 	gMidiReader = MidiReader:init(self.song.midi)
 	gMapNotes = gMidiReader:get_notes()
+	
 	--[[
 	for k, note in pairs(gMapNotes) do
 		print(note.start_time)
@@ -158,7 +159,8 @@ function PlayState:enter(params)
 	self.delay_before_notes = 1.5
 	
 	-- This coefficient converts the time units in the score to seconds. Luckily, it seems to be constant per file.
-	self.note_time_multiplier =  125 / self.song.bpm
+	self.note_time_multiplier = 1
+	-- self.note_time_multiplier =  125 / self.song.bpm
 	-- However, this formula only works for MIDI files exported from Logic Pro.
 	-- TODO: find a way to be platform-agnostic
 	
