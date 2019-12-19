@@ -50,6 +50,7 @@ require "src/states/MenuState"
 require "src/states/PlayState"
 require "src/states/GameOverState"
 require "src/states/CreditsState"
+require "src/states/PlayDemoState"
 
 -- Backgrounds
 require "src/backgrounddefs"
