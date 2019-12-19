@@ -165,7 +165,7 @@ function MenuState:updateNormal(dt)
 	end
 	
 	if self.success and love.keyboard.wasInput("bottomArrow") then
-		if (self.songs[self.currentSong].midi ~= nil and self.songs[self.currentSong].audio ~= nil and self.songs[self.currentSong].bpm ~= 0) then
+		if (self.songs[self.currentSong].midi ~= nil and self.songs[self.currentSong].audio ~= nil) then
 			gSounds["start"]:stop()
 			gSounds["start"]:play()
 			gCurrentSong = self.currentSong
