@@ -16,7 +16,7 @@ function GameOverState:enter(params)
 	self.score = params.score or 0;
 	self.fadeTextColor = gCurrentPalette.menuText
 	self.isWon = params.isWon or false
-	self.stopInputTimer = 4
+	self.stopInputTimer = 0.5
 	self.song = params.song
 
 	self.currChar = 65
@@ -50,7 +50,17 @@ function GameOverState:enter(params)
 	})
 	self.bottom = Note:init({
 		x = love.graphics.getWidth()/8*3 + 60,
-		y = love.graphics.getHeight()*0.75 + 15 + 20,
+		y = love.graphics.getHeight()*0.75 + 35,
+		radius = 20,
+		pad = 1,
+		lane = 1,
+		speed = 1,
+		noteType = 1,
+		score = 1
+	})
+	self.bottom2 = Note:init({
+		x = love.graphics.getWidth()/8*3 + 110,
+		y = love.graphics.getHeight()*0.85 + 20,
 		radius = 20,
 		pad = 1,
 		lane = 1,
@@ -227,9 +237,7 @@ function GameOverState:renderStats()
 		counter = counter + 1
 	end
 	
-	self.bottom.x = love.graphics.getWidth()/8*3 + 110
-	self.bottom.y = love.graphics.getHeight()*0.85 + 20
-	self.bottom:render()
+	self.bottom2:render()
 	love.graphics.setColor(gCurrentPalette.menuText)
 	love.graphics.printf(" to return", gFonts["AvenirLight32"], 20, love.graphics.getHeight()*0.85, love.graphics.getWidth(), "center")
 end
