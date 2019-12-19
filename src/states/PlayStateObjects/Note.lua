@@ -1,7 +1,7 @@
 Note = {}
 Note.__index = Note
 
-function Note:init(params, playState)
+function Note:init(params)
 	local o = o or {}
 	setmetatable(o, self)
 	self.__index = self
