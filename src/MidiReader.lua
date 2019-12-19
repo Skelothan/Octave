@@ -24,8 +24,9 @@ function MidiReader:init(filename)
 	if(love.filesystem.getInfo(filename)) then
 		self.midiData = MIDI.midi2score(love.filesystem.read(filename))
 		
+		-- Default tempo, if there are no tempo events in the MIDI file.
+		-- Mostly for Ableton-dialect MIDI files, since they lack tempo events.
 		local currentTempo = 2500000
-		local firstNoteIndex = nil
 		
 		for i=2, #self.midiData do
 			for j=1, #self.midiData[i] do
@@ -33,13 +34,10 @@ function MidiReader:init(filename)
 				if self.midiData[i][j][1] == 'set_tempo' then
 					currentTempo = self.midiData[i][j][3]
 				elseif self.midiData[i][j][1] == 'note' then
-					if not firstNoteIndex then
-						firstNoteIndex = self.midiData[i][j][2]
-						print("Set firstNoteIndex to " .. tostring(firstNoteIndex))
-					end
 					-- assign start times
-					--NUMBER AT THE END DECIDES HOW FAST NOTES COME
-					self.midiData[i][j].start_time = (self.midiData[i][j][2] / 1000) * 125 / (60000000 / currentTempo)
+					-- The mess of math at the end correctly converts the MIDI times into seconds.
+					--self.midiData[i][j].start_time = (self.midiData[i][j][2] / 1000) * 125 / (60000000 / currentTempo)
+					self.midiData[i][j].start_time = (self.midiData[i][j][2] * currentTempo) / 480000000
 					-- assign durations
 					self.midiData[i][j].duration = self.midiData[i][j][3]
 					-- assign pitch strings
@@ -85,5 +83,3 @@ function MidiReader:get_notes()
 	--table.print(notes)
 	return notes
 end
-
---return MidiReader
