@@ -7,6 +7,17 @@ function loadBackgroundNames()
 end
 
 gBackgroundDefs = {
+	["nothing"] = {
+			init2 = function(self) 
+						
+					end,
+			update = function(self, dt) 
+						
+					end,
+			render = function(self)
+						
+					end
+	},
 	["oscCircle"] = {
 			init2 = function(self) 
 						self.x = love.graphics.getWidth()/2
