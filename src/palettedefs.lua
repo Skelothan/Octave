@@ -144,9 +144,9 @@ gPalette = {
 	pad2 = {0.75, 0.75, 0.75, 1},
 	menuColor = {255/255, 30/255, 0/255, 1},
 	healthColor = {255/255, 30/255, 0/255, 1},
-	noteColorTop = {100/255, 190/255, 255/255, 1},
-	noteColorBottom = {20/255, 40/255, 229/255, 1},
-	noteColorBoth ={250/255, 60/255, 140/255, 255/255}
+	noteColorTop = {1, 1, 1, 1},
+	noteColorBottom = {0.7, 0.7, 0.7, 1},
+	noteColorBoth = {255/255, 40/255, 30/255, 1}
 },
 ["pinkgreen"] = {
 	background = {255/255, 93/255, 220/255, 255/255},
