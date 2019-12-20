@@ -25,7 +25,7 @@ function CreditsState:render()
 	love.graphics.setColor(gCurrentPalette.menuText)
 	--love.graphics.printf("Octave", gFonts["AvenirLight64"], 0, love.graphics.getHeight()*0.10, love.graphics.getWidth(), "center")
 	drawLogo(winWidth/2, winHeight*0.05)
-	love.graphics.printf("v 1.0.0", gFonts["AvenirLight32"], 0, love.graphics.getHeight()*0.25, love.graphics.getWidth(), "center")
+	love.graphics.printf("v 1.0.1", gFonts["AvenirLight32"], 0, love.graphics.getHeight()*0.25, love.graphics.getWidth(), "center")
 	
 	love.graphics.printf("Team Lead", gFonts["AvenirLight32"], 0, love.graphics.getHeight()*0.35, love.graphics.getWidth(), "center")
 	love.graphics.printf("Jonathan Fischer", gFonts["AvenirLight24"], 0, love.graphics.getHeight()*0.40, love.graphics.getWidth(), "center")
