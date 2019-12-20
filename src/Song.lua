@@ -107,14 +107,14 @@ function Song:renderSong(index, currentSong, opacity, menuOffset)
 	love.graphics.print(
 		self.name,
 		gFonts["AvenirLight32"],
-		songX + (songWidth/16),
-		songY + (songHeight/16)
+		math.floor(songX + (songWidth/16)),
+		math.floor(songY + (songHeight/16))
 	)
 	love.graphics.print(
 		self.artist,
 		gFonts["AvenirLight24"],
-		songX + (songWidth/16),
-		songY + (songHeight/16) + 40
+		math.floor(songX + (songWidth/16)),
+		math.floor(songY + (songHeight/16) + 40)
 	)
 	
 	love.graphics.pop()
