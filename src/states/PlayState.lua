@@ -4,6 +4,7 @@ PlayState.__index = PlayState
 function PlayState:newPad(pX, pY, pRadius, pNum)
 	color = gCurrentPalette.pad1
 	laneColor = gCurrentPalette.laneColor
+	outlineColor = gCurrentPalette.objectOutlineColor
 	if pNum % 2 == 1 then
 		color = gCurrentPalette.pad2
 		laneColor = gCurrentPalette.laneColor2
@@ -13,6 +14,7 @@ function PlayState:newPad(pX, pY, pRadius, pNum)
 		y = pY, 
 		radius = pRadius,
 		padColor = color,
+		outlineColor = outlineColor,
 		index = pNum
 		})
 	)
@@ -51,6 +53,7 @@ function PlayState:newNote(nRadius, pad, lane, nNoteType)
 			pad = pad,
 			lane = lane,
 			speed = self.noteSpeed,
+			outlineColor = gCurrentPalette.objectOutlineColor,
 			noteType = nNoteType,
 			score = 1000
 		})
@@ -97,7 +100,7 @@ end
 function PlayState:enter(params)
 	self.pads = {}
 	self.lanes = {}
-	self.healthBar = HealthBar:init({healthColor = gCurrentPalette.healthColor})
+	self.healthBar = HealthBar:init({healthColor = gCurrentPalette.healthColor, outlineColor = gCurrentPalette.objectOutlineColor})
 	self.notes = {}
 	self.effects = {}
 	self.song = params.song
