@@ -182,12 +182,12 @@ function MenuState:updateNormal(dt)
 		gSounds["back"]:play()
 		gStateMachine:change("title", {selectedOption = 1, submenuActive = true})
 	end
-	--[[
+	
 	-- Debug: enter playdemostate
 	if love.keyboard.wasInput("unbound") then
 		gStateMachine:change("playDemo", {})
 	end
-	]]
+	
 end
 
 function MenuState:updateSubmenu(dt)
