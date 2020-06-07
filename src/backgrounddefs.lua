@@ -360,6 +360,60 @@ gBackgroundDefs = {
 						love.graphics.setColor(gCurrentPalette.bgObjects)
 						love.graphics.circle("line",self.x,self.y,self.radius+math.cos(self.timer1)*self.radius/8*2/3)
 					end
+	},
+	-- New in 1.1
+	["twinBubbles"] = {
+		init2 = function(self)
+						self.x1 = winWidth / 4
+						self.x2 = winWidth * 3 / 4
+						self.maxY = winHeight * 3/9
+						self.tripleWinHeight = winHeight * 3
+						self.oneThird = 1/3
+
+						-- Speed at which the whole animation plays
+						self.bubbleSpeed = 1/1024
+
+						-- Rate at which the size of the bubbles decreases.
+						-- Strictly linear wasn't as aesthetically pleasing.
+						self.bubbleSizeDecay = 2/3
+
+						-- Bubbles: {"timer", radius, y-position}
+						-- Y-position is not calculated until the update function
+						self.bubbles = {
+							{3/9, winHeight * math.pow(3/9, self.bubbleSizeDecay), 0},
+							{2/9, winHeight * math.pow(2/9, self.bubbleSizeDecay), 0},
+							{1/9, winHeight * math.pow(1/9, self.bubbleSizeDecay), 0},
+							{0, 0, 0}
+						}
+
+						-- Constants used to calculate the y-position of each bubble based on radius.
+						self.yIntercept = winHeight * 0.10
+						self.ySlope = ((winHeight + self.bubbles[1][2]) - self.yIntercept) * 3
+						
+						gBackgroundImage = love.graphics.newImage("graphics/linearGradientBottom.png")
+						love.graphics.setBackgroundColor(gCurrentPalette.background)
+					end,
+		update = function(self, dt)
+						for k,bubble in ipairs(self.bubbles) do
+							bubble[1] = (bubble[1] - self.bubbleSpeed) % self.oneThird
+							bubble[2] = winHeight * math.pow(bubble[1], self.bubbleSizeDecay)
+							bubble[3] = self.ySlope * bubble[1] + self.yIntercept
+						end
+					end,
+		render = function(self)
+						love.graphics.setColor(gCurrentPalette.gradient)
+						love.graphics.draw(gBackgroundImage,0,0,0,self.x*2/1920, self.y*2/1080)
+						
+						love.graphics.setColor(gCurrentPalette.bgObjects)
+						
+						for k,bubble in ipairs(self.bubbles) do
+							love.graphics.push()
+							love.graphics.translate(0, bubble[3])
+							love.graphics.circle("fill", self.x1, 0, bubble[2])
+							love.graphics.circle("fill", self.x2, 0, bubble[2])
+							love.graphics.pop()
+						end
+					end
 	}
 	
 }
