@@ -378,7 +378,6 @@ gBackgroundDefs = {
 						self.bubbleSizeDecay = 2/3
 
 						-- Bubbles: {"timer", radius, y-position}
-						-- Y-position is not calculated until the update function
 						self.bubbles = {
 							{3/9, winHeight * math.pow(3/9, self.bubbleSizeDecay), 0},
 							{2/9, winHeight * math.pow(2/9, self.bubbleSizeDecay), 0},
@@ -389,6 +388,11 @@ gBackgroundDefs = {
 						-- Constants used to calculate the y-position of each bubble based on radius.
 						self.yIntercept = winHeight * 0.10
 						self.ySlope = ((winHeight + self.bubbles[1][2]) - self.yIntercept) * 3
+
+						-- Fix initial y position of bubbles
+						for i=1,3 do
+							self.bubbles[i][3] = self.ySlope * self.bubbles[i][1] + self.yIntercept
+						end
 						
 						gBackgroundImage = love.graphics.newImage("graphics/linearGradientBottom.png")
 						love.graphics.setBackgroundColor(gCurrentPalette.background)
