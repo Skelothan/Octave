@@ -53,7 +53,6 @@ gBackgroundDefs = {
 						love.graphics.setLineWidth(10)
 						love.graphics.setColor(gCurrentPalette.gradient)
 						love.graphics.draw(gBackgroundImage,0,0,0,self.x*2/1920, self.y*2/1080)
-						love.graphics.resetColor()
 						love.graphics.setColor(gCurrentPalette.bgObjects)
 
 						love.graphics.push()
@@ -132,16 +131,19 @@ gBackgroundDefs = {
 						self.timer1 = 0
 						self.timer2 = math.pi/2
 						love.graphics.setBackgroundColor(gCurrentPalette.background)
+						gBackgroundImage = love.graphics.newImage("graphics/linearGradientBottom.png")
 						self.bounds = math.max(love.graphics.getHeight(), love.graphics.getWidth())
 					end,
 			update = function(self, dt)
-						self.timer1 = (self.timer1 + dt * 3/4) % (2 * math.pi)
-						self.timer2 = (self.timer2 + dt * 3/4) % (2 * math.pi)
+						self.timer1 = (self.timer1 + dt * 1/4) % (2 * math.pi)
+						self.timer2 = (self.timer2 + dt * 1/4) % (2 * math.pi)
 						
 					end,
 			render = function(self)
 						local margin = self.bounds * 1/4 * 1/8
 						local size = self.bounds*1/4*3/4
+						love.graphics.setColor(gCurrentPalette.gradient)
+						love.graphics.draw(gBackgroundImage,0,0,0,self.x*2/1920, self.y*2/1080)
 						love.graphics.push()
 						love.graphics.setColor(gCurrentPalette.bgObjects)
 						love.graphics.translate(margin,love.graphics.getHeight()/2 + margin)
