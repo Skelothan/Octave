@@ -191,6 +191,8 @@ function MenuState:updateNormal(dt)
 end
 
 function MenuState:updateSubmenu(dt)
+	self.submenu:update(dt)
+
 	if love.keyboard.wasInput("up") then
 		self.submenu:up()
 	elseif love.keyboard.wasInput("down") then

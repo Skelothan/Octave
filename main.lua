@@ -19,6 +19,7 @@ function love.load()
 	loadGraphics()
 	loadBackgroundNames()
 	gBackgroundImage = nil
+	gController = nil
 	
 	-- initialize palette
 	gCurrentPalette = gPalette["bluepink"]
@@ -49,12 +50,14 @@ function love.load()
 	gIsPaused = false
 end
 
+function love.joystickadded(joystick)
+	if not gController then
+		gController = joystick
+	end
+end
 
 function love.update(dt)
-	if not gIsPaused then
-		gBackground:update(dt)
-		gAudioPlayer:update(dt)
-	end
+	local checkPaused = (not gIsPaused) and (gBackground:update(dt) or gAudioPlayer:update(dt))
 	
 	gStateMachine:update(dt)
 	
@@ -80,6 +83,46 @@ function love.keyreleased(key)
 	local action  = gKeys[key] or "misc"
 	love.keyboard.keysDown[action] = false
 end
+
+function love.gamepadpressed(joystick, button)
+	local action = gGamepadButtons[button] or "misc"
+	print(button)
+	love.keyboard.inputs[action] = true
+	love.keyboard.keysDown[action] = true
+end
+
+function love.gamepadreleased(joystick, button)
+	local action = gGamepadButtons[button] or "misc"
+	love.keyboard.keysDown[action] = false
+end
+
+function love.gamepadaxis(joystick, axis, value)
+	print(axis .. ", " .. value)
+	if axis == "leftx" then
+		if value > 0.5 then
+			love.keyboard.keysDown["right"] = true
+			love.keyboard.inputs["right"] = true
+		elseif value < -0.5 then
+			love.keyboard.keysDown["left"] = true	
+			love.keyboard.inputs["left"] = true
+		else
+			love.keyboard.keysDown["right"] = false
+			love.keyboard.keysDown["left"] = false
+		end
+	elseif axis == "lefty" then
+		if value > 0.5 then
+			love.keyboard.keysDown["down"] = true
+			love.keyboard.inputs["down"] = true
+		elseif value < -0.5 then
+			love.keyboard.keysDown["up"] = true	
+			love.keyboard.inputs["up"] = true
+		else
+			love.keyboard.keysDown["down"] = false
+			love.keyboard.keysDown["up"] = false
+		end
+	end
+end
+
 
 --[[ 
 Last I was told, the default love.keypressed can only be accessed from main. 
@@ -116,7 +159,22 @@ gKeys = {
 	right = "right2",
 	x = "togglePauseMenu"
 	
-	}
+}
+
+gGamepadButtons = {
+	a = "bottomArrow",
+	x = "bottomArrow",
+	b = "topArrow",
+	y = "topArrow",
+
+	dpup = "up",
+	dpdown = "down",
+	dpleft = "left",
+	dpright = "right",
+
+	start = "togglePauseMenu",
+	back = "unbound"
+}
 
 
 function love.keyboard.wasInput(key)

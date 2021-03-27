@@ -20,6 +20,9 @@ function Submenu:init(params)
 	self.align = params.align or "left"
 	
 	self.textColor = params.textColor or table.deepcopy(gCurrentPalette.menuText)
+
+	self.lastUp = 0
+	self.lastDown = 0
 	
 	return table.deepcopy(o)
 end
@@ -32,24 +35,35 @@ function Submenu:deactivate()
 	self.active = false
 end
 
+function Submenu:update(dt)
+	self.lastUp = math.min(self.lastUp + dt, 0.15)
+	self.lastDown = math.min(self.lastDown + dt, 0.15)
+end
+
 function Submenu:updateColor()
 	self.textColor = table.deepcopy(gCurrentPalette.menuText)
 end
 
 function Submenu:up()
-	if self.selectedOption ~= 1 then
-		gSounds["scroll"]:stop()
-		gSounds["scroll"]:play()
+	if self.lastUp >= 0.15 then
+		if self.selectedOption ~= 1 then
+			gSounds["scroll"]:stop()
+			gSounds["scroll"]:play()
+		end
+		self.selectedOption = math.max(1, self.selectedOption - 1)
+		self.lastUp = 0
 	end
-	self.selectedOption = math.max(1, self.selectedOption - 1)
 end
 
 function Submenu:down()
-	if self.selectedOption ~= #self.options then
-		gSounds["scroll"]:stop()
-		gSounds["scroll"]:play()
+	if self.lastDown >= 0.15 then
+		if self.selectedOption ~= #self.options then
+			gSounds["scroll"]:stop()
+			gSounds["scroll"]:play()
+		end
+		self.selectedOption = math.min(#self.options, self.selectedOption + 1)
+		self.lastDown = 0
 	end
-	self.selectedOption = math.min(#self.options, self.selectedOption + 1)
 end
 
 function Submenu:select()
