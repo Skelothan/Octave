@@ -4,6 +4,7 @@ PlayState.__index = PlayState
 function PlayState:newPad(pX, pY, pRadius, pNum)
 	color = gCurrentPalette.pad1
 	laneColor = gCurrentPalette.laneColor
+	outlineColor = gCurrentPalette.objectOutlineColor
 	if pNum % 2 == 1 then
 		color = gCurrentPalette.pad2
 		laneColor = gCurrentPalette.laneColor2
@@ -13,6 +14,7 @@ function PlayState:newPad(pX, pY, pRadius, pNum)
 		y = pY, 
 		radius = pRadius,
 		padColor = color,
+		outlineColor = outlineColor,
 		index = pNum
 		})
 	)
@@ -51,6 +53,7 @@ function PlayState:newNote(nRadius, pad, lane, nNoteType)
 			pad = pad,
 			lane = lane,
 			speed = self.noteSpeed,
+			outlineColor = gCurrentPalette.objectOutlineColor,
 			noteType = nNoteType,
 			score = 1000
 		})
@@ -97,7 +100,8 @@ end
 function PlayState:enter(params)
 	self.pads = {}
 	self.lanes = {}
-	self.healthBar = HealthBar:init({healthColor = gCurrentPalette.healthColor})
+	self.lanesGraphics = love.graphics.newCanvas()
+	self.healthBar = HealthBar:init({healthColor = gCurrentPalette.healthColor, outlineColor = gCurrentPalette.objectOutlineColor})
 	self.notes = {}
 	self.effects = {}
 	self.song = params.song
@@ -145,6 +149,13 @@ function PlayState:enter(params)
 	self.noteSpeed = self.speedCoeff * math.max(love.graphics.getHeight(), love.graphics.getWidth())
 	
 	self:makePads()
+
+	-- Draw lanes to canvas
+	love.graphics.setCanvas(self.lanesGraphics)
+	for k, lane in pairs(self.lanes) do
+		lane:render()
+	end
+	love.graphics.setCanvas()
 	
 	gMidiReader = MidiReader:init(self.song.midi)
 	gMapNotes = gMidiReader:get_notes()
@@ -422,10 +433,11 @@ function PlayState:updateSubmenu(dt)
 	end
 end
 
-function PlayState:render() 
-	for k, lane in pairs(self.lanes) do
-		lane:render()
-	end
+function PlayState:render()
+	love.graphics.setBlendMode("alpha", "premultiplied")
+	love.graphics.draw(self.lanesGraphics)
+	love.graphics.setBlendMode("alpha")
+
 	for k, pad in pairs(self.pads) do
 		pad:render()
 	end

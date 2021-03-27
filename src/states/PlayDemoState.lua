@@ -4,6 +4,7 @@ PlayDemoState.__index = PlayDemoState
 function PlayDemoState:newPad(pX, pY, pRadius, pNum)
 	color = gCurrentPalette.pad1
 	laneColor = gCurrentPalette.laneColor
+	outlineColor = gCurrentPalette.objectOutlineColor
 	if pNum % 2 == 1 then
 		color = gCurrentPalette.pad2
 		laneColor = gCurrentPalette.laneColor2
@@ -13,6 +14,7 @@ function PlayDemoState:newPad(pX, pY, pRadius, pNum)
 		y = pY, 
 		radius = pRadius,
 		padColor = color,
+		outlineColor = outlineColor,
 		index = pNum
 		})
 	)
@@ -82,7 +84,7 @@ end
 function PlayDemoState:enter(params)
 	self.pads = {}
 	self.lanes = {}
-	self.healthBar = HealthBar:init({healthColor = gCurrentPalette.healthColor})
+	self.healthBar = HealthBar:init({healthColor = gCurrentPalette.healthColor, outlineColor = gCurrentPalette.objectOutlineColor})
 	self.notes = {}
 	
 	self:makePads()
@@ -96,6 +98,7 @@ function PlayDemoState:enter(params)
 			lane = 1,
 			speed = 0,
 			noteType = math.oimod(i+1,3),
+			outlineColor = gCurrentPalette.objectOutlineColor,
 			score = 1000
 		})
 	end

@@ -30,16 +30,6 @@ function Song:init(params)
 	self.directory = params.directory or nil
 
 	self.saveFile = "highScores/" .. string.sub(self.directory, 12)
-	
-	if love.filesystem.getInfo(params.directory .. "albumart.jpg") then
-		self.image = params.directory .. "albumart.jpg"
-	elseif love.filesystem.getInfo(params.directory .. "albumart.jpeg") then
-		self.image = params.directory .. "albumart.jpeg"
-	elseif love.filesystem.getInfo(params.directory .. "albumart.png") then 
-		self.image = params.directory .. "albumart.png"
-	else
-		self.image = "graphics/noteImage.png"
-	end
 
 	if love.filesystem.getInfo(self.saveFile .. "highScores.json") then
 		self.highScores = JSONReader:init(self.saveFile .. "highScores.json").data["highScores"] or {}
@@ -68,6 +58,19 @@ function Song:init(params)
 	self.audioDelay = params.audioDelay or 0
 	self.playable = self.midi ~= nil and self.audio ~= nil and self.bpm > 0 and self.noteDelay ~= nil and self.speedCoeff > 0
 	return table.deepcopy(o)
+end
+
+-- Stores the album art on the Song object. Can't be done in init() since album art is a userdata.
+function Song:init2()
+	if love.filesystem.getInfo(self.directory .. "albumart.png") then 
+		self.image = love.graphics.newImage(self.directory .. "albumart.png")
+	elseif love.filesystem.getInfo(self.directory .. "albumart.jpg") then
+		self.image = love.graphics.newImage(self.directory .. "albumart.jpg")
+	elseif love.filesystem.getInfo(self.directory .. "albumart.jpeg") then
+		self.image = love.graphics.newImage(self.directory .. "albumart.jpeg")
+	else
+		self.image = love.graphics.newImage("graphics/noteImage.png")
+	end
 end
 
 function Song:render(index, currentSong, opacity, isCurrentSong, menuOffset)
@@ -137,9 +140,8 @@ function Song:renderLeft(opacity)
 		star[4*i] = winWidth/96*math.cos(math.pi+math.pi/5+i*2*math.pi/5) *3/4
 	end
 
-	local image = love.graphics.newImage(self.image)
-	local scaleX = winWidth/6/image:getWidth()
-	local scaleY = winWidth/6/image:getHeight()
+	local scaleX = winWidth/6/self.image:getWidth()
+	local scaleY = winWidth/6/self.image:getHeight()
 
 	self.menuColor[4] = opacity
 	self.textColor[4] = opacity
@@ -152,7 +154,7 @@ function Song:renderLeft(opacity)
 		2*winHeight/3
 	)
 	love.graphics.resetColor()
-	love.graphics.draw(image, imageX, imageY, 0, scaleX, scaleY, 0, 0)
+	love.graphics.draw(self.image, imageX, imageY, 0, scaleX, scaleY, 0, 0)
 
 	love.graphics.setColor(self.textColor)
 	love.graphics.print(
