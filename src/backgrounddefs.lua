@@ -101,8 +101,7 @@ gBackgroundDefs = {
 						love.graphics.setColor(gCurrentPalette.bgObjects)
 
 						for i = 1,2 do 
-							j = 1
-							if i%2 == 0 then j = -1 end
+							j = 1 - 2 * ((i+1)%2)
 							love.graphics.push()
 							love.graphics.translate(self.x,self.y)
 							love.graphics.rotate(self.angle/15 * j)
