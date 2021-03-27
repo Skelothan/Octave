@@ -129,10 +129,13 @@ end
 --INPUT HANDLING END
 
 function love.draw()
+	--[[
+		2021-03-26: why wasn't this commented?????????
 	if false and gBackgroundImage then
 		love.graphics.resetColor()
 		love.graphics.draw(gBackgroundImage,0,0,0,love.graphics.getWidth()/1920, love.graphics.getHeight()/1080)
 	end
+	]]
 	gBackground:render()
 	
 	gStateMachine:render()

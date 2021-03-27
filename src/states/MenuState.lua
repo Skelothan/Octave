@@ -18,63 +18,16 @@ function MenuState:init()
 	
 	--if self.success == nil then self.success = false end
 	--print(self.success)
-		local files = love.filesystem.getDirectoryItems("/OctaveMaps")
-		
-		--print(love.filesystem.getSourceBaseDirectory() .. "/OctaveMaps")
-		local usefiles = {}
-		local counter = 1
-		for i, file in ipairs(files) do
-			--print(file)
-			--TODO: replace with table.insert
-			if file ~= ".DS_Store" then
-				table.insert(usefiles, "OctaveMaps/" .. file)
-				--print("Adding " .. usefiles[counter])
-			else
-				--print("Skipping .DS_Store")
-			end
-		end
+	
+	--JSONReader:init("maps/database.json").data["songs"]
 
-		--JSONReader:init("maps/database.json").data["songs"]
-
-
-		for i, song in ipairs(usefiles) do
-			--print(song .. "/data.json")
-			local params = JSONReader:init(song .. "/data.json").data
-			if params and params ~= {} then
-				params.directory = song .. "/"
-				local s = Song:init(params)
-				table.insert(self.songs, s)
-				self.numSongs = self.numSongs + 1
-			end
-		end
-		print(self.numSongs)
-		if self.numSongs == 0 then
-			self.success = false
-		else
-			self.success = true
-		end
-
-		--love.filesystem.unmount(love.filesystem.getSourceBaseDirectory());
-		
-		if self.success then
-			self.currentSong = gCurrentSong or 1
-			print(self.currentSong)
-
-			gCurrentPalette = self.songs[self.currentSong].palette
-			gBackground = Background:init(self.songs[self.currentSong].background)
-			-- print("test")
-			self.menuColor = self.songs[self.currentSong].menuColor or {1,1,1,1}
-			self.textColor = self.songs[self.currentSong].textColor or {0, 0, 0, 1}
-		else			
-			-- print("test2")
-		end
-		self.lastUp = 0
-		self.lastDown = 0
-		
-		
-		self.maxMenuOffset = love.graphics.getHeight() / 72
-		self.menuOffset = 0
-		self.movedDown = true
+	self.lastUp = 0
+	self.lastDown = 0
+	
+	
+	self.maxMenuOffset = love.graphics.getHeight() / 72
+	self.menuOffset = 0
+	self.movedDown = true
 	
 	return table.deepcopy(o)
 end
@@ -113,6 +66,55 @@ function MenuState:enter(params)
 			end}
 		}
 	})
+
+	local files = love.filesystem.getDirectoryItems("/OctaveMaps")
+		
+	--print(love.filesystem.getSourceBaseDirectory() .. "/OctaveMaps")
+	local usefiles = {}
+	local counter = 1
+	for i, file in ipairs(files) do
+		--print(file)
+		--TODO: replace with table.insert
+		if file ~= ".DS_Store" then
+			table.insert(usefiles, "OctaveMaps/" .. file)
+			--print("Adding " .. usefiles[counter])
+		else
+			--print("Skipping .DS_Store")
+		end
+	end
+
+	for i, song in ipairs(usefiles) do
+		--print(song .. "/data.json")
+		local params = JSONReader:init(song .. "/data.json").data
+		if params and params ~= {} then
+			params.directory = song .. "/"
+			local s = Song:init(params)
+			s:init2()
+			table.insert(self.songs, s)
+			self.numSongs = self.numSongs + 1
+		end
+	end
+	print(self.numSongs)
+	if self.numSongs == 0 then
+		self.success = false
+	else
+		self.success = true
+	end
+
+	--love.filesystem.unmount(love.filesystem.getSourceBaseDirectory());
+	
+	if self.success then
+		self.currentSong = gCurrentSong or 1
+		print(self.currentSong)
+
+		gCurrentPalette = self.songs[self.currentSong].palette
+		gBackground = Background:init(self.songs[self.currentSong].background)
+		-- print("test")
+		self.menuColor = self.songs[self.currentSong].menuColor or {1,1,1,1}
+		self.textColor = self.songs[self.currentSong].textColor or {0, 0, 0, 1}
+	else			
+		-- print("test2")
+	end
 end 
 
 
