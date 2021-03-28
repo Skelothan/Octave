@@ -86,7 +86,6 @@ end
 
 function love.gamepadpressed(joystick, button)
 	local action = gGamepadButtons[button] or "misc"
-	print(button)
 	love.keyboard.inputs[action] = true
 	love.keyboard.keysDown[action] = true
 end
@@ -97,7 +96,6 @@ function love.gamepadreleased(joystick, button)
 end
 
 function love.gamepadaxis(joystick, axis, value)
-	print(axis .. ", " .. value)
 	if axis == "leftx" then
 		if value > 0.5 then
 			love.keyboard.keysDown["right"] = true
